@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">food-assistant</string>
+    <string name="hello_text">Hello, there!</string>
+    <string name="current_intakes_presentation_text">Here are your day\'s current nutrient intakes:</string>
+    <string name="carbs_name">Carbs</string>
+    <string name="sugars_name">Sugars</string>
+    <string name="fats_name">Fats</string>
+    <string name="saturated_fats_name">Saturated Fats</string>
+    <string name="fiber_name">Fiber</string>
+    <string name="salt_name">Salt</string>
+    <string name="proteins_name">Proteins</string>
+    <string name="scan_product_name">Scan Product</string>
+    <string name="analyse_recipe_name">Analyse Recipe</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
