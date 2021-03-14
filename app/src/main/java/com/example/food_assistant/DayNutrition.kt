@@ -13,10 +13,10 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [dayNutrition.newInstance] factory method to
+ * Use the [DayNutrition.newInstance] factory method to
  * create an instance of this fragment.
  */
-class dayNutrition : Fragment() {
+class DayNutrition : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -47,7 +47,7 @@ class dayNutrition : Fragment() {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-                dayNutrition().apply {
+                DayNutrition().apply {
                     arguments = Bundle().apply {
                         putString(ARG_PARAM1, param1)
                         putString(ARG_PARAM2, param2)
