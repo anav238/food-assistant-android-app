@@ -12,6 +12,9 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         NavigationUI.setupWithNavController(bottomNav, navController);
+
+        //ImageButton settingsButton = findViewById(R.id.button_settings);
+        //settingsButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.settingsFragment, null));
+        //NavigationUI.setupWithNavController((View) settingsButton, navController);
     }
 
     @Override

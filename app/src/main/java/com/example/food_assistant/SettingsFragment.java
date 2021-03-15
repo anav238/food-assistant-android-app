@@ -8,24 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+public class SettingsFragment extends Fragment {
 
-public class NutrientIntake extends Fragment {
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
-    private static List<String> nutrients;
-    private static List<String> values;
-
-    public NutrientIntake() {
+    public SettingsFragment() {
         // Required empty public constructor
     }
 
-    public static NutrientIntake newInstance(ArrayList<String> nutrients, ArrayList<Integer> values) {
-        NutrientIntake fragment = new NutrientIntake();
+    public static SettingsFragment newInstance(String param1, String param2) {
+        SettingsFragment fragment = new SettingsFragment();
         Bundle args = new Bundle();
-        args.putStringArrayList("nutrients", nutrients);
-        args.putIntegerArrayList("values", values);
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -38,6 +34,7 @@ public class NutrientIntake extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_nutrient_intake, container, false);
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 }

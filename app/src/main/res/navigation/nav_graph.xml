@@ -16,15 +16,31 @@
         <action
             android:id="@+id/action_dayNutrition_to_historyFragment"
             app:destination="@id/historyFragment" />
+        <action
+            android:id="@+id/action_dayNutrition_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/logMealFragment"
         android:name="com.example.food_assistant.LogMeal"
         android:label="fragment_log_meal"
-        tools:layout="@layout/fragment_log_meal" />
+        tools:layout="@layout/fragment_log_meal" >
+        <action
+            android:id="@+id/action_logMealFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/historyFragment"
         android:name="com.example.food_assistant.HistoryFragment"
         android:label="fragment_history"
-        tools:layout="@layout/fragment_history" />
+        tools:layout="@layout/fragment_history" >
+        <action
+            android:id="@+id/action_historyFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.food_assistant.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
