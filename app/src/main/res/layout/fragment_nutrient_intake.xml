@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <TableLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context=".NutrientIntake"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textViewCarbs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:paddingBottom="2dp"
+                android:text="@string/carbs_name"
+                android:textSize="20sp" />
+
+            <ProgressBar
+                android:id="@+id/progressBarCarbs"
+                style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:max="100"
+                android:progress="50"
+                android:progressDrawable="@drawable/custom_progressbar" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textViewSugars"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:paddingBottom="2dp"
+                android:text="@string/sugars_name"
+                android:textSize="20sp" />
+
+            <ProgressBar
+                android:id="@+id/progressBarSugars"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:max="100"
+                android:progress="70"
+                android:progressDrawable="@drawable/custom_progressbar" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textViewFats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:paddingBottom="2dp"
+                android:text="@string/fats_name"
+                android:textSize="20sp" />
+
+            <ProgressBar
+                android:id="@+id/progressBarFats"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:max="100"
+                android:progress="50"
+                android:progressDrawable="@drawable/custom_progressbar" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textViewSaturatedFats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:paddingBottom="2dp"
+                android:text="@string/saturated_fats_name"
+                android:textSize="20sp" />
+
+            <ProgressBar
+                android:id="@+id/progressBarSaturatedFats"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:max="100"
+                android:progress="50"
+                android:progressDrawable="@drawable/custom_progressbar" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textViewProteins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:paddingBottom="2dp"
+                android:text="@string/proteins_name"
+                android:textSize="20sp" />
+
+            <ProgressBar
+                android:id="@+id/progressBarProteins"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:max="100"
+                android:progress="30"
+                android:progressDrawable="@drawable/custom_progressbar" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:paddingBottom="2dp"
+                android:text="@string/fiber_name"
+                android:textSize="20sp" />
+
+            <ProgressBar
+                android:id="@+id/progressBar5"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:max="100"
+                android:progress="90"
+                android:progressDrawable="@drawable/custom_progressbar" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:paddingBottom="2dp"
+                android:text="@string/salt_name"
+                android:textSize="20sp" />
+
+            <ProgressBar
+                android:id="@+id/progressBar6"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:max="100"
+                android:progress="50"
+                android:progressDrawable="@drawable/custom_progressbar" />
+
+        </TableRow>
+
+    </TableLayout>
