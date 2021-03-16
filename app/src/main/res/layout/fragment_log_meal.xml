@@ -25,7 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/scan_product_name" />
+        android:text="@string/scan_product_name"
+        android:onClick="openScanProduct"/>
 
     <Button
         android:id="@+id/analyse_recipe_button"

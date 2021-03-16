@@ -46,4 +46,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
         startActivity(intent);
     }
+
+    public void openScanProduct(View view) {
+        Intent intent = new Intent(MainActivity.this, ScanProductActivity.class);
+        startActivity(intent);
+    }
 }
