@@ -11,7 +11,10 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
 import android.os.Bundle;
+import android.view.View;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.concurrent.ExecutionException;
@@ -52,4 +55,12 @@ public class ScanProductActivity extends AppCompatActivity {
         Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, preview);
     }
 
+    public void processScannedProduct(View view) {
+        SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
+        selectProductQuantityFragment.show(getSupportFragmentManager(), "test");
+    }
+
+    public void closeActivity(View view) {
+        super.onBackPressed();
+    }
 }

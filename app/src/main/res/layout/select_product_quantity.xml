@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp">
+
+    <EditText
+        android:id="@+id/product_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:autofillHints="How much you'll eat"
+        android:inputType="number"
+        android:minWidth="60dp"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/product_quantity_scale"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif"
+        android:gravity="center|center_vertical"
+        android:text="@string/grams" />
+</LinearLayout>
