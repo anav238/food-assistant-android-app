@@ -50,7 +50,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/favorite_meals" />
+        android:text="@string/favorite_meals"
+        android:onClick="openFavoritesActivity"/>
 
     <Button
         android:id="@+id/previous_meals_button"
@@ -58,6 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/previous_meals" />
+        android:text="@string/previous_meals"
+        android:onClick="openPreviousMealsActivity"/>
 
 </LinearLayout>

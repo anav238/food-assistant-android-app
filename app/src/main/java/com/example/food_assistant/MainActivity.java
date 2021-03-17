@@ -51,4 +51,14 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, ScanProductActivity.class);
         startActivity(intent);
     }
+
+    public void openFavoritesActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, FavoritesActivity.class);
+        startActivity(intent);
+    }
+
+    public void openPreviousMealsActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, FavoritesActivity.class);
+        startActivity(intent);
+    }
 }
