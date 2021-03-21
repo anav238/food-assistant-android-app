@@ -6,11 +6,17 @@
             app:title="@string/nutrients_setting_category_text"
             app:iconSpaceReserved="false">
         <androidx.preference.SwitchPreferenceCompat
+            android:id="@+id/carbs"
             android:layout_width="match_parent"
             android:defaultValue="true"
             android:key="carbs_shown"
             android:title="@string/carbs_name"
-            app:iconSpaceReserved="false"/>
+            app:iconSpaceReserved="false"
+            android:onClick="showNutrientMaxQuantity"/>
+        <EditTextPreference
+            app:key="carbs_max1"
+            app:title="Your signature"
+            app:isPreferenceVisible="false"/>
         <androidx.preference.SwitchPreferenceCompat
             android:layout_width="match_parent"
             android:defaultValue="true"

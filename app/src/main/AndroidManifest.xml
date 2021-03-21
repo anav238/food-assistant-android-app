@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Foodassistant">
-        <activity android:name=".FavoritesActivity"></activity>
+        <activity android:name=".ProductInfo"></activity>
+        <activity android:name=".FavoritesActivity" />
         <activity android:name=".ScanProductActivity" />
         <activity
             android:name=".SettingsActivity"

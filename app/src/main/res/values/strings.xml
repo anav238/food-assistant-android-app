@@ -68,4 +68,5 @@
     <string name="close">Close</string>
     <string name="add_to_favorites">Add to favorites</string>
     <string name="your_favorite_products">Your favorite products</string>
+    <string name="your_profile_picture">Your profile picture</string>
 </resources>
