@@ -22,7 +22,9 @@
         android:layout_weight="1"
         android:background="@null"
         android:contentDescription="@string/add_to_favorites"
-        app:srcCompat="@drawable/ic_favorite" />
+        app:srcCompat="@drawable/selector_favorite"
+        android:onClick="switchFavorite"
+        />
 
     <ImageButton
         android:id="@+id/infoButton"
@@ -31,5 +33,6 @@
         android:layout_weight="1"
         android:background="@null"
         android:contentDescription="@string/add_to_favorites"
-        app:srcCompat="@drawable/ic_info" />
+        app:srcCompat="@drawable/ic_info"
+        android:onClick="openProductInfo"/>
 </LinearLayout>

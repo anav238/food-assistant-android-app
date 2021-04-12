@@ -3,6 +3,7 @@ package com.example.food_assistant;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,11 +54,12 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdap
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
-
+        private final ImageButton imageButton;
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
-
+            imageButton = (ImageButton) view.findViewById(R.id.favoriteButton);
+            imageButton.setActivated(true);
             textView = (TextView) view.findViewById(R.id.favoritesTextView);
         }
 

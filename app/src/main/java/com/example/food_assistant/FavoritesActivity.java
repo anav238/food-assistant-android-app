@@ -1,12 +1,21 @@
 package com.example.food_assistant;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +69,16 @@ public class FavoritesActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
         // END_INCLUDE(initializeRecyclerView)
 
+        Toolbar myChildToolbar =
+                (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myChildToolbar);
+
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
+
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
+
     }
 
     /**
@@ -94,4 +113,27 @@ public class FavoritesActivity extends AppCompatActivity {
         mRecyclerView.scrollToPosition(scrollPosition);
     }
 
+    public void openProductInfo(View view) {
+        Intent intent = new Intent(FavoritesActivity.this, ProductInfo.class);
+        startActivity(intent);
+    }
+
+    public void switchFavorite(View view) {
+        ImageButton favoriteButton = (ImageButton) view;
+        favoriteButton.setActivated(!favoriteButton.isActivated());
+    }
+
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
+    }
 }

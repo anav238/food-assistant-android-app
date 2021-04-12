@@ -2,32 +2,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:id="@+id/width"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".ProductInfo">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ToolBarStyle"
+        app:titleTextAppearance="@style/ToolBarStyle"
+        app:titleTextColor="#FFFFFF"/>
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:maxWidth="10dp"
-        android:maxHeight="20dp"
+        android:maxWidth="2dp"
         app:srcCompat="@drawable/apple_chips" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="6dp"
         android:layout_weight="1"
         android:text="Apple Chips"
         android:textAlignment="center"
         android:textSize="24sp" />
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment3"
-        android:name="com.example.food_assistant.DayNutrition"
+        android:name="com.example.food_assistant.NutrientIntake"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
