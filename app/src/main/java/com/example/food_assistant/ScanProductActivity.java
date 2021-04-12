@@ -164,7 +164,7 @@ public class ScanProductActivity extends AppCompatActivity
                 ContextCompat.getMainExecutor(this),
                 imageProxy -> {
                     try {
-                        imageProcessor.processImageProxy(imageProxy);
+                        imageProcessor.processImageProxy(imageProxy, getSupportFragmentManager());
                     } catch (MlKitException e) {
                         Log.e(TAG, "Failed to process image. Error: " + e.getLocalizedMessage());
                         Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT)

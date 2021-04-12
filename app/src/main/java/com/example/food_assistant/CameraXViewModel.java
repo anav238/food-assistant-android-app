@@ -11,15 +11,11 @@ import androidx.core.content.ContextCompat;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.ExecutionException;
 
-/** View model for interacting with CameraX. */
 public final class CameraXViewModel extends AndroidViewModel {
 
     private static final String TAG = "CameraXViewModel";
     private MutableLiveData<ProcessCameraProvider> cameraProviderLiveData;
 
-    /**
-     * Create an instance which interacts with the camera service via the given application context.
-     */
     public CameraXViewModel(@NonNull Application application) {
         super(application);
     }
