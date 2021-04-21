@@ -3,6 +3,7 @@ package com.example.food_assistant.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.food_assistant.HttpRequest.NetworkManager;
 import com.example.food_assistant.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         NavigationUI.setupWithNavController(bottomNav, navController);
 
+        NetworkManager networkManager = NetworkManager.getInstance(this);
         //ImageButton settingsButton = findViewById(R.id.button_settings);
         //settingsButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.settingsFragment, null));
         //NavigationUI.setupWithNavController((View) settingsButton, navController);
