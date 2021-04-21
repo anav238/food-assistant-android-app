@@ -5,7 +5,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment2"
-        android:name="com.example.food_assistant.NutrientIntake"
+        android:name="com.example.food_assistant.Fragments.NutrientIntakeFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

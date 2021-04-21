@@ -1,4 +1,4 @@
-package com.example.food_assistant;
+package com.example.food_assistant.Fragments;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.food_assistant.R;
 
 import org.jetbrains.annotations.NotNull;
 

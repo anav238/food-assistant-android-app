@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="10dp"
-    tools:context=".DayNutrition">
+    tools:context=".Fragments.DayNutritionFragment">
 
     <TextView
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment"
-        android:name="com.example.food_assistant.NutrientIntake"
+        android:name="com.example.food_assistant.Fragments.NutrientIntakeFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

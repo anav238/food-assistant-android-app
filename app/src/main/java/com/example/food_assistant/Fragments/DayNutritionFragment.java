@@ -1,4 +1,4 @@
-package com.example.food_assistant;
+package com.example.food_assistant.Fragments;
 
 import android.os.Bundle;
 
@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.food_assistant.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link DayNutrition#newInstance} factory method to
+ * Use the {@link DayNutritionFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DayNutrition extends Fragment {
+public class DayNutritionFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +26,7 @@ public class DayNutrition extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public DayNutrition() {
+    public DayNutritionFragment() {
         // Required empty public constructor
     }
 
@@ -37,8 +39,8 @@ public class DayNutrition extends Fragment {
      * @return A new instance of fragment DayNutrition2.
      */
     // TODO: Rename and change types and number of parameters
-    public static DayNutrition newInstance(String param1, String param2) {
-        DayNutrition fragment = new DayNutrition();
+    public static DayNutritionFragment newInstance(String param1, String param2) {
+        DayNutritionFragment fragment = new DayNutritionFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

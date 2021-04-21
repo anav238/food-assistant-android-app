@@ -6,7 +6,7 @@
     android:id="@+id/myCoordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ScanProductActivity">
+    tools:context=".Activities.ScanProductActivity">
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">

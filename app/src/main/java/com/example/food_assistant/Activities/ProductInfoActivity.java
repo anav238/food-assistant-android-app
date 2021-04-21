@@ -1,32 +1,21 @@
-package com.example.food_assistant;
-
-import android.content.SharedPreferences;
-import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+package com.example.food_assistant.Activities;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.preference.EditTextPreference;
-import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
 
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-public class SettingsActivity extends AppCompatActivity {
+import com.example.food_assistant.R;
+
+public class ProductInfoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.settingsFragmentContainer, new SettingsFragment())
-                .commit();
+        setContentView(R.layout.activity_product_info);
 
         Toolbar myChildToolbar =
                 (Toolbar) findViewById(R.id.toolbar);
@@ -51,5 +40,4 @@ public class SettingsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
     }
-
 }

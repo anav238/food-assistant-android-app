@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SettingsActivity">
+    tools:context=".Activities.SettingsActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -67,7 +67,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/settingsFragmentContainer"
-        android:name="com.example.food_assistant.SettingsFragment"
+        android:name="com.example.food_assistant.Fragments.SettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp" />

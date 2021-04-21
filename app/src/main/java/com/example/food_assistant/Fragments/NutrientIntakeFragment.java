@@ -1,4 +1,4 @@
-package com.example.food_assistant;
+package com.example.food_assistant.Fragments;
 
 import android.os.Bundle;
 
@@ -8,21 +8,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.food_assistant.R;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class NutrientIntake extends Fragment {
+public class NutrientIntakeFragment extends Fragment {
 
     private static List<String> nutrients;
     private static List<String> values;
 
-    public NutrientIntake() {
+    public NutrientIntakeFragment() {
         // Required empty public constructor
     }
 
-    public static NutrientIntake newInstance(ArrayList<String> nutrients, ArrayList<Integer> values) {
-        NutrientIntake fragment = new NutrientIntake();
+    public static NutrientIntakeFragment newInstance(ArrayList<String> nutrients, ArrayList<Integer> values) {
+        NutrientIntakeFragment fragment = new NutrientIntakeFragment();
         Bundle args = new Bundle();
         args.putStringArrayList("nutrients", nutrients);
         args.putIntegerArrayList("values", values);

@@ -3,6 +3,7 @@
     package="com.example.food_assistant">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:icon="@mipmap/ic_launcher"
@@ -11,23 +12,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Foodassistant">
         <activity
-            android:name=".ProductInfo"
-            android:parentActivityName=".FavoritesActivity"
+            android:name=".Activities.ProductInfoActivity"
+            android:parentActivityName=".Activities.FavoritesActivity"
             android:label="Product Info"/>
-        <activity android:name=".FavoritesActivity"
-            android:parentActivityName=".MainActivity"
+        <activity android:name=".Activities.FavoritesActivity"
+            android:parentActivityName=".Activities.MainActivity"
             android:label="Favorites"/>
-        <activity android:name=".ScanProductActivity" />
+        <activity android:name=".Activities.ScanProductActivity" />
         <activity
-            android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".Activities.SettingsActivity"
+            android:parentActivityName=".Activities.MainActivity"
             android:theme="@style/Theme.Foodassistant.NoActionBar"
             android:label="Settings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".Activities.MainActivity" />
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

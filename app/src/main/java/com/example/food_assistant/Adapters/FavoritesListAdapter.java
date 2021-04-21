@@ -1,4 +1,4 @@
-package com.example.food_assistant;
+package com.example.food_assistant.Adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.food_assistant.R;
 
 public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdapter.ViewHolder> {
 

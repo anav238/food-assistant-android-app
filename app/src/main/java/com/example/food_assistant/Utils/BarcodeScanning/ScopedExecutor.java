@@ -1,4 +1,4 @@
-package com.example.food_assistant;
+package com.example.food_assistant.Utils.BarcodeScanning;
 
 import androidx.annotation.NonNull;
 import java.util.concurrent.Executor;

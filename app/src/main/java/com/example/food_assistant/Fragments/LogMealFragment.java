@@ -1,4 +1,4 @@
-package com.example.food_assistant;
+package com.example.food_assistant.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,9 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class LogMeal extends Fragment {
+import com.example.food_assistant.R;
 
-    public LogMeal() {
+public class LogMealFragment extends Fragment {
+
+    public LogMealFragment() {
         // Required empty public constructor
     }
 

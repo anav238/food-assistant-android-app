@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/dayNutrition"
-        android:name="com.example.food_assistant.DayNutrition"
+        android:name="com.example.food_assistant.Fragments.DayNutritionFragment"
         android:label="fragment_day_nutrition"
         tools:layout="@layout/fragment_day_nutrition">
         <action
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/logMealFragment"
-        android:name="com.example.food_assistant.LogMeal"
+        android:name="com.example.food_assistant.Fragments.LogMealFragment"
         android:label="fragment_log_meal"
         tools:layout="@layout/fragment_log_meal">
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/historyFragment"
-        android:name="com.example.food_assistant.HistoryFragment"
+        android:name="com.example.food_assistant.Fragments.HistoryFragment"
         android:label="fragment_history"
         tools:layout="@layout/fragment_history">
         <action
@@ -40,7 +40,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.food_assistant.SettingsFragment"
+        android:name="com.example.food_assistant.Fragments.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
 </navigation>

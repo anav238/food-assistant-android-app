@@ -1,12 +1,12 @@
-package com.example.food_assistant;
+package com.example.food_assistant.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.food_assistant.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -14,8 +14,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
 

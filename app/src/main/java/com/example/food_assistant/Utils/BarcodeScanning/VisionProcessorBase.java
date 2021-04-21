@@ -1,4 +1,4 @@
-package com.example.food_assistant;
+package com.example.food_assistant.Utils.BarcodeScanning;
 
 import android.content.Context;
 import android.os.Build.VERSION_CODES;

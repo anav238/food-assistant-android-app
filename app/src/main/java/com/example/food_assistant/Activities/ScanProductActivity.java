@@ -1,4 +1,4 @@
-package com.example.food_assistant;
+package com.example.food_assistant.Activities;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -22,6 +22,11 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory;
 
+import com.example.food_assistant.Utils.BarcodeScanning.BarcodeScannerProcessor;
+import com.example.food_assistant.Utils.BarcodeScanning.CameraXViewModel;
+import com.example.food_assistant.R;
+import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
+import com.example.food_assistant.Utils.BarcodeScanning.VisionImageProcessor;
 import com.google.mlkit.common.MlKitException;
 
 import org.jetbrains.annotations.NotNull;

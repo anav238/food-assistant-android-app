@@ -1,10 +1,12 @@
-package com.example.food_assistant;
+package com.example.food_assistant.Utils.BarcodeScanning;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
+
+import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.google.android.gms.tasks.Task;
 import com.google.mlkit.vision.barcode.Barcode;
 import com.google.mlkit.vision.barcode.BarcodeScanner;

@@ -1,4 +1,4 @@
-package com.example.food_assistant;
+package com.example.food_assistant.Activities;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,18 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.example.food_assistant.Adapters.FavoritesListAdapter;
+import com.example.food_assistant.R;
 
 public class FavoritesActivity extends AppCompatActivity {
 
@@ -114,7 +110,7 @@ public class FavoritesActivity extends AppCompatActivity {
     }
 
     public void openProductInfo(View view) {
-        Intent intent = new Intent(FavoritesActivity.this, ProductInfo.class);
+        Intent intent = new Intent(FavoritesActivity.this, ProductInfoActivity.class);
         startActivity(intent);
     }
 

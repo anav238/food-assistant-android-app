@@ -1,4 +1,4 @@
-package com.example.food_assistant;
+package com.example.food_assistant.Fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import androidx.preference.SwitchPreference;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.food_assistant.R;
 
 import java.util.Objects;
 
