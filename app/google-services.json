@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "731931502861",
+    "project_id": "foodassistant-43fda",
+    "storage_bucket": "foodassistant-43fda.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:731931502861:android:6087d5c09663b9fc4de844",
+        "android_client_info": {
+          "package_name": "com.example.food_assistant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "731931502861-2g7pa0lulgn935ont9gs0p0isoo23j7h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDwgoyIylsPc6DY0qcVkBVqpdpedWzkrg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "731931502861-2g7pa0lulgn935ont9gs0p0isoo23j7h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

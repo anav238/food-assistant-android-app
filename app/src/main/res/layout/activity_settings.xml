@@ -25,7 +25,7 @@
         android:padding="16dp">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/userProfilePictureImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/profile_picture"
@@ -39,7 +39,7 @@
             android:showDividers="none">
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/usernameTextView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -60,7 +60,8 @@
                 android:elevation="0dp"
                 android:gravity="center|top"
                 android:text="@string/logout"
-                android:textColor="@color/dirty_white" />
+                android:textColor="@color/dirty_white"
+                android:onClick="logoutUser"/>
         </LinearLayout>
 
     </LinearLayout>
