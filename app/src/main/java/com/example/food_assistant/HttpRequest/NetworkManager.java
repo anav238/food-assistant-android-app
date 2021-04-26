@@ -1,7 +1,12 @@
 package com.example.food_assistant.HttpRequest;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -9,6 +14,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
+import com.example.food_assistant.Models.Product;
+import com.example.food_assistant.Utils.Mappers.ProductMapper;
+import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 public class NetworkManager
 {
@@ -44,16 +55,24 @@ public class NetworkManager
         return instance;
     }
 
-    public void getProductDetailsByBarcode(String barcode) {
+    public void getProductDetailsByBarcode(String barcode, AppCompatActivity activity) {
         String url = "https://world.openfoodfacts.org/api/v0/product/" + barcode + ".json";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        Log.i("response", response.substring(0,500));
+                    public void onResponse(String responseString) {
+                        Log.i("response", responseString.substring(0,500));
+                        JsonObject responseJson = new Gson().fromJson(responseString, JsonObject.class);
+                        Product product = ProductMapper.map(responseJson);
+                        ProductSharedViewModel productSharedViewModel = new ViewModelProvider(activity).get(ProductSharedViewModel.class);
+                        productSharedViewModel.select(product);
+                        System.out.println(product.toString());
+
+                        SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
+                        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                        selectProductQuantityFragment.show(fragmentManager, "test");
                     }
                 }, new Response.ErrorListener() {
             @Override

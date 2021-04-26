@@ -22,11 +22,13 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory;
 
+import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.Utils.BarcodeScanning.BarcodeScannerProcessor;
 import com.example.food_assistant.Utils.BarcodeScanning.CameraXViewModel;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.example.food_assistant.Utils.BarcodeScanning.VisionImageProcessor;
+import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.google.mlkit.common.MlKitException;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,6 +44,7 @@ public class ScanProductActivity extends AppCompatActivity
     private static final String BARCODE_SCANNING = "Barcode Scanning";
 
     private PreviewView previewView;
+    private ProductSharedViewModel productSharedViewModel;
 
     @Nullable private ProcessCameraProvider cameraProvider;
     @Nullable private Preview previewUseCase;
@@ -83,6 +86,8 @@ public class ScanProductActivity extends AppCompatActivity
         if (!allPermissionsGranted()) {
             getRuntimePermissions();
         }
+
+        productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
     }
 
     @Override
@@ -169,7 +174,7 @@ public class ScanProductActivity extends AppCompatActivity
                 ContextCompat.getMainExecutor(this),
                 imageProxy -> {
                     try {
-                        imageProcessor.processImageProxy(imageProxy, getSupportFragmentManager());
+                        imageProcessor.processImageProxy(imageProxy, this);
                     } catch (MlKitException e) {
                         Log.e(TAG, "Failed to process image. Error: " + e.getLocalizedMessage());
                         Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT)

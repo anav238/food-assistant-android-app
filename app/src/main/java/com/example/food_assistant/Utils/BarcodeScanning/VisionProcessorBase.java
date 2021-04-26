@@ -6,6 +6,8 @@ import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageProxy;
 import androidx.fragment.app.FragmentManager;
@@ -35,18 +37,18 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
         executor = new ScopedExecutor(TaskExecutors.MAIN_THREAD);
     }
 
-    private synchronized void processLatestImage(FragmentManager fragmentManager) {
+    private synchronized void processLatestImage(AppCompatActivity activity) {
         ByteBuffer processingImage = latestImage;
         FrameMetadata processingMetaData = latestImageMetaData;
         latestImage = null;
         latestImageMetaData = null;
         if (processingImage != null && processingMetaData != null && !isShutdown) {
-            processImage(processingImage, processingMetaData, fragmentManager);
+            processImage(processingImage, processingMetaData, activity);
         }
     }
 
     private void processImage(
-            ByteBuffer data, final FrameMetadata frameMetadata, FragmentManager fragmentManager) {
+            ByteBuffer data, final FrameMetadata frameMetadata, AppCompatActivity activity) {
 
         requestDetectInImage(
                 InputImage.fromByteBuffer(
@@ -54,14 +56,14 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
                         frameMetadata.getWidth(),
                         frameMetadata.getHeight(),
                         frameMetadata.getRotation(),
-                        InputImage.IMAGE_FORMAT_NV21), fragmentManager)
-                .addOnSuccessListener(executor, results -> processLatestImage(fragmentManager));
+                        InputImage.IMAGE_FORMAT_NV21), activity)
+                .addOnSuccessListener(executor, results -> processLatestImage(activity));
     }
 
     @Override
     @RequiresApi(VERSION_CODES.KITKAT)
     @ExperimentalGetImage
-    public void processImageProxy(ImageProxy image, FragmentManager fragmentManager) {
+    public void processImageProxy(ImageProxy image, AppCompatActivity activity) {
         if (isShutdown) {
             image.close();
             return;
@@ -69,17 +71,17 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
 
         requestDetectInImage(
                 InputImage.fromMediaImage(image.getImage(), image.getImageInfo().getRotationDegrees()),
-                fragmentManager)
+                activity)
                 .addOnCompleteListener(results -> image.close());
     }
 
     private Task<T> requestDetectInImage(
-            final InputImage image, FragmentManager fragmentManager) {
+            final InputImage image, AppCompatActivity activity) {
         return detectInImage(image)
                 .addOnSuccessListener(
                         executor,
                         results -> {
-                            VisionProcessorBase.this.onSuccess(results, fragmentManager);
+                            VisionProcessorBase.this.onSuccess(results, activity);
                         })
                 .addOnFailureListener(
                         executor,
@@ -100,7 +102,7 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
 
     protected abstract Task<T> detectInImage(InputImage image);
 
-    protected abstract void onSuccess(@NonNull T results, FragmentManager fragmentManager);
+    protected abstract void onSuccess(@NonNull T results, AppCompatActivity activity);
 
     protected abstract void onFailure(@NonNull Exception e);
 }

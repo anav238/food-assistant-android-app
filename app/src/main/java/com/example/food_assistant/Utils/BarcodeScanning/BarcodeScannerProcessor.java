@@ -1,7 +1,9 @@
 package com.example.food_assistant.Utils.BarcodeScanning;
 
+import android.app.Activity;
 import android.content.Context;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
@@ -40,12 +42,10 @@ public class BarcodeScannerProcessor extends VisionProcessorBase<List<Barcode>> 
 
     @Override
     protected void onSuccess(
-            @NonNull List<Barcode> barcodes, FragmentManager fragmentManager) {
+            @NonNull List<Barcode> barcodes, AppCompatActivity activity) {
         for (int i = 0; i < barcodes.size(); ++i) {
             Barcode barcode = barcodes.get(i);
-            SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
-            selectProductQuantityFragment.show(fragmentManager, "test");
-            NetworkManager.getInstance().getProductDetailsByBarcode(barcode.getRawValue());
+            NetworkManager.getInstance().getProductDetailsByBarcode(barcode.getRawValue(), activity);
             System.out.println(barcode.getRawValue());
             stop();
         }
