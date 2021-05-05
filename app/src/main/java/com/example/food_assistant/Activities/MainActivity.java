@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         NetworkManager networkManager = NetworkManager.getInstance(this);
         authenticateUser();
+        //test3
     }
 
     @Override
