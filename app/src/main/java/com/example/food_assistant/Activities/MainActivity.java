@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.i("Test", user.toString());
                 //UserDataLogger.logUserData(user);
             }
+            //test
         }
     }
 
