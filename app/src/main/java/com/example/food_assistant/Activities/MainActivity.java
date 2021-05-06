@@ -1,42 +1,41 @@
 package com.example.food_assistant.Activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import com.example.food_assistant.HttpRequest.NetworkManager;
-import com.example.food_assistant.Models.User;
+import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.R;
-import com.example.food_assistant.Utils.Firebase.UserDataLogger;
+import com.example.food_assistant.Utils.Firebase.UserDataUtility;
+import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
+import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
-import android.service.autofill.UserData;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 123;
+    private UserSharedViewModel userSharedViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +49,27 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(bottomNav, navController);
 
         NetworkManager networkManager = NetworkManager.getInstance(this);
+        userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
+        userSharedViewModel.getSelected().observe(this,  provider -> updateNutrientProgressBars());
+
         authenticateUser();
-        //test3
+        //updateNutrientProgressBars();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         authenticateUser();
+        //updateNutrientProgressBars();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
+        }
     }
 
     private void authenticateUser() {
@@ -77,7 +89,30 @@ public class MainActivity extends AppCompatActivity {
                     RC_SIGN_IN);
         }
         else {
-            UserDataLogger.logUserData(user);
+            UserDataUtility.logUserData(user, userSharedViewModel);
+        }
+    }
+
+    private void updateNutrientProgressBars() {
+        AppUser currentUser = userSharedViewModel.getSelected().getValue();
+        if (currentUser == null)
+            return;
+
+        Map<String, Double> maxNutrientDVs = currentUser.getMaximumNutrientDV();
+        Map<String, Double> todayNutrientConsumption = currentUser.getTodayNutrientConsumption();
+        for (String nutrient:maxNutrientDVs.keySet()) {
+            int nutrientPercentage = (int) (todayNutrientConsumption.get(nutrient) * 100 / maxNutrientDVs.get(nutrient));
+            if (nutrientPercentage == 0)
+                nutrientPercentage = 1;
+            String progressBarIdString = "progressBar_" + nutrient.replace("-", "_");
+            Resources res = getResources();
+            int progressBarId = res.getIdentifier(progressBarIdString, "id", this.getPackageName());
+
+            System.out.println(progressBarIdString);
+            System.out.println(progressBarId);
+
+            ProgressBar nutrientProgressBar = findViewById(progressBarId);
+            nutrientProgressBar.setProgress(nutrientPercentage);
         }
     }
 
@@ -92,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 // Successfully signed in
                 Log.i("TEST", "TEST");
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                UserDataLogger.logUserData(user);
+                UserDataUtility.logUserData(user, userSharedViewModel);
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
@@ -100,10 +135,9 @@ public class MainActivity extends AppCompatActivity {
                 // ...
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user != null)
-                    Log.i("Test", user.toString());
-                //UserDataLogger.logUserData(user);
+                    updateNutrientProgressBars();
+                //UserDataUtility.logUserData(user);
             }
-            //test2
         }
     }
 

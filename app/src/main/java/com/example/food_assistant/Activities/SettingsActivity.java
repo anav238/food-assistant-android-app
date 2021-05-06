@@ -1,15 +1,12 @@
 package com.example.food_assistant.Activities;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.example.food_assistant.Models.User;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Fragments.SettingsFragment;
 import com.example.food_assistant.Utils.Mappers.DrawableMapper;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,7 +17,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,8 +24,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity {
 

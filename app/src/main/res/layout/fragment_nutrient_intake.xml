@@ -23,7 +23,7 @@
                 android:textSize="20sp" />
 
             <ProgressBar
-                android:id="@+id/progressBarCarbs"
+                android:id="@+id/progressBar_carbohydrates"
                 style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -50,7 +50,7 @@
                 android:textSize="20sp" />
 
             <ProgressBar
-                android:id="@+id/progressBarSugars"
+                android:id="@+id/progressBar_sugars"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -77,7 +77,7 @@
                 android:textSize="20sp" />
 
             <ProgressBar
-                android:id="@+id/progressBarFats"
+                android:id="@+id/progressBar_fat"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -104,7 +104,7 @@
                 android:textSize="20sp" />
 
             <ProgressBar
-                android:id="@+id/progressBarSaturatedFats"
+                android:id="@+id/progressBar_saturated_fat"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -132,7 +132,7 @@
                 android:textSize="20sp" />
 
             <ProgressBar
-                android:id="@+id/progressBarProteins"
+                android:id="@+id/progressBar_proteins"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -160,7 +160,7 @@
                 android:textSize="20sp" />
 
             <ProgressBar
-                android:id="@+id/progressBar5"
+                android:id="@+id/progressBar_fiber"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -188,7 +188,7 @@
                 android:textSize="20sp" />
 
             <ProgressBar
-                android:id="@+id/progressBar6"
+                android:id="@+id/progressBar_salt"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -198,5 +198,33 @@
                 android:progressDrawable="@drawable/custom_progressbar" />
 
         </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center"
+            android:paddingBottom="2dp"
+            android:text="@string/calories_name"
+            android:textSize="20sp" />
+
+        <ProgressBar
+            android:id="@+id/progressBar_energy_kcal"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:max="100"
+            android:progress="50"
+            android:progressDrawable="@drawable/custom_progressbar" />
+
+    </TableRow>
 
     </TableLayout>
