@@ -50,17 +50,13 @@ public class MainActivity extends AppCompatActivity {
 
         NetworkManager networkManager = NetworkManager.getInstance(this);
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
-        //userSharedViewModel.getSelected().observe(this,  provider -> updateNutrientProgressBars());
-
         authenticateUser();
-        //updateNutrientProgressBars();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         authenticateUser();
-        //updateNutrientProgressBars();
     }
 
     @Override

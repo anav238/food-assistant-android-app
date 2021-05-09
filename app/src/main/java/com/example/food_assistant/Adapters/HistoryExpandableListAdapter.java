@@ -1,35 +1,50 @@
 package com.example.food_assistant.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
+import com.example.food_assistant.Fragments.NutrientIntakeFragment;
+import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.R;
+import com.firebase.ui.auth.data.model.User;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
 
+    private final FragmentActivity activity;
     private final Context context;
+    private final AppUser user;
     private final List<String> expandableListTitle;
-    private final HashMap<String, List<String>> expandableListDetail;
+    private final Map<String, Map<String, Double>> expandableListDetail;
 
-    public HistoryExpandableListAdapter(Context context, List<String> expandableListTitle,
-                                        HashMap<String, List<String>> expandableListDetail) {
+    public HistoryExpandableListAdapter(FragmentActivity activity, Context context, AppUser user, List<String> expandableListTitle,
+                                        Map<String, Map<String, Double>> expandableListDetail) {
+        this.activity = activity;
         this.context = context;
+        this.user = user;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;
     }
 
+
     @Override
     public Object getChild(int listPosition, int expandedListPosition) {
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition))
-                .get(expandedListPosition);
+        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition));
     }
 
     @Override
@@ -40,11 +55,32 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int listPosition, final int expandedListPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        if (convertView == null) {
+        //if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_item, null);
-        }
+
+            Map<String, Double> maxNutrientDVs = user.getMaximumNutrientDV();
+            Map<String, Double> daysNutrientConsumption = expandableListDetail.get(expandableListTitle.get(listPosition));
+            System.out.println(listPosition);
+            System.out.println(expandedListPosition);
+            System.out.println(daysNutrientConsumption);
+            Bundle bundle = new Bundle();
+            bundle.putStringArray("nutrients", maxNutrientDVs.keySet().toArray(new String[maxNutrientDVs.keySet().size()]));
+            for (String nutrient:maxNutrientDVs.keySet()) {
+                int nutrientPercentage = (int) (daysNutrientConsumption.get(nutrient) * 100 / maxNutrientDVs.get(nutrient));
+                if (nutrientPercentage == 0)
+                    nutrientPercentage = 1;
+                bundle.putInt(nutrient, nutrientPercentage);
+            }
+
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                        .setReorderingAllowed(true)
+                        .add(R.id.nutrient_intake_fragment, NutrientIntakeFragment.class, bundle)
+                        .commit();
+
+        //}
         return convertView;
     }
 
@@ -78,8 +114,7 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
                     getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_group, null);
         }
-        TextView listTitleTextView = (TextView) convertView
-                .findViewById(R.id.listTitle);
+        TextView listTitleTextView = convertView.findViewById(R.id.listTitle);
         listTitleTextView.setTypeface(null, Typeface.BOLD);
         listTitleTextView.setText(listTitle);
         return convertView;

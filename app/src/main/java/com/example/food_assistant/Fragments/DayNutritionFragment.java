@@ -19,11 +19,6 @@ import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DayNutritionFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class DayNutritionFragment extends Fragment {
 
     private UserSharedViewModel userSharedViewModel;
@@ -49,7 +44,6 @@ public class DayNutritionFragment extends Fragment {
 
         userSharedViewModel = new ViewModelProvider(requireActivity()).get(UserSharedViewModel.class);
         userSharedViewModel.getSelected().observe(this,  provider -> showNutrientIntakeFragment());
-
     }
 
     @Override
@@ -70,7 +64,6 @@ public class DayNutritionFragment extends Fragment {
         if (currentUser == null)
             return;
 
-        Log.i("USER", currentUser.toString());
         Map<String, Double> maxNutrientDVs = currentUser.getMaximumNutrientDV();
         Map<String, Double> todayNutrientConsumption = currentUser.getTodayNutrientConsumption();
         Bundle bundle = new Bundle();
@@ -95,9 +88,6 @@ public class DayNutritionFragment extends Fragment {
         else { // re-use the old fragment
             fragmentManager.beginTransaction().replace(R.id.nutrientIntakeContainer, NutrientIntakeFragment.class, bundle, "todayNutrientIntake").commit();
         }
-
-
-        Log.i("TEST2", bundle.toString());
 
     }
 }

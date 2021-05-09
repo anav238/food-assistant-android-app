@@ -32,18 +32,5 @@
         android:tint="@color/dirty_white"
         app:srcCompat="@drawable/ic_close" />
 
-    <ImageButton
-        android:id="@+id/scanProductPictureButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:layout_marginBottom="20dp"
-        android:background="@null"
-        android:contentDescription="@string/scan_product_name"
-        android:minWidth="50dp"
-        android:minHeight="50dp"
-        android:onClick="processScannedProduct"
-        app:srcCompat="@drawable/circle" />
-
 </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -4,8 +4,7 @@
     android:layout_height="wrap_content">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment2"
-        android:name="com.example.food_assistant.Fragments.NutrientIntakeFragment"
+        android:id="@+id/nutrient_intake_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

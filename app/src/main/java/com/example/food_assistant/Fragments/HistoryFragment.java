@@ -7,15 +7,22 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.food_assistant.Adapters.HistoryExpandableListAdapter;
+import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.R;
+import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HistoryFragment extends Fragment {
+
+    private UserSharedViewModel userSharedViewModel;
+    private int lastExpandedPosition = -1;
 
     public HistoryFragment() {
         // Required empty public constructor
@@ -24,25 +31,26 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userSharedViewModel = new ViewModelProvider(requireActivity()).get(UserSharedViewModel.class);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_history, null);
-        ExpandableListView elv = (ExpandableListView) v.findViewById(R.id.expandableListView);
+        ExpandableListView elv = v.findViewById(R.id.expandableListView);
 
-        HashMap<String, List<String>> expandableListDetail = new HashMap<String, List<String>>();
-        List<String> cricket = new ArrayList<String>();
-        cricket.add("India");
-        List<String> football = new ArrayList<String>();
-        football.add("Brazil");
-        List<String> basketball = new ArrayList<String>();
-        basketball.add("United States");
-        expandableListDetail.put("Yesterday", cricket);
-        expandableListDetail.put("Sunday", football);
-        expandableListDetail.put("Saturday", basketball);
+        elv.setOnGroupExpandListener(groupPosition -> {
+            if (lastExpandedPosition != -1
+                    && groupPosition != lastExpandedPosition) {
+                elv.collapseGroup(lastExpandedPosition);
+            }
+            lastExpandedPosition = groupPosition;
+        });
 
-        elv.setAdapter(new HistoryExpandableListAdapter(getContext(), new ArrayList<>(expandableListDetail.keySet()), expandableListDetail));
+        AppUser user = userSharedViewModel.getSelected().getValue();
+        Map<String, Map<String, Double>> nutrientConsumptionHistory = user.getNutrientConsumptionHistory();
+
+        elv.setAdapter(new HistoryExpandableListAdapter(requireActivity(), getContext(), user, new ArrayList<>(nutrientConsumptionHistory.keySet()), nutrientConsumptionHistory));
         return v;
     }
 
