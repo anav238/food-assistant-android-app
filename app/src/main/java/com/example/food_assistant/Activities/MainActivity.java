@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         NetworkManager networkManager = NetworkManager.getInstance(this);
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
-        userSharedViewModel.getSelected().observe(this,  provider -> updateNutrientProgressBars());
+        //userSharedViewModel.getSelected().observe(this,  provider -> updateNutrientProgressBars());
 
         authenticateUser();
         //updateNutrientProgressBars();
@@ -134,8 +134,8 @@ public class MainActivity extends AppCompatActivity {
                 // response.getError().getErrorCode() and handle the error.
                 // ...
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if (user != null)
-                    updateNutrientProgressBars();
+                //if (user != null)
+                    //updateNutrientProgressBars();
                 //UserDataUtility.logUserData(user);
             }
         }
@@ -156,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openScanProduct(View view) {
         Intent intent = new Intent(MainActivity.this, ScanProductActivity.class);
+        intent.putExtra("loggedUser", userSharedViewModel.getSelected().getValue());
         startActivity(intent);
     }
 

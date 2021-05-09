@@ -3,12 +3,21 @@ package com.example.food_assistant.Fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.R;
+import com.example.food_assistant.Utils.Constants.Nutrients;
+import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
+
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,28 +26,14 @@ import com.example.food_assistant.R;
  */
 public class DayNutritionFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private UserSharedViewModel userSharedViewModel;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public DayNutritionFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DayNutrition2.
-     */
-    // TODO: Rename and change types and number of parameters
     public static DayNutritionFragment newInstance(String param1, String param2) {
         DayNutritionFragment fragment = new DayNutritionFragment();
         Bundle args = new Bundle();
@@ -51,10 +46,16 @@ public class DayNutritionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+        userSharedViewModel = new ViewModelProvider(requireActivity()).get(UserSharedViewModel.class);
+        userSharedViewModel.getSelected().observe(this,  provider -> showNutrientIntakeFragment());
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        showNutrientIntakeFragment();
     }
 
     @Override
@@ -62,5 +63,40 @@ public class DayNutritionFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_day_nutrition, container, false);
+    }
+
+    private void showNutrientIntakeFragment() {
+        AppUser currentUser = userSharedViewModel.getSelected().getValue();
+        if (currentUser == null)
+            return;
+
+        Map<String, Double> maxNutrientDVs = currentUser.getMaximumNutrientDV();
+        Map<String, Double> todayNutrientConsumption = currentUser.getTodayNutrientConsumption();
+        Bundle bundle = new Bundle();
+        bundle.putStringArray("nutrients", maxNutrientDVs.keySet().toArray(new String[maxNutrientDVs.keySet().size()]));
+        for (String nutrient:maxNutrientDVs.keySet()) {
+            int nutrientPercentage = (int) (todayNutrientConsumption.get(nutrient) * 100 / maxNutrientDVs.get(nutrient));
+            if (nutrientPercentage == 0)
+                nutrientPercentage = 1;
+            bundle.putInt(nutrient, nutrientPercentage);
+        }
+
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        //FragmentTransaction fTransaction = fManager.beginTransaction();
+        Fragment fragment = fragmentManager.findFragmentByTag("todayNutrientIntake");
+
+        if (fragment == null) {
+            fragmentManager.beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.nutrientIntakeContainer, NutrientIntakeFragment.class, bundle, "todayNutrientIntake")
+                    .commit();
+        }
+        else { // re-use the old fragment
+            fragmentManager.beginTransaction().replace(R.id.nutrientIntakeContainer, NutrientIntakeFragment.class, bundle, "todayNutrientIntake").commit();
+        }
+
+
+        Log.i("TEST2", bundle.toString());
+
     }
 }

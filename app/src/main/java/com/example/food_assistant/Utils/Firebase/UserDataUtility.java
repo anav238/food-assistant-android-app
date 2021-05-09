@@ -44,6 +44,10 @@ public class UserDataUtility {
     public static void updateUserDataToDb(FirebaseUser user, UserSharedViewModel userSharedViewModel) {
         if (mDatabase == null)
             mDatabase = FirebaseDatabase.getInstance("https://foodassistant-43fda-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
-        mDatabase.child("users").child(user.getUid()).setValue(userSharedViewModel.getSelected().getValue());
+        AppUser loggedUser = userSharedViewModel.getSelected().getValue();
+        if (loggedUser != null) {
+            Log.i("Logging user data to DB", loggedUser.toString());
+            mDatabase.child("users").child(user.getUid()).setValue(loggedUser);
+        }
     }
 }

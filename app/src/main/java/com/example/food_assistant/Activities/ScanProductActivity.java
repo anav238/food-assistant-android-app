@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory;
 
+import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.Utils.BarcodeScanning.BarcodeScannerProcessor;
 import com.example.food_assistant.Utils.BarcodeScanning.CameraXViewModel;
@@ -29,6 +30,8 @@ import com.example.food_assistant.R;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.example.food_assistant.Utils.BarcodeScanning.VisionImageProcessor;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
+import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
+import com.firebase.ui.auth.data.model.User;
 import com.google.mlkit.common.MlKitException;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +47,7 @@ public class ScanProductActivity extends AppCompatActivity
     private static final String BARCODE_SCANNING = "Barcode Scanning";
 
     private PreviewView previewView;
+    private UserSharedViewModel userSharedViewModel;
     private ProductSharedViewModel productSharedViewModel;
 
     @Nullable private ProcessCameraProvider cameraProvider;
@@ -88,6 +92,13 @@ public class ScanProductActivity extends AppCompatActivity
         }
 
         productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
+        userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
+
+        Bundle bundle = getIntent().getExtras();
+        AppUser user = bundle.getParcelable("loggedUser");
+        Log.i("loggedUser", user.toString());
+
+        userSharedViewModel.select(user);
     }
 
     @Override

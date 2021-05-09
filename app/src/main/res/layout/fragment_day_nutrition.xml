@@ -33,8 +33,7 @@
         android:textStyle="italic" />
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment"
-        android:name="com.example.food_assistant.Fragments.NutrientIntakeFragment"
+        android:id="@+id/nutrientIntakeContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

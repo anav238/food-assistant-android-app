@@ -1,5 +1,8 @@
 package com.example.food_assistant.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.example.food_assistant.Utils.Constants.Nutrients;
 
 import java.text.SimpleDateFormat;
@@ -9,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AppUser {
+public class AppUser implements Parcelable {
     String name = "";
     String email = "";
     Map<String, Map<String, Double>> nutrientConsumptionHistory = new HashMap<>();
@@ -42,6 +45,25 @@ public class AppUser {
             todayNutrientConsumption.put(nutrient, 0.0);
         nutrientConsumptionHistory.put(dateString, todayNutrientConsumption);
     }
+
+    protected AppUser(Parcel in) {
+        name = in.readString();
+        email = in.readString();
+        favoriteProductsBarcodes = in.createStringArrayList();
+        historyProductsBarcodes = in.createStringArrayList();
+    }
+
+    public static final Creator<AppUser> CREATOR = new Creator<AppUser>() {
+        @Override
+        public AppUser createFromParcel(Parcel in) {
+            return new AppUser(in);
+        }
+
+        @Override
+        public AppUser[] newArray(int size) {
+            return new AppUser[size];
+        }
+    };
 
     @Override
     public String toString() {
@@ -108,5 +130,20 @@ public class AppUser {
 
     public void setMaximumNutrientDV(Map<String, Double> maximumNutrientDV) {
         this.maximumNutrientDV = maximumNutrientDV;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.name);
+        dest.writeString(this.email);
+        dest.writeMap(this.nutrientConsumptionHistory);
+        dest.writeMap(this.maximumNutrientDV);
+        dest.writeList(favoriteProductsBarcodes);
+        dest.writeList(historyProductsBarcodes);
     }
 }
