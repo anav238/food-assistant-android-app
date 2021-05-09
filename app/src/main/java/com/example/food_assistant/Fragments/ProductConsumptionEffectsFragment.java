@@ -24,7 +24,9 @@ import android.widget.Toast;
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
+import com.example.food_assistant.Utils.BarcodeScanning.VisionImageProcessor;
 import com.example.food_assistant.Utils.Constants.Nutrients;
+import com.example.food_assistant.Utils.ViewModels.ImageProcessorSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 
@@ -37,15 +39,19 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
 
     private UserSharedViewModel userSharedViewModel;
     private ProductSharedViewModel productSharedViewModel;
+    private ImageProcessorSharedViewModel imageProcessorSharedViewModel;
 
     @NotNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         userSharedViewModel = new ViewModelProvider(requireActivity()).get(UserSharedViewModel.class);
         productSharedViewModel = new ViewModelProvider(requireActivity()).get(ProductSharedViewModel.class);
+        imageProcessorSharedViewModel = new ViewModelProvider(requireActivity()).get(ImageProcessorSharedViewModel.class);
 
         AppUser user = userSharedViewModel.getSelected().getValue();
         Product product = productSharedViewModel.getSelected().getValue();
+        VisionImageProcessor visionImageProcessor = imageProcessorSharedViewModel.getSelected().getValue();
+
         Double productQuantity = requireArguments().getDouble("productQuantity");
         Log.i("PROD_QUANTITY", String.valueOf(productQuantity));
 
@@ -56,6 +62,7 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
                 .setMessage("Are you sure you want to consume this product?")
                 .setPositiveButton(R.string.next, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        updateUserNutrientConsumption(productQuantity);
                         dismiss();
                         Context context = getActivity();
                         CharSequence text = "Product logged!";
@@ -64,6 +71,8 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
                         Toast toast = Toast.makeText(context, text, duration);
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
+
+                        visionImageProcessor.restart();
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -103,6 +112,25 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
             nutrientIncreaseTextView.setText(decimalFormat.format(currNutrientPercentage) + "% ->" + decimalFormat.format(newNutrientPercentage) + "%");
         }
         return builder.create();
+    }
+
+    private void updateUserNutrientConsumption(Double productQuantity) {
+        AppUser user = userSharedViewModel.getSelected().getValue();
+        Product product = productSharedViewModel.getSelected().getValue();
+
+        Map<String, Double> todayNutrientConsumption = user.getTodayNutrientConsumption();
+        Map<String, Double> productNutrients = product.getNutriments();
+        Double productBaseQuantity = product.getBaseQuantity();
+
+        for (String nutrient:todayNutrientConsumption.keySet()) {
+            String productNutrientKey = nutrient + "_value";
+            if (productNutrients.containsKey(productNutrientKey)) {
+                double newConsumption = todayNutrientConsumption.get(nutrient) + productNutrients.get(productNutrientKey) * (productQuantity / productBaseQuantity);
+                todayNutrientConsumption.put(nutrient, newConsumption);
+            }
+        }
+        user.updateTodayNutrientConsumption(todayNutrientConsumption);
+        userSharedViewModel.select(user);
     }
 
     @Override

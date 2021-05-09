@@ -47,7 +47,7 @@ public class BarcodeScannerProcessor extends VisionProcessorBase<List<Barcode>> 
             Barcode barcode = barcodes.get(i);
             NetworkManager.getInstance().getProductDetailsByBarcode(barcode.getRawValue(), activity);
             System.out.println(barcode.getRawValue());
-            stop();
+            pause();
         }
     }
 

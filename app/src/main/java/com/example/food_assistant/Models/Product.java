@@ -91,4 +91,5 @@ public class Product {
     public void setNutriScoreGrade(String nutriScoreGrade) {
         this.nutriScoreGrade = nutriScoreGrade;
     }
+
 }

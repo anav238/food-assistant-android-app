@@ -16,4 +16,10 @@ public interface VisionImageProcessor {
 
     /** Stops the underlying machine learning model and release resources. */
     void stop();
+
+    /** pauses the execution */
+    void pause();
+
+    /** restarts the execution */
+    void restart();
 }

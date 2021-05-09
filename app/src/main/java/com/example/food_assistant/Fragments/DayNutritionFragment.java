@@ -70,6 +70,7 @@ public class DayNutritionFragment extends Fragment {
         if (currentUser == null)
             return;
 
+        Log.i("USER", currentUser.toString());
         Map<String, Double> maxNutrientDVs = currentUser.getMaximumNutrientDV();
         Map<String, Double> todayNutrientConsumption = currentUser.getTodayNutrientConsumption();
         Bundle bundle = new Bundle();

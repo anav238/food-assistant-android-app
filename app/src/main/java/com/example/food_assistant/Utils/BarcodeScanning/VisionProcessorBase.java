@@ -26,6 +26,7 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
     private final ScopedExecutor executor;
 
     private boolean isShutdown;
+    private boolean isPaused;
 
     @GuardedBy("this")
     private ByteBuffer latestImage;
@@ -42,7 +43,7 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
         FrameMetadata processingMetaData = latestImageMetaData;
         latestImage = null;
         latestImageMetaData = null;
-        if (processingImage != null && processingMetaData != null && !isShutdown) {
+        if (processingImage != null && processingMetaData != null && !isShutdown && !isPaused) {
             processImage(processingImage, processingMetaData, activity);
         }
     }
@@ -64,7 +65,7 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
     @RequiresApi(VERSION_CODES.KITKAT)
     @ExperimentalGetImage
     public void processImageProxy(ImageProxy image, AppCompatActivity activity) {
-        if (isShutdown) {
+        if (isShutdown || isPaused) {
             image.close();
             return;
         }
@@ -98,6 +99,16 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
         executor.shutdown();
         isShutdown = true;
         fpsTimer.cancel();
+    }
+
+    @Override
+    public void pause() {
+        isPaused = true;
+    }
+
+    @Override
+    public void restart() {
+        isPaused = false;
     }
 
     protected abstract Task<T> detectInImage(InputImage image);

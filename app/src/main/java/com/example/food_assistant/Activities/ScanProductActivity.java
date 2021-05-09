@@ -30,6 +30,7 @@ import com.example.food_assistant.R;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.example.food_assistant.Utils.BarcodeScanning.VisionImageProcessor;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
+import com.example.food_assistant.Utils.ViewModels.ImageProcessorSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 import com.firebase.ui.auth.data.model.User;
@@ -52,11 +53,13 @@ public class ScanProductActivity extends AppCompatActivity
     private PreviewView previewView;
     private UserSharedViewModel userSharedViewModel;
     private ProductSharedViewModel productSharedViewModel;
+    private ImageProcessorSharedViewModel imageProcessorSharedViewModel;
 
     @Nullable private ProcessCameraProvider cameraProvider;
     @Nullable private Preview previewUseCase;
     @Nullable private ImageAnalysis analysisUseCase;
     @Nullable private VisionImageProcessor imageProcessor;
+
 
     private CameraSelector cameraSelector;
 
@@ -96,11 +99,7 @@ public class ScanProductActivity extends AppCompatActivity
 
         productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
-
-        //Bundle bundle = getIntent().getExtras();
-        //AppUser user = bundle.getParcelable("loggedUser");
-        //Log.i("loggedUser", user.toString());
-        //userSharedViewModel.select(user);
+        imageProcessorSharedViewModel = new ViewModelProvider(this).get(ImageProcessorSharedViewModel.class);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -117,9 +116,13 @@ public class ScanProductActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        if (imageProcessor != null) {
+
+        if (imageProcessor != null)
             imageProcessor.stop();
-        }
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null)
+            UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
     }
 
     @Override
@@ -170,6 +173,7 @@ public class ScanProductActivity extends AppCompatActivity
         try {
             Log.i(TAG, "Using Barcode Detector Processor");
             imageProcessor = new BarcodeScannerProcessor(this);
+            imageProcessorSharedViewModel.select(imageProcessor);
         } catch (Exception e) {
             Log.e(TAG, "Can not create image processor: " + BARCODE_SCANNING, e);
             Toast.makeText(
