@@ -13,7 +13,12 @@ public class ProductMapper {
         Product product = new Product();
         if (productJson.has("product")) {
             productJson = productJson.getAsJsonObject("product");
-            if (productJson.has("product_name"))
+
+            if (productJson.has("product_name_ro") && productJson.get("product_name_ro").getAsString().length() > 0)
+                product.setProductName(productJson.get("product_name_ro").getAsString());
+            else if (productJson.has("product_name_en") && productJson.get("product_name_en").getAsString().length() > 0)
+                product.setProductName(productJson.get("product_name_en").getAsString());
+            else if (productJson.has("product_name") && productJson.get("product_name").getAsString().length() > 0)
                 product.setProductName(productJson.get("product_name").getAsString());
 
             if (productJson.has("nova_group"))
@@ -33,7 +38,7 @@ public class ProductMapper {
                 product.setBaseQuantity(productJson.get("product_quantity").getAsDouble());
 
             if (productJson.has("quantity")) {
-                String measurementUnit = productJson.get("quantity").getAsString().split("\\s+")[0];
+                String measurementUnit = productJson.get("quantity").getAsString().split("\\s+")[1];
                 product.setMeasurementUnit(measurementUnit);
             }
         }

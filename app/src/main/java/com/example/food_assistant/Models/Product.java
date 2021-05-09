@@ -6,7 +6,7 @@ public class Product {
     String productName = "Unknown";
     String novaGroup = "Unknown";
     Map<String, String> nutrientLevels;
-    Map<String, String> nutriments;
+    Map<String, Double> nutriments;
     String nutriScoreGrade = "Unknown";
 
     double baseQuantity;
@@ -76,11 +76,11 @@ public class Product {
         this.nutrientLevels = nutrientLevels;
     }
 
-    public Map<String, String> getNutriments() {
+    public Map<String, Double> getNutriments() {
         return nutriments;
     }
 
-    public void setNutriments(Map<String, String> nutriments) {
+    public void setNutriments(Map<String, Double> nutriments) {
         this.nutriments = nutriments;
     }
 

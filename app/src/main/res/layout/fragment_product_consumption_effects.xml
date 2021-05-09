@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp"
+    android:padding="20dp"
     tools:context=".Fragments.ProductConsumptionEffectsFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elegantTextHeight="true"
-        android:text="This product's nutritional scores:" />
+        android:text="This product's nutritional scores:"
+        android:textSize="18sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,26 +24,31 @@
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nutri-Score: " />
+            android:text="Nutri-Score: "
+            android:textSize="14sp"
+            android:textStyle="italic" />
 
         <TextView
             android:id="@+id/nutriScoreGrade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Nova-Score:" />
+            android:text="Nova-Score: "
+            android:textSize="14sp"
+            android:textStyle="italic" />
 
         <TextView
             android:id="@+id/novaScoreGrade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <TextView
@@ -52,16 +58,19 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"
         android:elegantTextHeight="true"
-        android:text="By consuming this product, your intake of nutrients will increase like this:" />
+        android:text="By consuming this product, your intake of nutrients will increase like this:"
+        android:textSize="18sp" />
+
     <TableLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textViewCarbs"
+                android:id="@+id/textView_carbohydrates"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -73,7 +82,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/textViewCarbsIncrease"
+                android:id="@+id/textView_carbohydrates_increase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -89,7 +98,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textViewSugars"
+                android:id="@+id/textView_sugars"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -101,7 +110,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/textViewSugarsIncrease"
+                android:id="@+id/textView_sugars_increase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -117,7 +126,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textViewFats"
+                android:id="@+id/textView_fat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -129,7 +138,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/textViewFatsIncrease"
+                android:id="@+id/textView_fat_increase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -145,7 +154,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textViewSaturatedFats"
+                android:id="@+id/textView_saturated_fat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -157,7 +166,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/textViewSaturatedFatsIncrease"
+                android:id="@+id/textView_saturated_fat_increase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -174,7 +183,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textViewProteins"
+                android:id="@+id/textView_proteins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -186,7 +195,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/textViewProteinsIncrease"
+                android:id="@+id/textView_proteins_increase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -202,7 +211,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textViewFiber"
+                android:id="@+id/textView_fiber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -214,7 +223,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/textViewFiberIncrease"
+                android:id="@+id/textView_fiber_increase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -231,7 +240,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textViewSalt"
+                android:id="@+id/textView_salt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -244,7 +253,37 @@
 
 
             <TextView
-                android:id="@+id/textViewSaltIncrease"
+                android:id="@+id/textView_salt_increase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:paddingBottom="2dp"
+                android:textSize="20sp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView_energy_kcal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:paddingBottom="2dp"
+                android:text="@string/calories_name"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:id="@+id/textView_energy_kcal_increase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

@@ -29,9 +29,12 @@ import com.example.food_assistant.Utils.BarcodeScanning.CameraXViewModel;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.example.food_assistant.Utils.BarcodeScanning.VisionImageProcessor;
+import com.example.food_assistant.Utils.Firebase.UserDataUtility;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 import com.firebase.ui.auth.data.model.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.mlkit.common.MlKitException;
 
 import org.jetbrains.annotations.NotNull;
@@ -94,11 +97,15 @@ public class ScanProductActivity extends AppCompatActivity
         productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
 
-        Bundle bundle = getIntent().getExtras();
-        AppUser user = bundle.getParcelable("loggedUser");
-        Log.i("loggedUser", user.toString());
+        //Bundle bundle = getIntent().getExtras();
+        //AppUser user = bundle.getParcelable("loggedUser");
+        //Log.i("loggedUser", user.toString());
+        //userSharedViewModel.select(user);
 
-        userSharedViewModel.select(user);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            UserDataUtility.logUserData(user, userSharedViewModel);
+        }
     }
 
     @Override

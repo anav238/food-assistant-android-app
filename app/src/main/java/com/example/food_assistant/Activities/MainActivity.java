@@ -93,29 +93,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateNutrientProgressBars() {
-        AppUser currentUser = userSharedViewModel.getSelected().getValue();
-        if (currentUser == null)
-            return;
-
-        Map<String, Double> maxNutrientDVs = currentUser.getMaximumNutrientDV();
-        Map<String, Double> todayNutrientConsumption = currentUser.getTodayNutrientConsumption();
-        for (String nutrient:maxNutrientDVs.keySet()) {
-            int nutrientPercentage = (int) (todayNutrientConsumption.get(nutrient) * 100 / maxNutrientDVs.get(nutrient));
-            if (nutrientPercentage == 0)
-                nutrientPercentage = 1;
-            String progressBarIdString = "progressBar_" + nutrient.replace("-", "_");
-            Resources res = getResources();
-            int progressBarId = res.getIdentifier(progressBarIdString, "id", this.getPackageName());
-
-            System.out.println(progressBarIdString);
-            System.out.println(progressBarId);
-
-            ProgressBar nutrientProgressBar = findViewById(progressBarId);
-            nutrientProgressBar.setProgress(nutrientPercentage);
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
