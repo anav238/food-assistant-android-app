@@ -14,4 +14,5 @@
     <color name="red_primary">#d32f2f</color>
     <color name="red_light">#ff6659</color>
     <color name="red_dark">#9a0007</color>
+    <color name="yellow_primary">#FFEB3B</color>
 </resources>

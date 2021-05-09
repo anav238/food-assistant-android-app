@@ -1,6 +1,7 @@
 package com.example.food_assistant.Fragments;
 
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.example.food_assistant.R;
+import com.example.food_assistant.Utils.Constants.Nutrients;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +56,23 @@ public class NutrientIntakeFragment extends Fragment {
 
             ProgressBar nutrientProgressBar = view.findViewById(progressBarId);
             nutrientProgressBar.setProgress(nutrientPercentage);
+
+            int progressDrawableId = R.drawable.custom_progressbar_red;
+            if (Nutrients.badNutrients.contains(nutrient)) {
+                if (nutrientPercentage < 30)
+                    progressDrawableId = R.drawable.custom_progressbar_green;
+                else if (nutrientPercentage < 60)
+                    progressDrawableId = R.drawable.custom_progressbar_yellow;
+            }
+            else {
+                if (nutrientPercentage > 60)
+                    progressDrawableId = R.drawable.custom_progressbar_green;
+                else if (nutrientPercentage > 30)
+                    progressDrawableId = R.drawable.custom_progressbar_yellow;
+            }
+
+            Drawable progressDrawable = getResources().getDrawable(progressDrawableId);
+            nutrientProgressBar.setProgressDrawable(progressDrawable);
         }
         return view;
     }
