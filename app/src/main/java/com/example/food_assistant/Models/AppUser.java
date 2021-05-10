@@ -89,7 +89,15 @@ public class AppUser implements Parcelable {
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date(System.currentTimeMillis());
         String dateString = formatter.format(date);
-        return nutrientConsumptionHistory.get(dateString);
+        if (nutrientConsumptionHistory.containsKey(dateString))
+            return nutrientConsumptionHistory.get(dateString);
+
+        Map<String, Double> todayNutrientConsumption = new HashMap<>();
+        for (String nutrient:Nutrients.nutrientDefaultDV.keySet())
+            todayNutrientConsumption.put(nutrient, 0.0);
+        nutrientConsumptionHistory.put(dateString, todayNutrientConsumption);
+        return todayNutrientConsumption;
+
     }
 
     public void updateTodayNutrientConsumption(Map<String, Double> newNutrientConsumption) {

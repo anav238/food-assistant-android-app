@@ -63,11 +63,6 @@ public class ScanProductActivity extends AppCompatActivity
 
     private CameraSelector cameraSelector;
 
-    public void processScannedProduct(View view) {
-        SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
-        selectProductQuantityFragment.show(getSupportFragmentManager(), "test");
-    }
-
     public void closeActivity(View view) {
         super.onBackPressed();
     }

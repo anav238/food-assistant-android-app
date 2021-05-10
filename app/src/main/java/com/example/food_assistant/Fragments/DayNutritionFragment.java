@@ -70,8 +70,6 @@ public class DayNutritionFragment extends Fragment {
         bundle.putStringArray("nutrients", maxNutrientDVs.keySet().toArray(new String[maxNutrientDVs.keySet().size()]));
         for (String nutrient:maxNutrientDVs.keySet()) {
             int nutrientPercentage = (int) (todayNutrientConsumption.get(nutrient) * 100 / maxNutrientDVs.get(nutrient));
-            if (nutrientPercentage == 0)
-                nutrientPercentage = 1;
             bundle.putInt(nutrient, nutrientPercentage);
         }
 

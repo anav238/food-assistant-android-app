@@ -31,6 +31,19 @@
                 android:max="100"
                 android:progress="50"
                 android:progressDrawable="@drawable/custom_progressbar_red" />
+
+            <TextView
+                android:id="@+id/textView_carbohydrates_percentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:gravity="end"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:paddingBottom="2dp"
+                android:text="10%"
+                android:textSize="20sp" />
+
         </TableRow>
 
         <TableRow
@@ -58,6 +71,18 @@
                 android:max="100"
                 android:progress="70"
                 android:progressDrawable="@drawable/custom_progressbar_red" />
+
+            <TextView
+                android:id="@+id/textView_sugars_percentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="end"
+                android:paddingBottom="2dp"
+                android:text="10%"
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow
@@ -85,6 +110,18 @@
                 android:max="100"
                 android:progress="50"
                 android:progressDrawable="@drawable/custom_progressbar_red" />
+
+            <TextView
+                android:id="@+id/textView_fat_percentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="end"
+                android:paddingBottom="2dp"
+                android:text="10%"
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow
@@ -112,6 +149,18 @@
                 android:max="100"
                 android:progress="50"
                 android:progressDrawable="@drawable/custom_progressbar_red" />
+
+            <TextView
+                android:id="@+id/textView_saturated_fat_percentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="end"
+                android:paddingBottom="2dp"
+                android:text="10%"
+                android:textSize="20sp" />
 
         </TableRow>
 
@@ -141,6 +190,18 @@
                 android:progress="30"
                 android:progressDrawable="@drawable/custom_progressbar_red" />
 
+            <TextView
+                android:id="@+id/textView_proteins_percentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="end"
+                android:paddingBottom="2dp"
+                android:text="10%"
+                android:textSize="20sp" />
+
         </TableRow>
 
         <TableRow
@@ -168,6 +229,18 @@
                 android:max="100"
                 android:progress="90"
                 android:progressDrawable="@drawable/custom_progressbar_red" />
+
+            <TextView
+                android:id="@+id/textView_fiber_percentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="end"
+                android:paddingBottom="2dp"
+                android:text="10%"
+                android:textSize="20sp" />
 
         </TableRow>
 
@@ -197,6 +270,18 @@
                 android:progress="50"
                 android:progressDrawable="@drawable/custom_progressbar_red" />
 
+            <TextView
+                android:id="@+id/textView_salt_percentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="end"
+                android:paddingBottom="2dp"
+                android:text="10%"
+                android:textSize="20sp" />
+
         </TableRow>
 
     <TableRow
@@ -224,6 +309,18 @@
             android:max="100"
             android:progress="50"
             android:progressDrawable="@drawable/custom_progressbar_red" />
+
+        <TextView
+            android:id="@+id/textView_energy_kcal_percentage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="end"
+            android:paddingBottom="2dp"
+            android:text="10%"
+            android:textSize="20sp" />
 
     </TableRow>
 

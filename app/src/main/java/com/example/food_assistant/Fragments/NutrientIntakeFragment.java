@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.Constants.Nutrients;
@@ -55,7 +56,10 @@ public class NutrientIntakeFragment extends Fragment {
             int progressBarId = res.getIdentifier(progressBarIdString, "id", this.getActivity().getPackageName());
 
             ProgressBar nutrientProgressBar = view.findViewById(progressBarId);
-            nutrientProgressBar.setProgress(nutrientPercentage);
+            if (nutrientPercentage >= 1)
+                nutrientProgressBar.setProgress(nutrientPercentage);
+            else
+                nutrientProgressBar.setProgress(1);
 
             int progressDrawableId = R.drawable.custom_progressbar_red;
             if (Nutrients.badNutrients.contains(nutrient)) {
@@ -73,6 +77,11 @@ public class NutrientIntakeFragment extends Fragment {
 
             Drawable progressDrawable = getResources().getDrawable(progressDrawableId);
             nutrientProgressBar.setProgressDrawable(progressDrawable);
+
+            String textViewIdString = "textView_" + nutrient.replace("-", "_") + "_percentage";
+            int textViewId = res.getIdentifier(textViewIdString, "id", this.getActivity().getPackageName());
+            TextView nutrientTextView = view.findViewById(textViewId);
+            nutrientTextView.setText(String.valueOf(nutrientPercentage) + "%");
         }
         return view;
     }

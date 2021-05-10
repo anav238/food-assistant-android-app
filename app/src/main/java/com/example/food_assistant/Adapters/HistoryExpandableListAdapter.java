@@ -62,15 +62,10 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
 
             Map<String, Double> maxNutrientDVs = user.getMaximumNutrientDV();
             Map<String, Double> daysNutrientConsumption = expandableListDetail.get(expandableListTitle.get(listPosition));
-            System.out.println(listPosition);
-            System.out.println(expandedListPosition);
-            System.out.println(daysNutrientConsumption);
             Bundle bundle = new Bundle();
             bundle.putStringArray("nutrients", maxNutrientDVs.keySet().toArray(new String[maxNutrientDVs.keySet().size()]));
             for (String nutrient:maxNutrientDVs.keySet()) {
                 int nutrientPercentage = (int) (daysNutrientConsumption.get(nutrient) * 100 / maxNutrientDVs.get(nutrient));
-                if (nutrientPercentage == 0)
-                    nutrientPercentage = 1;
                 bundle.putInt(nutrient, nutrientPercentage);
             }
 

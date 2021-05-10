@@ -25,7 +25,6 @@ public class UserDataUtility {
             if (!task.isSuccessful() || task.getResult().getValue() == null) {
                 AppUser appUser = new AppUser(user.getDisplayName(), user.getEmail());
                 mDatabase.child("users").child(userId).setValue(appUser);
-                Log.i("TEST - NEW USER ADDED", user.toString());
                 userSharedViewModel.select(appUser);
             }
             else {
