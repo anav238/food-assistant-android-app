@@ -74,6 +74,7 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // AppUser cancelled the dialog
+                        visionImageProcessor.restart();
                     }
                 });
 

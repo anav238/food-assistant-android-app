@@ -83,8 +83,6 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
                         executor,
                         results -> {
                             VisionProcessorBase.this.onSuccess(results, activity);
-                            VisionProcessorBase.this.onSuccess(results, activity);
-
                         })
                 .addOnFailureListener(
                         executor,
