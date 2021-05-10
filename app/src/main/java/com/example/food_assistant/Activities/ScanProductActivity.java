@@ -22,18 +22,16 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory;
 
-import com.example.food_assistant.Models.AppUser;
-import com.example.food_assistant.Models.Product;
-import com.example.food_assistant.Utils.BarcodeScanning.BarcodeScannerProcessor;
-import com.example.food_assistant.Utils.BarcodeScanning.CameraXViewModel;
+import com.example.food_assistant.Utils.MLKit.BarcodeScannerProcessor;
+import com.example.food_assistant.Utils.MLKit.CameraXViewModel;
 import com.example.food_assistant.R;
-import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
-import com.example.food_assistant.Utils.BarcodeScanning.VisionImageProcessor;
+import com.example.food_assistant.Utils.MLKit.GraphicOverlay;
+import com.example.food_assistant.Utils.MLKit.TextRecognitionProcessor;
+import com.example.food_assistant.Utils.MLKit.VisionImageProcessor;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
 import com.example.food_assistant.Utils.ViewModels.ImageProcessorSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
-import com.firebase.ui.auth.data.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.mlkit.common.MlKitException;
@@ -49,6 +47,9 @@ public class ScanProductActivity extends AppCompatActivity
     private static final int PERMISSION_REQUESTS = 1;
 
     private static final String BARCODE_SCANNING = "Barcode Scanning";
+    private static final String TEXT_RECOGNITION = "Text Recognition";
+    private static final String STATE_SELECTED_MODEL = "selected_model";
+    private String selectedModel = BARCODE_SCANNING;
 
     private PreviewView previewView;
     private UserSharedViewModel userSharedViewModel;
@@ -60,8 +61,11 @@ public class ScanProductActivity extends AppCompatActivity
     @Nullable private ImageAnalysis analysisUseCase;
     @Nullable private VisionImageProcessor imageProcessor;
 
+    private GraphicOverlay graphicOverlay;
+    private boolean needUpdateGraphicOverlayImageSourceInfo;
 
     private CameraSelector cameraSelector;
+    private int lensFacing = CameraSelector.LENS_FACING_BACK;
 
     public void closeActivity(View view) {
         super.onBackPressed();
@@ -70,11 +74,14 @@ public class ScanProductActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int lensFacing = CameraSelector.LENS_FACING_BACK;
         cameraSelector = new CameraSelector.Builder().requireLensFacing(lensFacing).build();
+        if (savedInstanceState != null) {
+            selectedModel = savedInstanceState.getString(STATE_SELECTED_MODEL, BARCODE_SCANNING);
+        }
 
         setContentView(R.layout.activity_scan_product);
         previewView = findViewById(R.id.previewView);
+        graphicOverlay = findViewById(R.id.graphic_overlay);
 
         new ViewModelProvider(this, AndroidViewModelFactory.getInstance(getApplication()))
                 .get(CameraXViewModel.class)
@@ -166,9 +173,15 @@ public class ScanProductActivity extends AppCompatActivity
         }
 
         try {
-            Log.i(TAG, "Using Barcode Detector Processor");
-            imageProcessor = new BarcodeScannerProcessor(this);
-            imageProcessorSharedViewModel.select(imageProcessor);
+            if (selectedModel.equals(BARCODE_SCANNING)) {
+                Log.i(TAG, "Using Barcode Detector Processor");
+                imageProcessor = new BarcodeScannerProcessor(this);
+                imageProcessorSharedViewModel.select(imageProcessor);
+            }
+            else {
+                Log.i(TAG, "Using on-device Text recognition Processor");
+                imageProcessor = new TextRecognitionProcessor(this);
+            }
         } catch (Exception e) {
             Log.e(TAG, "Can not create image processor: " + BARCODE_SCANNING, e);
             Toast.makeText(
@@ -185,13 +198,26 @@ public class ScanProductActivity extends AppCompatActivity
 
         analysisUseCase = builder.build();
 
+        needUpdateGraphicOverlayImageSourceInfo = true;
         analysisUseCase.setAnalyzer(
                 // imageProcessor.processImageProxy will use another thread to run the detection underneath,
                 // thus we can just runs the analyzer itself on main thread.
                 ContextCompat.getMainExecutor(this),
                 imageProxy -> {
+                    if (needUpdateGraphicOverlayImageSourceInfo) {
+                        boolean isImageFlipped = lensFacing == CameraSelector.LENS_FACING_FRONT;
+                        int rotationDegrees = imageProxy.getImageInfo().getRotationDegrees();
+                        if (rotationDegrees == 0 || rotationDegrees == 180) {
+                            graphicOverlay.setImageSourceInfo(
+                                    imageProxy.getWidth(), imageProxy.getHeight(), isImageFlipped);
+                        } else {
+                            graphicOverlay.setImageSourceInfo(
+                                    imageProxy.getHeight(), imageProxy.getWidth(), isImageFlipped);
+                        }
+                        needUpdateGraphicOverlayImageSourceInfo = false;
+                    }
                     try {
-                        imageProcessor.processImageProxy(imageProxy, this);
+                        imageProcessor.processImageProxy(imageProxy, this, graphicOverlay);
                     } catch (MlKitException e) {
                         Log.e(TAG, "Failed to process image. Error: " + e.getLocalizedMessage());
                         Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT)

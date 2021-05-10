@@ -1,4 +1,4 @@
-package com.example.food_assistant.Utils.BarcodeScanning;
+package com.example.food_assistant.Utils.MLKit;
 
 public class FrameMetadata {
 

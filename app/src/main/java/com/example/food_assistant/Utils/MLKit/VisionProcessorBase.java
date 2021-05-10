@@ -1,6 +1,7 @@
-package com.example.food_assistant.Utils.BarcodeScanning;
+package com.example.food_assistant.Utils.MLKit;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build.VERSION_CODES;
 import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
@@ -10,7 +11,6 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageProxy;
-import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskExecutors;
@@ -38,18 +38,20 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
         executor = new ScopedExecutor(TaskExecutors.MAIN_THREAD);
     }
 
-    private synchronized void processLatestImage(AppCompatActivity activity) {
+    private synchronized void processLatestImage(AppCompatActivity activity, GraphicOverlay graphicOverlay) {
         ByteBuffer processingImage = latestImage;
         FrameMetadata processingMetaData = latestImageMetaData;
         latestImage = null;
         latestImageMetaData = null;
         if (processingImage != null && processingMetaData != null && !isShutdown && !isPaused) {
-            processImage(processingImage, processingMetaData, activity);
+            processImage(processingImage, processingMetaData, activity, graphicOverlay);
         }
     }
 
     private void processImage(
-            ByteBuffer data, final FrameMetadata frameMetadata, AppCompatActivity activity) {
+            ByteBuffer data, final FrameMetadata frameMetadata, AppCompatActivity activity, GraphicOverlay graphicOverlay) {
+
+        Bitmap bitmap = BitmapUtils.getBitmap(data, frameMetadata);
 
         requestDetectInImage(
                 InputImage.fromByteBuffer(
@@ -57,36 +59,47 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
                         frameMetadata.getWidth(),
                         frameMetadata.getHeight(),
                         frameMetadata.getRotation(),
-                        InputImage.IMAGE_FORMAT_NV21), activity)
-                .addOnSuccessListener(executor, results -> processLatestImage(activity));
+                        InputImage.IMAGE_FORMAT_NV21), activity, graphicOverlay, bitmap)
+                .addOnSuccessListener(executor, results -> processLatestImage(activity, graphicOverlay));
     }
 
     @Override
     @RequiresApi(VERSION_CODES.KITKAT)
     @ExperimentalGetImage
-    public void processImageProxy(ImageProxy image, AppCompatActivity activity) {
+    public void processImageProxy(ImageProxy image, AppCompatActivity activity, GraphicOverlay graphicOverlay) {
         if (isShutdown || isPaused) {
             image.close();
             return;
         }
 
+        Bitmap bitmap = BitmapUtils.getBitmap(image);
+
         requestDetectInImage(
                 InputImage.fromMediaImage(image.getImage(), image.getImageInfo().getRotationDegrees()),
-                activity)
+                activity, graphicOverlay, bitmap)
                 .addOnCompleteListener(results -> image.close());
     }
 
     private Task<T> requestDetectInImage(
-            final InputImage image, AppCompatActivity activity) {
+            final InputImage image, AppCompatActivity activity, GraphicOverlay graphicOverlay, Bitmap originalCameraImage) {
         return detectInImage(image)
                 .addOnSuccessListener(
                         executor,
                         results -> {
-                            VisionProcessorBase.this.onSuccess(results, activity);
+                            VisionProcessorBase.this.onSuccess(results, activity, graphicOverlay);
+                            graphicOverlay.clear();
+                            if (originalCameraImage != null) {
+                                graphicOverlay.add(new CameraImageGraphic(graphicOverlay, originalCameraImage));
+                            }
+                            VisionProcessorBase.this.onSuccess(results, activity, graphicOverlay);
+                            graphicOverlay.postInvalidate();
                         })
                 .addOnFailureListener(
                         executor,
                         e -> {
+                            graphicOverlay.clear();
+                            graphicOverlay.postInvalidate();
+
                             String error = "Failed to process. Error: " + e.getLocalizedMessage();
                             Log.d(TAG, error);
                             e.printStackTrace();
@@ -113,7 +126,7 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
 
     protected abstract Task<T> detectInImage(InputImage image);
 
-    protected abstract void onSuccess(@NonNull T results, AppCompatActivity activity);
+    protected abstract void onSuccess(@NonNull T results, AppCompatActivity activity, GraphicOverlay graphicOverlay);
 
     protected abstract void onFailure(@NonNull Exception e);
 }

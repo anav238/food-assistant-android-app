@@ -18,6 +18,11 @@
 
     </androidx.camera.view.PreviewView>
 
+    <com.example.food_assistant.Utils.MLKit.GraphicOverlay
+        android:id="@+id/graphic_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <ImageButton
         android:id="@+id/scanProductCloseButton"
         android:layout_width="wrap_content"

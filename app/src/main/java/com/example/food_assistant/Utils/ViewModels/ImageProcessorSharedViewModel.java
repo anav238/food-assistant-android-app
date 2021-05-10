@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.food_assistant.Utils.BarcodeScanning.VisionImageProcessor;
+import com.example.food_assistant.Utils.MLKit.VisionImageProcessor;
 
 public class ImageProcessorSharedViewModel extends ViewModel {
     private final MutableLiveData<VisionImageProcessor> selected = new MutableLiveData<VisionImageProcessor>();

@@ -6,25 +6,21 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
-import com.example.food_assistant.Utils.BarcodeScanning.VisionImageProcessor;
+import com.example.food_assistant.Utils.MLKit.VisionImageProcessor;
 import com.example.food_assistant.Utils.Constants.Nutrients;
 import com.example.food_assistant.Utils.ViewModels.ImageProcessorSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
