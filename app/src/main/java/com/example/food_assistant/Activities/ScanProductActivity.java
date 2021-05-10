@@ -25,7 +25,6 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory;
 import com.example.food_assistant.Utils.MLKit.BarcodeScannerProcessor;
 import com.example.food_assistant.Utils.MLKit.CameraXViewModel;
 import com.example.food_assistant.R;
-import com.example.food_assistant.Utils.MLKit.GraphicOverlay;
 import com.example.food_assistant.Utils.MLKit.TextRecognitionProcessor;
 import com.example.food_assistant.Utils.MLKit.VisionImageProcessor;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
@@ -61,11 +60,7 @@ public class ScanProductActivity extends AppCompatActivity
     @Nullable private ImageAnalysis analysisUseCase;
     @Nullable private VisionImageProcessor imageProcessor;
 
-    private GraphicOverlay graphicOverlay;
-    private boolean needUpdateGraphicOverlayImageSourceInfo;
-
     private CameraSelector cameraSelector;
-    private int lensFacing = CameraSelector.LENS_FACING_BACK;
 
     public void closeActivity(View view) {
         super.onBackPressed();
@@ -74,6 +69,7 @@ public class ScanProductActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int lensFacing = CameraSelector.LENS_FACING_BACK;
         cameraSelector = new CameraSelector.Builder().requireLensFacing(lensFacing).build();
         if (savedInstanceState != null) {
             selectedModel = savedInstanceState.getString(STATE_SELECTED_MODEL, BARCODE_SCANNING);
@@ -81,7 +77,6 @@ public class ScanProductActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_scan_product);
         previewView = findViewById(R.id.previewView);
-        graphicOverlay = findViewById(R.id.graphic_overlay);
 
         new ViewModelProvider(this, AndroidViewModelFactory.getInstance(getApplication()))
                 .get(CameraXViewModel.class)
@@ -198,26 +193,13 @@ public class ScanProductActivity extends AppCompatActivity
 
         analysisUseCase = builder.build();
 
-        needUpdateGraphicOverlayImageSourceInfo = true;
         analysisUseCase.setAnalyzer(
                 // imageProcessor.processImageProxy will use another thread to run the detection underneath,
                 // thus we can just runs the analyzer itself on main thread.
                 ContextCompat.getMainExecutor(this),
                 imageProxy -> {
-                    if (needUpdateGraphicOverlayImageSourceInfo) {
-                        boolean isImageFlipped = lensFacing == CameraSelector.LENS_FACING_FRONT;
-                        int rotationDegrees = imageProxy.getImageInfo().getRotationDegrees();
-                        if (rotationDegrees == 0 || rotationDegrees == 180) {
-                            graphicOverlay.setImageSourceInfo(
-                                    imageProxy.getWidth(), imageProxy.getHeight(), isImageFlipped);
-                        } else {
-                            graphicOverlay.setImageSourceInfo(
-                                    imageProxy.getHeight(), imageProxy.getWidth(), isImageFlipped);
-                        }
-                        needUpdateGraphicOverlayImageSourceInfo = false;
-                    }
                     try {
-                        imageProcessor.processImageProxy(imageProxy, this, graphicOverlay);
+                        imageProcessor.processImageProxy(imageProxy, this);
                     } catch (MlKitException e) {
                         Log.e(TAG, "Failed to process image. Error: " + e.getLocalizedMessage());
                         Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT)

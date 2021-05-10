@@ -38,10 +38,9 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
     }
 
     @Override
-    protected void onSuccess(@NonNull Text text, AppCompatActivity activity, GraphicOverlay graphicOverlay) {
+    protected void onSuccess(@NonNull Text text, AppCompatActivity activity) {
         Log.d(TAG, "On-device Text detection successful");
         logExtrasForTesting(text);
-        graphicOverlay.add(new TextGraphic(graphicOverlay, text));
     }
 
     private static void logExtrasForTesting(Text text) {

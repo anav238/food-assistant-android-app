@@ -39,10 +39,9 @@ public class BarcodeScannerProcessor extends VisionProcessorBase<List<Barcode>> 
 
     @Override
     protected void onSuccess(
-            @NonNull List<Barcode> barcodes, AppCompatActivity activity, GraphicOverlay graphicOverlay) {
+            @NonNull List<Barcode> barcodes, AppCompatActivity activity) {
         for (int i = 0; i < barcodes.size(); ++i) {
             Barcode barcode = barcodes.get(i);
-            //graphicOverlay.add(new BarcodeGraphic(graphicOverlay, barcode));
             NetworkManager.getInstance().getProductDetailsByBarcode(barcode.getRawValue(), activity);
             System.out.println(barcode.getRawValue());
             pause();

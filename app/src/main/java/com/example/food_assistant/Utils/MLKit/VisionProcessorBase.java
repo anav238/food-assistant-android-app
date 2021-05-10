@@ -38,20 +38,18 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
         executor = new ScopedExecutor(TaskExecutors.MAIN_THREAD);
     }
 
-    private synchronized void processLatestImage(AppCompatActivity activity, GraphicOverlay graphicOverlay) {
+    private synchronized void processLatestImage(AppCompatActivity activity) {
         ByteBuffer processingImage = latestImage;
         FrameMetadata processingMetaData = latestImageMetaData;
         latestImage = null;
         latestImageMetaData = null;
         if (processingImage != null && processingMetaData != null && !isShutdown && !isPaused) {
-            processImage(processingImage, processingMetaData, activity, graphicOverlay);
+            processImage(processingImage, processingMetaData, activity);
         }
     }
 
     private void processImage(
-            ByteBuffer data, final FrameMetadata frameMetadata, AppCompatActivity activity, GraphicOverlay graphicOverlay) {
-
-        Bitmap bitmap = BitmapUtils.getBitmap(data, frameMetadata);
+            ByteBuffer data, final FrameMetadata frameMetadata, AppCompatActivity activity) {
 
         requestDetectInImage(
                 InputImage.fromByteBuffer(
@@ -59,47 +57,38 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
                         frameMetadata.getWidth(),
                         frameMetadata.getHeight(),
                         frameMetadata.getRotation(),
-                        InputImage.IMAGE_FORMAT_NV21), activity, graphicOverlay, bitmap)
-                .addOnSuccessListener(executor, results -> processLatestImage(activity, graphicOverlay));
+                        InputImage.IMAGE_FORMAT_NV21), activity)
+                .addOnSuccessListener(executor, results -> processLatestImage(activity));
     }
 
     @Override
     @RequiresApi(VERSION_CODES.KITKAT)
     @ExperimentalGetImage
-    public void processImageProxy(ImageProxy image, AppCompatActivity activity, GraphicOverlay graphicOverlay) {
+    public void processImageProxy(ImageProxy image, AppCompatActivity activity) {
         if (isShutdown || isPaused) {
             image.close();
             return;
         }
 
-        Bitmap bitmap = BitmapUtils.getBitmap(image);
-
         requestDetectInImage(
                 InputImage.fromMediaImage(image.getImage(), image.getImageInfo().getRotationDegrees()),
-                activity, graphicOverlay, bitmap)
+                activity)
                 .addOnCompleteListener(results -> image.close());
     }
 
     private Task<T> requestDetectInImage(
-            final InputImage image, AppCompatActivity activity, GraphicOverlay graphicOverlay, Bitmap originalCameraImage) {
+            final InputImage image, AppCompatActivity activity) {
         return detectInImage(image)
                 .addOnSuccessListener(
                         executor,
                         results -> {
-                            VisionProcessorBase.this.onSuccess(results, activity, graphicOverlay);
-                            graphicOverlay.clear();
-                            if (originalCameraImage != null) {
-                                graphicOverlay.add(new CameraImageGraphic(graphicOverlay, originalCameraImage));
-                            }
-                            VisionProcessorBase.this.onSuccess(results, activity, graphicOverlay);
-                            graphicOverlay.postInvalidate();
+                            VisionProcessorBase.this.onSuccess(results, activity);
+                            VisionProcessorBase.this.onSuccess(results, activity);
+
                         })
                 .addOnFailureListener(
                         executor,
                         e -> {
-                            graphicOverlay.clear();
-                            graphicOverlay.postInvalidate();
-
                             String error = "Failed to process. Error: " + e.getLocalizedMessage();
                             Log.d(TAG, error);
                             e.printStackTrace();
@@ -126,7 +115,7 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
 
     protected abstract Task<T> detectInImage(InputImage image);
 
-    protected abstract void onSuccess(@NonNull T results, AppCompatActivity activity, GraphicOverlay graphicOverlay);
+    protected abstract void onSuccess(@NonNull T results, AppCompatActivity activity);
 
     protected abstract void onFailure(@NonNull Exception e);
 }
