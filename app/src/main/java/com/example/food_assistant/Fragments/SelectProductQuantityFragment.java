@@ -14,6 +14,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.food_assistant.R;
+import com.example.food_assistant.Utils.MLKit.VisionImageProcessor;
+import com.example.food_assistant.Utils.ViewModels.ImageProcessorSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 
@@ -23,6 +25,7 @@ public class SelectProductQuantityFragment extends DialogFragment {
 
     private UserSharedViewModel userSharedViewModel;
     private ProductSharedViewModel productSharedViewModel;
+    private ImageProcessorSharedViewModel imageProcessorSharedViewModel;
 
     @NotNull
     @Override
@@ -30,6 +33,9 @@ public class SelectProductQuantityFragment extends DialogFragment {
         // Use the Builder class for convenient dialog construction
         userSharedViewModel = new ViewModelProvider(requireActivity()).get(UserSharedViewModel.class);
         productSharedViewModel = new ViewModelProvider(requireActivity()).get(ProductSharedViewModel.class);
+        imageProcessorSharedViewModel = new ViewModelProvider(requireActivity()).get(ImageProcessorSharedViewModel.class);
+
+        VisionImageProcessor visionImageProcessor = imageProcessorSharedViewModel.getSelected().getValue();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -43,6 +49,7 @@ public class SelectProductQuantityFragment extends DialogFragment {
                 })
                 .setNegativeButton(R.string.cancel, (dialog, id) -> {
                     // AppUser cancelled the dialog
+                    visionImageProcessor.restart();
                 });
 
         AlertDialog dialog = builder.create();

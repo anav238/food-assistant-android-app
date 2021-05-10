@@ -1,11 +1,10 @@
-package com.example.food_assistant.Utils.BarcodeScanning;
+package com.example.food_assistant.Utils.MLKit;
 
 
 import android.os.Build.VERSION_CODES;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.ImageProxy;
-import androidx.fragment.app.FragmentManager;
 
 import com.google.mlkit.common.MlKitException;
 

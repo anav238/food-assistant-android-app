@@ -1,6 +1,7 @@
-package com.example.food_assistant.Utils.BarcodeScanning;
+package com.example.food_assistant.Utils.MLKit;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build.VERSION_CODES;
 import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
@@ -10,7 +11,6 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageProxy;
-import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskExecutors;
