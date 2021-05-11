@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.OpenFoodFactsProduct;
+import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.Constants.Nutrients;
 import com.example.food_assistant.Utils.Firebase.ProductDataUtility;
@@ -104,7 +105,7 @@ public class LogNewProductFragment extends DialogFragment {
             Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
             positiveButton.setOnClickListener(v -> {
                 try {
-                    OpenFoodFactsProduct product = getProductFromUserInput(dialog);
+                    Product product = getProductFromUserInput(dialog);
                     boolean isValidProduct = true;
                     if (product.getId().length() == 0)
                         isValidProduct = false;
@@ -123,7 +124,7 @@ public class LogNewProductFragment extends DialogFragment {
                     EditText productConsumedQuantity = dialog.findViewById(R.id.editText_consumed_quantity);
                     try {
                         consumedQuantity = Double.parseDouble(productConsumedQuantity.getText().toString());
-                        product.setConsumedQuantity(consumedQuantity);
+                        //product.setConsumedQuantity(consumedQuantity);
                     }
                     catch (Exception e) {
                         productConsumedQuantity.setError("Please enter a valid consumed quantity.");
@@ -144,6 +145,7 @@ public class LogNewProductFragment extends DialogFragment {
                         ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
                         Bundle args = new Bundle();
                         args.putDouble("productQuantity", consumedQuantity);
+                        System.out.println(consumedQuantity);
                         productConsumptionEffectsFragment.setArguments(args);
                         productConsumptionEffectsFragment.show(getParentFragmentManager(), "test");
                         dismiss();
@@ -156,9 +158,9 @@ public class LogNewProductFragment extends DialogFragment {
         }
     }
 
-    private OpenFoodFactsProduct getProductFromUserInput(AlertDialog dialog) throws FormatException {
+    private Product getProductFromUserInput(AlertDialog dialog) throws FormatException {
         boolean isValidProduct = true;
-        OpenFoodFactsProduct product = new OpenFoodFactsProduct();
+        Product product = productSharedViewModel.getSelected().getValue();
         EditText productNameEditText = dialog.findViewById(R.id.editText_product_name);
         if (productNameEditText.getText().length() == 0) {
             productNameEditText.setError("Please enter a product name.");
@@ -188,8 +190,8 @@ public class LogNewProductFragment extends DialogFragment {
             }
         }
         product.setNutriments(nutrientQuantities);
-        if (isValidProduct)
-            product.setId(UUID.randomUUID().toString());
+        if (!isValidProduct)
+            product.setId("");
 
         return product;
     }

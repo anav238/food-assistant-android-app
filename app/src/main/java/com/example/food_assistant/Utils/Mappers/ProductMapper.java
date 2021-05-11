@@ -51,13 +51,16 @@ public class ProductMapper {
         System.out.println(productJson);
         Gson gson = new Gson();
         Product product = new Product();
-        productJson = productJson.getAsJsonObject("product");
         if (productJson.has("id"))
            product.setProductName(productJson.get("id").getAsString());
         if (productJson.has("productName"))
             product.setProductName(productJson.get("productName").getAsString());
         if (productJson.has("nutriments"))
             product.setNutriments(gson.fromJson(productJson.get("nutriments").getAsJsonObject(), HashMap.class));
+        if (productJson.has("baseQuantity"))
+            product.setBaseQuantity(Double.parseDouble(productJson.get("baseQuantity").getAsString()));
+        if (productJson.has("measurementUnit"))
+            product.setMeasurementUnit(productJson.get("measurementUnit").getAsString());
         if (productJson.has("productType")) {
             String productTypeString = productJson.get("productType").getAsString();
             if (productTypeString.equals("CUSTOM"))

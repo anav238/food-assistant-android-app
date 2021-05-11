@@ -49,6 +49,7 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
         VisionImageProcessor visionImageProcessor = imageProcessorSharedViewModel.getSelected().getValue();
 
         Double productQuantity = requireArguments().getDouble("productQuantity");
+        System.out.println(productQuantity);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -60,7 +61,7 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
                         updateUserNutrientConsumption(productQuantity);
                         dismiss();
                         Context context = getActivity();
-                        CharSequence text = "OpenFoodFactsProduct logged!";
+                        CharSequence text = "Product logged!";
                         int duration = Toast.LENGTH_SHORT;
 
                         Toast toast = Toast.makeText(context, text, duration);
@@ -89,6 +90,7 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
         Double productBaseQuantity = product.getBaseQuantity();
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         System.out.println(productNutrition);
+        System.out.println("base quantity: " + productBaseQuantity);
         for (String nutrient: Nutrients.nutrientDefaultDV.keySet()) {
             double currNutrientPercentage = (todayNutrientConsumption.get(nutrient) * 100 / maxNutrientDVs.get(nutrient));
             double newNutrientPercentage = currNutrientPercentage;
