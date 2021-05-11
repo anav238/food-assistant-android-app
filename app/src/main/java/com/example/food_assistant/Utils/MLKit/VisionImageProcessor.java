@@ -9,6 +9,9 @@ import androidx.camera.core.ImageProxy;
 import com.google.mlkit.common.MlKitException;
 
 public interface VisionImageProcessor {
+
+    void processLatestImage(AppCompatActivity activity);
+
     /** Processes ImageProxy image data, e.g. used for CameraX live preview case. */
     @RequiresApi(VERSION_CODES.KITKAT)
     void processImageProxy(ImageProxy image, AppCompatActivity activity) throws MlKitException;

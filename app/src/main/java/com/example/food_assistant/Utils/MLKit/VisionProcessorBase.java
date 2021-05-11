@@ -38,7 +38,7 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
         executor = new ScopedExecutor(TaskExecutors.MAIN_THREAD);
     }
 
-    private synchronized void processLatestImage(AppCompatActivity activity) {
+    public synchronized void processLatestImage(AppCompatActivity activity) {
         ByteBuffer processingImage = latestImage;
         FrameMetadata processingMetaData = latestImageMetaData;
         latestImage = null;

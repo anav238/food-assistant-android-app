@@ -10,7 +10,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.food_assistant.Models.AppUser;
+import com.example.food_assistant.Models.OpenFoodFactsProduct;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.MLKit.VisionImageProcessor;
@@ -49,7 +49,6 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
         VisionImageProcessor visionImageProcessor = imageProcessorSharedViewModel.getSelected().getValue();
 
         Double productQuantity = requireArguments().getDouble("productQuantity");
-        Log.i("PROD_QUANTITY", String.valueOf(productQuantity));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -61,7 +60,7 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
                         updateUserNutrientConsumption(productQuantity);
                         dismiss();
                         Context context = getActivity();
-                        CharSequence text = "Product logged!";
+                        CharSequence text = "OpenFoodFactsProduct logged!";
                         int duration = Toast.LENGTH_SHORT;
 
                         Toast toast = Toast.makeText(context, text, duration);
@@ -89,15 +88,12 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
         Map<String, Double> productNutrition = product.getNutriments();
         Double productBaseQuantity = product.getBaseQuantity();
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        System.out.println(productNutrition);
         for (String nutrient: Nutrients.nutrientDefaultDV.keySet()) {
             double currNutrientPercentage = (todayNutrientConsumption.get(nutrient) * 100 / maxNutrientDVs.get(nutrient));
             double newNutrientPercentage = currNutrientPercentage;
 
             String productNutrientKey = nutrient + "_value";
-            Log.i("TEST", productNutrientKey);
-            Log.i("TEST_PROD_NUTR", productNutrition.toString());
-            if (productNutrition.containsKey(productNutrientKey))
-                Log.i("PROD_NUTRITION", String.valueOf(productNutrition.get(productNutrientKey)));
             if (productNutrition.containsKey(productNutrientKey))
                 newNutrientPercentage = ((todayNutrientConsumption.get(nutrient) + Math.floor(productNutrition.get(productNutrientKey) * (productQuantity / productBaseQuantity))) * 100 / maxNutrientDVs.get(nutrient));
 

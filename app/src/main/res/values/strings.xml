@@ -64,10 +64,18 @@
     <string name="cancel">cancel</string>
     <string name="pick_product_quantity">Pick product quantity:</string>
     <string name="hello_blank_fragment">hello, blank fragment!</string>
-    <string name="grams">grams</string>
     <string name="close">Close</string>
     <string name="add_to_favorites">Add to favorites</string>
     <string name="your_favorite_products">Your favorite products</string>
     <string name="your_profile_picture">Your profile picture</string>
     <string name="calories_name">Calories</string>
+    <string name="scan_product_nutritional_table_request">This product does not exist in the database. Do you want to scan the nutritional table for logging this product?</string>
+    <string name="grams">grams</string>
+    <string name="kcal">kcal</string>
+    <string name="log_a_new_product">Log a new product</string>
+    <string name="consumed_quantity">Consumed quantity</string>
+    <string name="nutritional_values">Nutritional values</string>
+    <string name="product_name">Product name</string>
+    <string name="product_quantity">Product quantity</string>
+
 </resources>

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -19,9 +20,14 @@ import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory;
 
+import com.example.food_assistant.Fragments.LogNewProductFragment;
+import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
+import com.example.food_assistant.Fragments.ScanProductNutritionalTableRequestFragment;
+import com.example.food_assistant.Utils.Listeners.StartNutritionalTableScanListener;
 import com.example.food_assistant.Utils.MLKit.BarcodeScannerProcessor;
 import com.example.food_assistant.Utils.MLKit.CameraXViewModel;
 import com.example.food_assistant.R;
@@ -41,7 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScanProductActivity extends AppCompatActivity
-        implements OnRequestPermissionsResultCallback {
+        implements OnRequestPermissionsResultCallback, StartNutritionalTableScanListener {
     private static final String TAG = "CameraXLivePreview";
     private static final int PERMISSION_REQUESTS = 1;
 
@@ -268,4 +274,44 @@ public class ScanProductActivity extends AppCompatActivity
         Log.i(TAG, "Permission NOT granted: " + permission);
         return false;
     }
+
+    @Override
+    public void onStartNutritionalTableScan() {
+        //this.selectedModel = TEXT_RECOGNITION;
+        //this.imageProcessor = new TextRecognitionProcessor(this);
+        imageProcessor.pause();
+        Button scanTextButton = findViewById(R.id.scanTextButton);
+        scanTextButton.setVisibility(View.VISIBLE);
+        Button cancelScanButton = findViewById(R.id.cancelScanButton);
+        cancelScanButton.setVisibility(View.VISIBLE);
+    }
+
+    public void scanText(View view) {
+        LogNewProductFragment logNewProductFragment = new LogNewProductFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        logNewProductFragment.show(fragmentManager, "test");
+
+        this.selectedModel = BARCODE_SCANNING;
+        this.imageProcessor = new BarcodeScannerProcessor(this);
+        imageProcessor.pause();
+
+        Button scanTextButton = findViewById(R.id.scanTextButton);
+        scanTextButton.setVisibility(View.INVISIBLE);
+        Button cancelScanButton = findViewById(R.id.cancelScanButton);
+        cancelScanButton.setVisibility(View.INVISIBLE);
+
+        //imageProcessor.restart();
+        //imageProcessor.processLatestImage(this);
+    }
+
+    public void cancelScanText(View view) {
+        this.selectedModel = BARCODE_SCANNING;
+        this.imageProcessor = new BarcodeScannerProcessor(this);
+        imageProcessor.restart();
+        Button scanTextButton = findViewById(R.id.scanTextButton);
+        scanTextButton.setVisibility(View.INVISIBLE);
+        Button cancelScanButton = findViewById(R.id.cancelScanButton);
+        cancelScanButton.setVisibility(View.INVISIBLE);
+    }
+
 }

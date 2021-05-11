@@ -1,56 +1,27 @@
 package com.example.food_assistant.Models;
 
+import com.example.food_assistant.Enums.ProductType;
+
 import java.util.Map;
 
 public class Product {
-    String productName = "Unknown";
-    String novaGroup = "Unknown";
-    Map<String, String> nutrientLevels;
-    Map<String, Double> nutriments;
-    String nutriScoreGrade = "Unknown";
-
+    String id;
+    String productName;
     double baseQuantity;
-    double consumedQuantity;
+    ProductType productType = ProductType.CUSTOM;
+    Map<String, Double> nutriments;
     String measurementUnit;
 
-    @Override
-    public String toString() {
-        return "Product{" +
-                "productName='" + productName + '\'' +
-                ", novaGroup=" + novaGroup +
-                ", nutrientLevels=" + nutrientLevels +
-                ", nutriments=" + nutriments +
-                ", nutriScoreGrade='" + nutriScoreGrade + '\'' +
-                ", baseQuantity=" + baseQuantity +
-                ", consumedQuantity=" + consumedQuantity +
-                ", measurementUnit='" + measurementUnit + '\'' +
-                '}';
+    String novaGroup = "Unknown";
+    String nutriScoreGrade = "Unknown";
+
+    public String getId() {
+        return id;
     }
 
-    public double getBaseQuantity() {
-        return baseQuantity;
+    public void setId(String id) {
+        this.id = id;
     }
-
-    public void setBaseQuantity(double baseQuantity) {
-        this.baseQuantity = baseQuantity;
-    }
-
-    public double getConsumedQuantity() {
-        return consumedQuantity;
-    }
-
-    public void setConsumedQuantity(double consumedQuantity) {
-        this.consumedQuantity = consumedQuantity;
-    }
-
-    public String getMeasurementUnit() {
-        return measurementUnit;
-    }
-
-    public void setMeasurementUnit(String measurementUnit) {
-        this.measurementUnit = measurementUnit;
-    }
-
 
     public String getProductName() {
         return productName;
@@ -58,22 +29,6 @@ public class Product {
 
     public void setProductName(String productName) {
         this.productName = productName;
-    }
-
-    public String getNovaGroup() {
-        return novaGroup;
-    }
-
-    public void setNovaGroup(String novaGroup) {
-        this.novaGroup = novaGroup;
-    }
-
-    public Map<String, String> getNutrientLevels() {
-        return nutrientLevels;
-    }
-
-    public void setNutrientLevels(Map<String, String> nutrientLevels) {
-        this.nutrientLevels = nutrientLevels;
     }
 
     public Map<String, Double> getNutriments() {
@@ -84,6 +39,38 @@ public class Product {
         this.nutriments = nutriments;
     }
 
+    public ProductType getProductType() {
+        return productType;
+    }
+
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
+    }
+
+    public double getBaseQuantity() {
+        return baseQuantity;
+    }
+
+    public void setBaseQuantity(double baseQuantity) {
+        this.baseQuantity = baseQuantity;
+    }
+
+    public String getMeasurementUnit() {
+        return measurementUnit;
+    }
+
+    public void setMeasurementUnit(String measurementUnit) {
+        this.measurementUnit = measurementUnit;
+    }
+
+    public String getNovaGroup() {
+        return novaGroup;
+    }
+
+    public void setNovaGroup(String novaGroup) {
+        this.novaGroup = novaGroup;
+    }
+
     public String getNutriScoreGrade() {
         return nutriScoreGrade;
     }
@@ -91,5 +78,4 @@ public class Product {
     public void setNutriScoreGrade(String nutriScoreGrade) {
         this.nutriScoreGrade = nutriScoreGrade;
     }
-
 }

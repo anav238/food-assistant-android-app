@@ -16,8 +16,8 @@ public class AppUser implements Parcelable {
     String name = "";
     String email = "";
     Map<String, Map<String, Double>> nutrientConsumptionHistory = new HashMap<>();
-    List<String> favoriteProductsBarcodes = new ArrayList<>();
-    List<String> historyProductsBarcodes = new ArrayList<>();
+    List<String> favoritesIds = new ArrayList<>();
+    List<String> historyIds = new ArrayList<>();
     Map<String, Double> maximumNutrientDV = new HashMap<>();
 
     public AppUser() {
@@ -49,8 +49,8 @@ public class AppUser implements Parcelable {
     protected AppUser(Parcel in) {
         name = in.readString();
         email = in.readString();
-        favoriteProductsBarcodes = in.createStringArrayList();
-        historyProductsBarcodes = in.createStringArrayList();
+        favoritesIds = in.createStringArrayList();
+        historyIds = in.createStringArrayList();
     }
 
     public static final Creator<AppUser> CREATOR = new Creator<AppUser>() {
@@ -71,8 +71,8 @@ public class AppUser implements Parcelable {
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", nutrientConsumptionHistory=" + nutrientConsumptionHistory +
-                ", favoriteProductsBarcodes=" + favoriteProductsBarcodes +
-                ", historyProductsBarcodes=" + historyProductsBarcodes +
+                ", favoriteProductsBarcodes=" + favoritesIds +
+                ", historyProductsBarcodes=" + historyIds +
                 ", maximumDailyNutrientConsumption=" + maximumNutrientDV +
                 '}';
     }
@@ -111,12 +111,12 @@ public class AppUser implements Parcelable {
         return nutrientConsumptionHistory;
     }
 
-    public List<String> getFavoriteProductsBarcodes() {
-        return favoriteProductsBarcodes;
+    public List<String> getFavoritesIds() {
+        return favoritesIds;
     }
 
-    public List<String> getHistoryProductsBarcodes() {
-        return historyProductsBarcodes;
+    public List<String> getHistoryIds() {
+        return historyIds;
     }
 
     public Map<String, Double> getMaximumNutrientDV() {
@@ -135,12 +135,12 @@ public class AppUser implements Parcelable {
         this.nutrientConsumptionHistory = nutrientConsumptionHistory;
     }
 
-    public void setFavoriteProductsBarcodes(List<String> favoriteProductsBarcodes) {
-        this.favoriteProductsBarcodes = favoriteProductsBarcodes;
+    public void setFavoritesIds(List<String> favoritesIds) {
+        this.favoritesIds = favoritesIds;
     }
 
-    public void setHistoryProductsBarcodes(List<String> historyProductsBarcodes) {
-        this.historyProductsBarcodes = historyProductsBarcodes;
+    public void setHistoryIds(List<String> historyIds) {
+        this.historyIds = historyIds;
     }
 
     public void setMaximumNutrientDV(Map<String, Double> maximumNutrientDV) {
@@ -158,7 +158,7 @@ public class AppUser implements Parcelable {
         dest.writeString(this.email);
         dest.writeMap(this.nutrientConsumptionHistory);
         dest.writeMap(this.maximumNutrientDV);
-        dest.writeList(favoriteProductsBarcodes);
-        dest.writeList(historyProductsBarcodes);
+        dest.writeList(favoritesIds);
+        dest.writeList(historyIds);
     }
 }
