@@ -15,7 +15,7 @@ import com.google.gson.JsonObject;
 public class UserDataUtility {
     private static DatabaseReference mDatabase;
 
-    public static void logUserData(FirebaseUser user, UserSharedViewModel userSharedViewModel) {
+    public static void getUserData(FirebaseUser user, UserSharedViewModel userSharedViewModel) {
         if (mDatabase == null)
             mDatabase = FirebaseDatabase.getInstance("https://foodassistant-43fda-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 

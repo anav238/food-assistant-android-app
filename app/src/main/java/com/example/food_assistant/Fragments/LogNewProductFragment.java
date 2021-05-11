@@ -139,13 +139,13 @@ public class LogNewProductFragment extends DialogFragment {
                             AppUser appUser = userSharedViewModel.getSelected().getValue();
                             List<String> favoritesIds = appUser.getFavoritesIds();
                             favoritesIds.add(product.getId());
+                            userSharedViewModel.select(appUser);
                             UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
                         }
                         productSharedViewModel.select(product);
                         ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
                         Bundle args = new Bundle();
                         args.putDouble("productQuantity", consumedQuantity);
-                        System.out.println(consumedQuantity);
                         productConsumptionEffectsFragment.setArguments(args);
                         productConsumptionEffectsFragment.show(getParentFragmentManager(), "test");
                         dismiss();

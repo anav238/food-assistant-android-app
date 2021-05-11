@@ -25,8 +25,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory;
 
 import com.example.food_assistant.Fragments.LogNewProductFragment;
-import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
-import com.example.food_assistant.Fragments.ScanProductNutritionalTableRequestFragment;
 import com.example.food_assistant.Utils.Listeners.StartNutritionalTableScanListener;
 import com.example.food_assistant.Utils.MLKit.BarcodeScannerProcessor;
 import com.example.food_assistant.Utils.MLKit.CameraXViewModel;
@@ -106,7 +104,7 @@ public class ScanProductActivity extends AppCompatActivity
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            UserDataUtility.logUserData(user, userSharedViewModel);
+            UserDataUtility.getUserData(user, userSharedViewModel);
         }
     }
 

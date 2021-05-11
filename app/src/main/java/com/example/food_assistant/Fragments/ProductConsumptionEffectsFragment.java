@@ -29,6 +29,7 @@ import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Map;
 
 public class ProductConsumptionEffectsFragment extends DialogFragment {
@@ -59,6 +60,7 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
                 .setPositiveButton(R.string.next, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         updateUserNutrientConsumption(productQuantity);
+
                         dismiss();
                         Context context = getActivity();
                         CharSequence text = "Product logged!";
@@ -89,8 +91,7 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
         Map<String, Double> productNutrition = product.getNutriments();
         Double productBaseQuantity = product.getBaseQuantity();
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        System.out.println(productNutrition);
-        System.out.println("base quantity: " + productBaseQuantity);
+
         for (String nutrient: Nutrients.nutrientDefaultDV.keySet()) {
             double currNutrientPercentage = (todayNutrientConsumption.get(nutrient) * 100 / maxNutrientDVs.get(nutrient));
             double newNutrientPercentage = currNutrientPercentage;
@@ -125,6 +126,10 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
             }
         }
         user.updateTodayNutrientConsumption(todayNutrientConsumption);
+
+        List<String> historyIds = user.getHistoryIds();
+        historyIds.add(product.getId());
+        user.setHistoryIds(historyIds);
         userSharedViewModel.select(user);
     }
 

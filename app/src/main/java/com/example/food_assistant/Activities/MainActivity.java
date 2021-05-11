@@ -1,14 +1,11 @@
 package com.example.food_assistant.Activities;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 
 import com.example.food_assistant.HttpRequest.NetworkManager;
-import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
-import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -26,11 +23,9 @@ import androidx.navigation.ui.NavigationUI;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
+            //UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
         }
     }
 
@@ -85,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                     RC_SIGN_IN);
         }
         else {
-            UserDataUtility.logUserData(user, userSharedViewModel);
+            UserDataUtility.getUserData(user, userSharedViewModel);
         }
     }
 
@@ -100,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 // Successfully signed in
                 Log.i("TEST", "TEST");
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                UserDataUtility.logUserData(user, userSharedViewModel);
+                UserDataUtility.getUserData(user, userSharedViewModel);
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check

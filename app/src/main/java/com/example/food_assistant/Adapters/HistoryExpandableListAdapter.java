@@ -20,9 +20,12 @@ import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.R;
 import com.firebase.ui.auth.data.model.User;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -38,6 +41,7 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
         this.context = context;
         this.user = user;
         this.expandableListTitle = expandableListTitle;
+        Collections.sort(expandableListTitle, Collections.reverseOrder());
         this.expandableListDetail = expandableListDetail;
     }
 

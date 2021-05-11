@@ -13,6 +13,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.food_assistant.Enums.ProductType;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.example.food_assistant.Models.OpenFoodFactsProduct;
 import com.example.food_assistant.Utils.Firebase.ProductDataUtility;
@@ -68,7 +69,8 @@ public class NetworkManager
                         JsonObject responseJson = new Gson().fromJson(responseString, JsonObject.class);
                         if (responseJson.has("product")) {
                             OpenFoodFactsProduct product = ProductMapper.mapOpenFoodFactsProduct(responseJson);
-
+                            product.setId(barcode);
+                            //product.setProductType(ProductType.OPEN_FOOD_FACTS);
                             productSharedViewModel.select(product);
                             System.out.println(product.toString());
 
