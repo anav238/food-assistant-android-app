@@ -7,10 +7,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.food_assistant.Enums.ProductType;
@@ -20,7 +23,13 @@ import com.example.food_assistant.Utils.Firebase.ProductDataUtility;
 import com.example.food_assistant.Utils.Mappers.ProductMapper;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 public class NetworkManager
 {
@@ -88,6 +97,50 @@ public class NetworkManager
                 Log.i("response", "That didn't work!");
             }
         });
+
+        // Add the request to the RequestQueue.
+        requestQueue.add(stringRequest);
+    }
+
+    public void searchFoodByName(String name, AppCompatActivity activity) {
+        String url = "https://api.nal.usda.gov/fdc/v1/foods/search";
+
+        JsonObject jsonBody = new JsonObject();
+        jsonBody.addProperty("query", name);
+
+        JsonArray queryDataTypes = new JsonArray();
+        queryDataTypes.add("SR Legacy");
+        jsonBody.add("dataType", queryDataTypes);
+
+        jsonBody.addProperty("pageSize", 15);
+        jsonBody.addProperty("pageNumber", 1);
+        jsonBody.addProperty("sortBy", "dataType.keyword");
+        jsonBody.addProperty("sortOrder", "asc");
+
+        final String requestBody = jsonBody.toString();
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                response -> Log.e("APICALL", "\n response: " + response),
+                error -> Log.e("VOLLEY", error.toString())) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() {
+                return requestBody == null ? null : requestBody.getBytes(StandardCharsets.UTF_8);
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String,String> params = new HashMap<>();
+                params.put("X-Api-Key", "cwfnwhmRjkaCVAVCqicCcGas6Rp3gXcoyljdIKhz");
+                return params;
+            }
+
+        };
 
         // Add the request to the RequestQueue.
         requestQueue.add(stringRequest);

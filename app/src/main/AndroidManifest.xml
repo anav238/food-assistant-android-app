@@ -11,19 +11,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Foodassistant">
+        <activity android:name=".Activities.LogGenericFoodActivity"></activity>
         <activity
             android:name=".Activities.ProductInfoActivity"
-            android:parentActivityName=".Activities.FavoritesActivity"
-            android:label="Product Info"/>
-        <activity android:name=".Activities.FavoritesActivity"
-            android:parentActivityName=".Activities.MainActivity"
-            android:label="Favorites"/>
+            android:label="Product Info"
+            android:parentActivityName=".Activities.FavoritesActivity" />
+        <activity
+            android:name=".Activities.FavoritesActivity"
+            android:label="Favorites"
+            android:parentActivityName=".Activities.MainActivity" />
         <activity android:name=".Activities.ScanProductActivity" />
         <activity
             android:name=".Activities.SettingsActivity"
+            android:label="Settings"
             android:parentActivityName=".Activities.MainActivity"
-            android:theme="@style/Theme.Foodassistant.NoActionBar"
-            android:label="Settings">
+            android:theme="@style/Theme.Foodassistant.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.MainActivity" />

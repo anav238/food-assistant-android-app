@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         NetworkManager networkManager = NetworkManager.getInstance(this);
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
         authenticateUser();
+
+        networkManager.searchFoodByName("strawberry", this);
     }
 
     @Override
