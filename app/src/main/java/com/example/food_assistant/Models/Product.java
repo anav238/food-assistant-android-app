@@ -78,4 +78,16 @@ public class Product {
     public void setNutriScoreGrade(String nutriScoreGrade) {
         this.nutriScoreGrade = nutriScoreGrade;
     }
+
+    @Override
+    public String toString() {
+        return "OpenFoodFactsProduct{" +
+                "productName='" + productName + '\'' +
+                ", novaGroup=" + novaGroup +
+                ", nutriments=" + nutriments +
+                ", nutriScoreGrade='" + nutriScoreGrade + '\'' +
+                ", baseQuantity=" + baseQuantity +
+                ", measurementUnit='" + measurementUnit + '\'' +
+                '}';
+    }
 }

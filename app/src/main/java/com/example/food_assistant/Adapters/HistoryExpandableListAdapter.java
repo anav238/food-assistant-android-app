@@ -1,6 +1,5 @@
 package com.example.food_assistant.Adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -10,22 +9,16 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.food_assistant.Fragments.NutrientIntakeFragment;
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.R;
-import com.firebase.ui.auth.data.model.User;
 
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
 

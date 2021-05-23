@@ -113,6 +113,8 @@ public class ProductMapper {
         }
 
         product.setNutriments(productNutriments);
+        product.setBaseQuantity(100.0);
+        product.setMeasurementUnit("g");
         return product;
     }
 }

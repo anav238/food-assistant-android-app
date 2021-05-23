@@ -15,8 +15,6 @@ import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class HistoryFragment extends Fragment {

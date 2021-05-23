@@ -10,21 +10,6 @@ public class OpenFoodFactsProduct extends Product {
     ProductType productType = ProductType.OPEN_FOOD_FACTS;
     double consumedQuantity;
 
-
-    @Override
-    public String toString() {
-        return "OpenFoodFactsProduct{" +
-                "productName='" + productName + '\'' +
-                ", novaGroup=" + novaGroup +
-                ", nutrientLevels=" + nutrientLevels +
-                ", nutriments=" + nutriments +
-                ", nutriScoreGrade='" + nutriScoreGrade + '\'' +
-                ", baseQuantity=" + baseQuantity +
-                ", consumedQuantity=" + consumedQuantity +
-                ", measurementUnit='" + measurementUnit + '\'' +
-                '}';
-    }
-
     public double getConsumedQuantity() {
         return consumedQuantity;
     }

@@ -51,6 +51,7 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
 
         Double productQuantity = requireArguments().getDouble("productQuantity");
         System.out.println(productQuantity);
+        System.out.println(product.toString());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -70,13 +71,17 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
 
-                        visionImageProcessor.restart();
+                        if (visionImageProcessor != null) {
+                            visionImageProcessor.restart();
+                        }
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // AppUser cancelled the dialog
-                        visionImageProcessor.restart();
+                        if (visionImageProcessor != null) {
+                            visionImageProcessor.restart();
+                        }
                     }
                 });
 
