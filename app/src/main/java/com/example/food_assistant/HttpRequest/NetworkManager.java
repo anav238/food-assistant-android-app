@@ -18,33 +18,34 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.food_assistant.Enums.ProductType;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
+import com.example.food_assistant.Models.FoodDataCentralProduct;
 import com.example.food_assistant.Models.OpenFoodFactsProduct;
+import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.Utils.Firebase.ProductDataUtility;
 import com.example.food_assistant.Utils.Mappers.ProductMapper;
+import com.example.food_assistant.Utils.ViewModels.ProductListSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class NetworkManager
 {
-    private static final String TAG = "NetworkManager";
     private static NetworkManager instance = null;
 
-    private static final String prefixURL = "http://some/url/prefix/";
-
-    //for Volley API
     public RequestQueue requestQueue;
 
     private NetworkManager(Context context)
     {
         requestQueue = Volley.newRequestQueue(context.getApplicationContext());
-        //other stuf if you need
     }
 
     public static synchronized NetworkManager getInstance(Context context)
@@ -54,7 +55,6 @@ public class NetworkManager
         return instance;
     }
 
-    //this is so you don't need to pass context each time
     public static synchronized NetworkManager getInstance()
     {
         if (null == instance)
@@ -71,26 +71,23 @@ public class NetworkManager
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String responseString) {
-                        Log.i("response", responseString);
-                        JsonObject responseJson = new Gson().fromJson(responseString, JsonObject.class);
-                        if (responseJson.has("product")) {
-                            OpenFoodFactsProduct product = ProductMapper.mapOpenFoodFactsProduct(responseJson);
-                            product.setId(barcode);
-                            //product.setProductType(ProductType.OPEN_FOOD_FACTS);
-                            productSharedViewModel.select(product);
-                            System.out.println(product.toString());
+                responseString -> {
+                    Log.i("response", responseString);
+                    JsonObject responseJson = new Gson().fromJson(responseString, JsonObject.class);
+                    if (responseJson.has("product")) {
+                        OpenFoodFactsProduct product = ProductMapper.mapOpenFoodFactsProduct(responseJson);
+                        product.setId(barcode);
+                        //product.setProductType(ProductType.OPEN_FOOD_FACTS);
+                        productSharedViewModel.select(product);
+                        System.out.println(product.toString());
 
-                            SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
-                            FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                            selectProductQuantityFragment.show(fragmentManager, "test");
-                        }
-                        else
-                            ProductDataUtility.getProductById(barcode, activity);
-
+                        SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
+                        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                        selectProductQuantityFragment.show(fragmentManager, "test");
                     }
+                    else
+                        ProductDataUtility.getProductById(barcode, activity);
+
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -104,6 +101,7 @@ public class NetworkManager
 
     public void searchFoodByName(String name, AppCompatActivity activity) {
         String url = "https://api.nal.usda.gov/fdc/v1/foods/search";
+        ProductListSharedViewModel productListSharedViewModel = new ViewModelProvider(activity).get(ProductListSharedViewModel.class);
 
         JsonObject jsonBody = new JsonObject();
         jsonBody.addProperty("query", name);
@@ -121,7 +119,22 @@ public class NetworkManager
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                response -> Log.e("APICALL", "\n response: " + response),
+                responseString -> {
+                    JsonObject responseJson = new Gson().fromJson(responseString, JsonObject.class);
+                    if (responseJson.has("foods")) {
+                        JsonArray searchResults = responseJson.get("foods").getAsJsonArray();
+                        List<Product> products = new ArrayList<>();
+                        for (JsonElement searchResult:searchResults) {
+                            Product product = ProductMapper.mapFoodDataCentralProduct(searchResult.getAsJsonObject());
+                            products.add(product);
+                            System.out.println(product);
+                        }
+                        productListSharedViewModel.select(products);
+                    }
+                    else {
+                        // No foods found
+                    }
+                },
                 error -> Log.e("VOLLEY", error.toString())) {
             @Override
             public String getBodyContentType() {

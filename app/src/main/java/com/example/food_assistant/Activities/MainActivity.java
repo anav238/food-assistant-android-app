@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
         authenticateUser();
 
-        networkManager.searchFoodByName("strawberry", this);
     }
 
     @Override
@@ -137,6 +136,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void openPreviousMealsActivity(View view) {
         Intent intent = new Intent(MainActivity.this, FavoritesActivity.class);
+        startActivity(intent);
+    }
+
+    public void openLogGenericFoodActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, LogGenericFoodActivity.class);
         startActivity(intent);
     }
 }

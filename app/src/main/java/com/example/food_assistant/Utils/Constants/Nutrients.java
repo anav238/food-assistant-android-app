@@ -23,4 +23,15 @@ public class Nutrients {
         add("sugars");
         add("salt");
     }};
+
+    public static Map<String, String> foodDataCentralNutrientMapping = new HashMap<String, String>() {{
+        put("Fatty acids, total saturated", "saturated-fat");
+        put("Protein", "proteins");
+        put("Total lipid (fat)", "fat");
+        put("Energy", "energy-kcal");
+        put("Sugars, total including NLEA", "sugars");
+        put("Carbohydrate, by difference", "carbohydrates");
+        put("Sodium, Na", "salt");
+        put("Fiber, total dietary", "fiber");
+    }};
 }

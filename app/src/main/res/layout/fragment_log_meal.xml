@@ -29,6 +29,15 @@
         android:onClick="openScanProduct"/>
 
     <Button
+        android:id="@+id/button_log_generic_food"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:fontFamily="sans-serif-medium"
+        android:onClick="openLogGenericFoodActivity"
+        android:text="@string/log_generic_food" />
+
+    <Button
         android:id="@+id/analyse_recipe_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

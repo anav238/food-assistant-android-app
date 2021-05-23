@@ -77,5 +77,6 @@
     <string name="nutritional_values">Nutritional values</string>
     <string name="product_name">Product name</string>
     <string name="product_quantity">Product quantity</string>
+    <string name="log_generic_food">Log generic food</string>
 
 </resources>

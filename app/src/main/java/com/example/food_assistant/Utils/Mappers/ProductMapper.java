@@ -1,12 +1,19 @@
 package com.example.food_assistant.Utils.Mappers;
 
 import com.example.food_assistant.Enums.ProductType;
+import com.example.food_assistant.Models.FoodDataCentralProduct;
 import com.example.food_assistant.Models.OpenFoodFactsProduct;
 import com.example.food_assistant.Models.Product;
+import com.example.food_assistant.Utils.Constants.Nutrients;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProductMapper {
     public static OpenFoodFactsProduct mapOpenFoodFactsProduct(JsonObject productJson) {
@@ -70,6 +77,42 @@ public class ProductMapper {
             else if (productTypeString.equals("FOOD_DATA_CENTRAL"))
                 product.setProductType(ProductType.FOOD_DATA_CENTRAL);
         }
+        return product;
+    }
+
+    public static Product mapFoodDataCentralProduct(JsonObject productJson) {
+        System.out.println(productJson);
+        Gson gson = new Gson();
+        Product product = new Product();
+        Map<String, Double> productNutriments = new HashMap<>();
+
+
+        if (productJson.has("description"))
+            product.setProductName(productJson.get("description").getAsString());
+
+        List<String> foodDataCentralNutrients = new ArrayList<>(Nutrients.foodDataCentralNutrientMapping.keySet());
+        if (!productJson.has("foodNutrients"))
+            return product;
+
+        JsonArray foodNutrients = productJson.get("foodNutrients").getAsJsonArray();
+        for (JsonElement nutrientElement:foodNutrients) {
+            JsonObject nutrientObject = nutrientElement.getAsJsonObject();
+            if (nutrientObject.has("nutrientName")) {
+                String nutrientName = nutrientObject.get("nutrientName").getAsString();
+                if (foodDataCentralNutrients.contains(nutrientName)) {
+                    String nutrientNameMapping = Nutrients.foodDataCentralNutrientMapping.get(nutrientName);
+                    double nutrientQuantity = nutrientObject.get("value").getAsDouble();
+                    String nutrientMeasurementUnit = nutrientObject.get("unitName").getAsString();
+                    if (!nutrientMeasurementUnit.equals("kJ")) {
+                        if (nutrientMeasurementUnit.equals("MG"))
+                            nutrientQuantity /= 1000;
+                        productNutriments.put(nutrientNameMapping, nutrientQuantity);
+                    }
+                }
+            }
+        }
+
+        product.setNutriments(productNutriments);
         return product;
     }
 }

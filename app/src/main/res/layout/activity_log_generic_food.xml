@@ -8,10 +8,11 @@
     tools:context=".Activities.LogGenericFoodActivity">
 
     <SearchView
+        android:id="@+id/searchView_food"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="141dp"
-        tools:layout_editor_absoluteY="61dp" >
+        tools:layout_editor_absoluteY="61dp">
 
     </SearchView>
 
