@@ -14,4 +14,15 @@
         <item>grams</item>
         <item>milliliters</item>
     </string-array>
+
+    <string-array name="measurement_units_recipes">
+        <item>kilograms</item>
+        <item>grams</item>
+        <item>milligrams</item>
+        <item>liters</item>
+        <item>milliliters</item>
+        <item>cups</item>
+        <item>tablespoons</item>
+        <item>teaspoons</item>
+    </string-array>
 </resources>

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.food_assistant.Models.Product;
 
 public class ProductSharedViewModel extends ViewModel {
+
     private final MutableLiveData<Product> selected = new MutableLiveData<Product>();
 
     public void select(Product product) {

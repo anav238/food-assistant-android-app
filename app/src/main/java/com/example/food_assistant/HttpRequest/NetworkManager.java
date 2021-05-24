@@ -25,11 +25,19 @@ import com.example.food_assistant.Utils.Firebase.ProductDataUtility;
 import com.example.food_assistant.Utils.Mappers.ProductMapper;
 import com.example.food_assistant.Utils.ViewModels.ProductListSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
+import com.example.food_assistant.Utils.ViewModels.RecipeSharedViewModel;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.DataNode;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -157,5 +165,33 @@ public class NetworkManager
 
         // Add the request to the RequestQueue.
         requestQueue.add(stringRequest);
+    }
+
+    public void getRecipeFromUrl(String url, AppCompatActivity activity) {
+        RecipeSharedViewModel recipeSharedViewModel = new ViewModelProvider(activity).get(RecipeSharedViewModel.class);
+        Gson gson = new Gson();
+        Thread thread = new Thread(() -> {
+            try  {
+                Document document = Jsoup.connect(url).timeout(10000).get();
+                Elements scriptElements = document.select("script[type$=application/ld+json]");
+
+                for (Element element:scriptElements) {
+                    for (DataNode node : element.dataNodes()) {
+                        System.out.println(node.getWholeData());
+                        JsonObject recipeJson = gson.fromJson(node.getWholeData(), JsonObject.class);
+                        System.out.println(recipeJson.toString());
+                        // Object jsonObject = JsonUtils.fromString(node.getWholeData());
+                        // Object compact = JsonLdProcessor.compact(jsonObject, new HashMap<>(), new JsonLdOptions());
+                        //String compactContent = JsonUtils.toString(compact);
+                        //System.out.println(compactContent);
+                    }
+                    System.out.println("-------------------");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
+
     }
 }

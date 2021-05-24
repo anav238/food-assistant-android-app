@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="7">
+
+    <EditText
+        android:id="@+id/editText_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:width="20dp"
+        android:ems="10"
+        android:inputType="numberDecimal" />
+
+    <Spinner
+        android:id="@+id/spinner_ingredient_measurement_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="2" />
+
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextView_ingredients"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="4"
+        android:dropDownWidth="wrap_content"
+        android:dropDownVerticalOffset="5dp"
+        android:inputType="textAutoComplete|textAutoCorrect"
+        android:popupBackground="@color/white"
+        android:textColor="#FFFFFF" />
+
+</LinearLayout>

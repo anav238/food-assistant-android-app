@@ -43,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:fontFamily="sans-serif-medium"
+        android:onClick="openRecipeAnalysisActivity"
         android:text="@string/analyse_recipe_name" />
 
     <Button
