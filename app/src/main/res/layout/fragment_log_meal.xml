@@ -38,6 +38,15 @@
         android:text="@string/log_generic_food" />
 
     <Button
+        android:id="@+id/button_log_custom_meal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:fontFamily="sans-serif-medium"
+        android:onClick="openLogCustomMealActivity"
+        android:text="@string/log_custom_meal" />
+
+    <Button
         android:id="@+id/analyse_recipe_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

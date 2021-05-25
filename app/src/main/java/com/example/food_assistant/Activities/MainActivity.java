@@ -144,6 +144,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void openLogCustomMealActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, LogCustomMealActivity.class);
+        startActivity(intent);
+    }
+
     public void openRecipeAnalysisActivity(View view) {
         Intent intent = new Intent(MainActivity.this, RecipeAnalysisActivity.class);
         startActivity(intent);

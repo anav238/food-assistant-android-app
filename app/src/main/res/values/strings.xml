@@ -78,5 +78,10 @@
     <string name="product_name">Product name</string>
     <string name="product_quantity">Product quantity</string>
     <string name="log_generic_food">Log generic food</string>
+    <string name="nothing_to_see_here_yet">Nothing to see here yet…</string>
+    <string name="add_food_item">Add food item</string>
+    <string name="log_branded_product">Log branded product</string>
+    <string name="log_custom_meal">Log custom meal</string>
+    <string name="add_generic_food">Add Generic Food</string>
 
 </resources>
