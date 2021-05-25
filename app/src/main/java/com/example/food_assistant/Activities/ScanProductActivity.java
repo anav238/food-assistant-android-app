@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory;
 
@@ -105,6 +106,9 @@ public class ScanProductActivity extends AppCompatActivity
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             UserDataUtility.getUserData(user, userSharedViewModel);
+            userSharedViewModel.getSelected().observe(this, appUser -> {
+                UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
+            });
         }
     }
 
@@ -117,13 +121,8 @@ public class ScanProductActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-
         if (imageProcessor != null)
             imageProcessor.stop();
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null)
-            UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
     }
 
     @Override

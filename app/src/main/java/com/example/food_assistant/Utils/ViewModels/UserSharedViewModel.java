@@ -1,5 +1,6 @@
 package com.example.food_assistant.Utils.ViewModels;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;

@@ -58,30 +58,26 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
         View content = inflater.inflate(R.layout.fragment_product_consumption_effects, null);
         builder.setView(content)
                 .setMessage("Are you sure you want to consume this product?")
-                .setPositiveButton(R.string.next, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        updateUserNutrientConsumption(productQuantity);
+                .setPositiveButton("Log Product", (dialog, id) -> {
+                    updateUserNutrientConsumption(productQuantity);
 
-                        dismiss();
-                        Context context = getActivity();
-                        CharSequence text = "Product logged!";
-                        int duration = Toast.LENGTH_SHORT;
+                    dismiss();
+                    Context context = getActivity();
+                    CharSequence text = "Product logged!";
+                    int duration = Toast.LENGTH_SHORT;
 
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
 
-                        if (visionImageProcessor != null) {
-                            visionImageProcessor.restart();
-                        }
+                    if (visionImageProcessor != null) {
+                        visionImageProcessor.restart();
                     }
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // AppUser cancelled the dialog
-                        if (visionImageProcessor != null) {
-                            visionImageProcessor.restart();
-                        }
+                .setNegativeButton(R.string.cancel, (dialog, id) -> {
+                    // AppUser cancelled the dialog
+                    if (visionImageProcessor != null) {
+                        visionImageProcessor.restart();
                     }
                 });
 

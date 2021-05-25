@@ -48,8 +48,12 @@ public class LogGenericFoodActivity extends AppCompatActivity {
 
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null)
+        if (user != null) {
             UserDataUtility.getUserData(user, userSharedViewModel);
+            userSharedViewModel.getSelected().observe(this, appUser -> {
+                UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
+            });
+        }
 
         productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
         productListSharedViewModel = new ViewModelProvider(this).get(ProductListSharedViewModel.class);
