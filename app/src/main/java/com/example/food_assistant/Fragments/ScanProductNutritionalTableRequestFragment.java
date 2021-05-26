@@ -24,8 +24,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class ScanProductNutritionalTableRequestFragment extends DialogFragment {
 
-    // 1. Defines the listener interface with a method passing back data result.
-
     public ScanProductNutritionalTableRequestFragment() {
         // Required empty public constructor
     }
@@ -33,9 +31,7 @@ public class ScanProductNutritionalTableRequestFragment extends DialogFragment {
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the Builder class for convenient dialog construction
         ImageProcessorSharedViewModel imageProcessorSharedViewModel = new ViewModelProvider(requireActivity()).get(ImageProcessorSharedViewModel.class);
-
         VisionImageProcessor visionImageProcessor = imageProcessorSharedViewModel.getSelected().getValue();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
@@ -45,9 +41,8 @@ public class ScanProductNutritionalTableRequestFragment extends DialogFragment {
         builder.setView(content)
                 .setMessage(R.string.scan_product_nutritional_table_request)
                 .setPositiveButton("Yes", (dialog, id) -> {
-                    StartNutritionalTableScanListener listener = (StartNutritionalTableScanListener) getActivity();
-                    if (listener != null)
-                        listener.onStartNutritionalTableScan();
+                    Bundle result = new Bundle();
+                    getParentFragmentManager().setFragmentResult("ADD_NEW_PRODUCT_TO_DB", result);
                 })
                 .setNegativeButton("No", (dialog, id) -> {
                     // AppUser cancelled the dialog

@@ -24,20 +24,18 @@ import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory;
 
 import com.example.food_assistant.Fragments.LogNewProductFragment;
 import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
+import com.example.food_assistant.Fragments.ScanProductNutritionalTableRequestFragment;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Product;
-import com.example.food_assistant.Utils.Listeners.StartNutritionalTableScanListener;
 import com.example.food_assistant.Utils.MLKit.BarcodeScannerProcessor;
 import com.example.food_assistant.Utils.MLKit.CameraXViewModel;
 import com.example.food_assistant.R;
-import com.example.food_assistant.Utils.MLKit.TextRecognitionProcessor;
 import com.example.food_assistant.Utils.MLKit.VisionImageProcessor;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
 import com.example.food_assistant.Utils.ViewModels.ImageProcessorSharedViewModel;
@@ -54,12 +52,11 @@ import java.util.List;
 import java.util.Map;
 
 public class ScanProductActivity extends AppCompatActivity
-        implements OnRequestPermissionsResultCallback, StartNutritionalTableScanListener {
+        implements OnRequestPermissionsResultCallback {
     private static final String TAG = "CameraXLivePreview";
     private static final int PERMISSION_REQUESTS = 1;
 
     private static final String BARCODE_SCANNING = "Barcode Scanning";
-    private static final String TEXT_RECOGNITION = "Text Recognition";
     private static final String SINGLE_SCAN_MODE = "Single Scan Mode";
     private static final String MULTIPLE_SCAN_MODE = "Multiple Scan Mode";
 
@@ -137,7 +134,7 @@ public class ScanProductActivity extends AppCompatActivity
         }
 
         productSharedViewModel.getSelected().observe(this, product -> {
-            processScannedProduct();
+            processScannedProduct(product);
         });
     }
 
@@ -171,13 +168,30 @@ public class ScanProductActivity extends AppCompatActivity
                 }
             }
         });
+
+        getSupportFragmentManager().setFragmentResultListener("ADD_NEW_PRODUCT_TO_DB", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+                LogNewProductFragment logNewProductFragment = new LogNewProductFragment();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                logNewProductFragment.show(fragmentManager, "test");
+            }
+        });
+
     }
 
-    private void processScannedProduct() {
-        if (selectedScanMode.equals(MULTIPLE_SCAN_MODE)) {
-            SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
+    private void processScannedProduct(Product product) {
+        if (product.getNutriments() == null || product.getNutriments().size() == 0) {
+            ScanProductNutritionalTableRequestFragment scanProductNutritionalTableRequestFragment = new ScanProductNutritionalTableRequestFragment();
             FragmentManager fragmentManager = getSupportFragmentManager();
-            selectProductQuantityFragment.show(fragmentManager, "test");
+            scanProductNutritionalTableRequestFragment.show(fragmentManager, "test");
+        }
+        else {
+            if (selectedScanMode.equals(MULTIPLE_SCAN_MODE)) {
+                SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                selectProductQuantityFragment.show(fragmentManager, "test");
+            }
         }
     }
 
@@ -268,10 +282,7 @@ public class ScanProductActivity extends AppCompatActivity
                 imageProcessor = new BarcodeScannerProcessor(this);
                 imageProcessorSharedViewModel.select(imageProcessor);
             }
-            /*else {
-                Log.i(TAG, "Using on-device Text recognition Processor");
-                imageProcessor = new TextRecognitionProcessor(this);
-            }*/
+
         } catch (Exception e) {
             Log.e(TAG, "Can not create image processor: " + BARCODE_SCANNING, e);
             Toast.makeText(
@@ -294,7 +305,7 @@ public class ScanProductActivity extends AppCompatActivity
                 ContextCompat.getMainExecutor(this),
                 imageProxy -> {
                     try {
-                        imageProcessor.processImageProxy(imageProxy, this);
+                        imageProcessor.processImageProxy(imageProxy, productSharedViewModel);
                     } catch (MlKitException e) {
                         Log.e(TAG, "Failed to process image. Error: " + e.getLocalizedMessage());
                         Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT)
@@ -364,43 +375,5 @@ public class ScanProductActivity extends AppCompatActivity
         return false;
     }
 
-    @Override
-    public void onStartNutritionalTableScan() {
-        //this.selectedModel = TEXT_RECOGNITION;
-        //this.imageProcessor = new TextRecognitionProcessor(this);
-        imageProcessor.pause();
-        Button scanTextButton = findViewById(R.id.scanTextButton);
-        scanTextButton.setVisibility(View.VISIBLE);
-        Button cancelScanButton = findViewById(R.id.cancelScanButton);
-        cancelScanButton.setVisibility(View.VISIBLE);
-    }
-
-    public void scanText(View view) {
-        LogNewProductFragment logNewProductFragment = new LogNewProductFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        logNewProductFragment.show(fragmentManager, "test");
-
-        this.selectedModel = BARCODE_SCANNING;
-        this.imageProcessor = new BarcodeScannerProcessor(this);
-        imageProcessor.pause();
-
-        Button scanTextButton = findViewById(R.id.scanTextButton);
-        scanTextButton.setVisibility(View.INVISIBLE);
-        Button cancelScanButton = findViewById(R.id.cancelScanButton);
-        cancelScanButton.setVisibility(View.INVISIBLE);
-
-        //imageProcessor.restart();
-        //imageProcessor.processLatestImage(this);
-    }
-
-    public void cancelScanText(View view) {
-        this.selectedModel = BARCODE_SCANNING;
-        this.imageProcessor = new BarcodeScannerProcessor(this);
-        imageProcessor.restart();
-        Button scanTextButton = findViewById(R.id.scanTextButton);
-        scanTextButton.setVisibility(View.INVISIBLE);
-        Button cancelScanButton = findViewById(R.id.cancelScanButton);
-        cancelScanButton.setVisibility(View.INVISIBLE);
-    }
 
 }

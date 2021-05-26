@@ -98,64 +98,49 @@ public class LogNewProductFragment extends DialogFragment {
     @Override
     public void onStart()
     {
-        super.onStart();    //super.onStart() is where dialog.show() is actually called on the underlying dialog, so we have to do it after this point
+        super.onStart();
         AlertDialog dialog = (AlertDialog)getDialog();
-        if(dialog != null)
-        {
-            Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
-            positiveButton.setOnClickListener(v -> {
+        if(dialog == null)
+            return;
+
+        Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(v -> {
+            try {
+                Product product = getProductFromUserInput(dialog);
+                boolean isValidProduct = true;
+                if (product.getId().length() == 0)
+                    isValidProduct = false;
+
+                EditText productQuantityEditText = dialog.findViewById(R.id.editText_product_quantity);
+                double baseQuantity = 0.0, consumedQuantity = 0.0;
                 try {
-                    Product product = getProductFromUserInput(dialog);
-                    boolean isValidProduct = true;
-                    if (product.getId().length() == 0)
-                        isValidProduct = false;
-
-                    EditText productQuantityEditText = dialog.findViewById(R.id.editText_product_quantity);
-                    double baseQuantity = 0.0, consumedQuantity = 0.0;
-                    try {
-                        baseQuantity = Double.parseDouble(productQuantityEditText.getText().toString());
-                        product.setBaseQuantity(baseQuantity);
-                    }
-                    catch (Exception e) {
-                        productQuantityEditText.setError("Please enter a valid product quantity.");
-                        isValidProduct = false;
-                    }
-
-                    EditText productConsumedQuantity = dialog.findViewById(R.id.editText_consumed_quantity);
-                    try {
-                        consumedQuantity = Double.parseDouble(productConsumedQuantity.getText().toString());
-                        //product.setConsumedQuantity(consumedQuantity);
-                    }
-                    catch (Exception e) {
-                        productConsumedQuantity.setError("Please enter a valid consumed quantity.");
-                        isValidProduct = false;
-                    }
-
-                    if (isValidProduct) {
-                        ProductDataUtility.logProductData(product);
-                        CheckBox addToFavorites = dialog.findViewById(R.id.checkBox_add_favorite);
-                        if (addToFavorites.isChecked()) {
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            AppUser appUser = userSharedViewModel.getSelected().getValue();
-                            List<String> favoritesIds = appUser.getFavoritesIds();
-                            favoritesIds.add(product.getId());
-                            userSharedViewModel.select(appUser);
-                            UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
-                        }
-                        productSharedViewModel.select(product);
-                        ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
-                        Bundle args = new Bundle();
-                        args.putDouble("productQuantity", consumedQuantity);
-                        productConsumptionEffectsFragment.setArguments(args);
-                        productConsumptionEffectsFragment.show(getParentFragmentManager(), "test");
-                        dismiss();
-
-                    }
-                } catch (FormatException e) {
-                    e.printStackTrace();
+                    baseQuantity = Double.parseDouble(productQuantityEditText.getText().toString());
+                    product.setBaseQuantity(baseQuantity);
                 }
-            });
-        }
+                catch (Exception e) {
+                    productQuantityEditText.setError("Please enter a valid product quantity.");
+                    isValidProduct = false;
+                }
+
+                if (isValidProduct) {
+                    ProductDataUtility.logProductData(product);
+                    CheckBox addToFavorites = dialog.findViewById(R.id.checkBox_add_favorite);
+                    if (addToFavorites.isChecked()) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        AppUser appUser = userSharedViewModel.getSelected().getValue();
+                        List<String> favoritesIds = appUser.getFavoritesIds();
+                        favoritesIds.add(product.getId());
+                        userSharedViewModel.select(appUser);
+                        UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
+                    }
+                    productSharedViewModel.select(product);
+                    dismiss();
+                }
+            } catch (FormatException e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
     private Product getProductFromUserInput(AlertDialog dialog) throws FormatException {

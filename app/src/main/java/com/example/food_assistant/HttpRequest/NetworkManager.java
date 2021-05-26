@@ -73,11 +73,9 @@ public class NetworkManager
         return instance;
     }
 
-    public void getProductDetailsByBarcode(String barcode, AppCompatActivity activity) {
+    public void getProductDetailsByBarcode(String barcode, ProductSharedViewModel productSharedViewModel) {
         String url = "https://world.openfoodfacts.org/api/v0/product/" + barcode + ".json";
-        ProductSharedViewModel productSharedViewModel = new ViewModelProvider(activity).get(ProductSharedViewModel.class);
 
-        // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 responseString -> {
                     Log.i("response", responseString);
@@ -85,12 +83,12 @@ public class NetworkManager
                     if (responseJson.has("product")) {
                         OpenFoodFactsProduct product = ProductMapper.mapOpenFoodFactsProduct(responseJson);
                         product.setId(barcode);
-                        //product.setProductType(ProductType.OPEN_FOOD_FACTS);
+                        product.setProductType(ProductType.OPEN_FOOD_FACTS);
                         productSharedViewModel.select(product);
                         System.out.println(product.toString());
                     }
                     else
-                        ProductDataUtility.getProductById(barcode, activity);
+                        ProductDataUtility.getProductById(barcode, productSharedViewModel);
 
                 }, new Response.ErrorListener() {
             @Override
@@ -119,7 +117,6 @@ public class NetworkManager
 
         final String requestBody = jsonBody.toString();
 
-        // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 responseString -> {
                     JsonObject responseJson = new Gson().fromJson(responseString, JsonObject.class);
@@ -157,7 +154,6 @@ public class NetworkManager
 
         };
 
-        // Add the request to the RequestQueue.
         requestQueue.add(stringRequest);
     }
 

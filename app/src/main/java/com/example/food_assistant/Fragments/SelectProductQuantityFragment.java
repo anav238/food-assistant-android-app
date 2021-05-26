@@ -67,7 +67,7 @@ public class SelectProductQuantityFragment extends DialogFragment {
     @Override
     public void onStart()
     {
-        super.onStart();    //super.onStart() is where dialog.show() is actually called on the underlying dialog, so we have to do it after this point
+        super.onStart();
         AlertDialog dialog = (AlertDialog)getDialog();
         if(dialog != null)
         {
@@ -90,25 +90,6 @@ public class SelectProductQuantityFragment extends DialogFragment {
                     dismiss();
                 }
 
-                /*ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
-                Bundle args = new Bundle();
-                TextView productQuantityTextView = dialog.findViewById(R.id.product_quantity);
-                String productQuantityString = productQuantityTextView.getText().toString();
-
-                double productQuantity = -1.0;
-                try {
-                    productQuantity = Double.parseDouble(productQuantityString);
-                } catch (Exception e) {
-                    Log.i("INFO", "INVALID PROD QUANTITY");
-                    productQuantityTextView.setError("Please insert a valid product quantity!");
-                }
-
-                if (productQuantity != -1.0) {
-                    args.putDouble("productQuantity", Double.parseDouble(productQuantityString));
-                    productConsumptionEffectsFragment.setArguments(args);
-                    productConsumptionEffectsFragment.show(getParentFragmentManager(), "test");
-                    dismiss();
-                }*/
             });
         }
     }

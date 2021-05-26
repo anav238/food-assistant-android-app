@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageProxy;
 
+import com.example.food_assistant.Models.Product;
+import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskExecutors;
 import com.google.mlkit.vision.common.InputImage;
@@ -38,18 +40,18 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
         executor = new ScopedExecutor(TaskExecutors.MAIN_THREAD);
     }
 
-    public synchronized void processLatestImage(AppCompatActivity activity) {
+    public synchronized void processLatestImage(ProductSharedViewModel productSharedViewModel) {
         ByteBuffer processingImage = latestImage;
         FrameMetadata processingMetaData = latestImageMetaData;
         latestImage = null;
         latestImageMetaData = null;
         if (processingImage != null && processingMetaData != null && !isShutdown && !isPaused) {
-            processImage(processingImage, processingMetaData, activity);
+            processImage(processingImage, processingMetaData, productSharedViewModel);
         }
     }
 
     private void processImage(
-            ByteBuffer data, final FrameMetadata frameMetadata, AppCompatActivity activity) {
+            ByteBuffer data, final FrameMetadata frameMetadata, ProductSharedViewModel productSharedViewModel) {
 
         requestDetectInImage(
                 InputImage.fromByteBuffer(
@@ -57,14 +59,14 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
                         frameMetadata.getWidth(),
                         frameMetadata.getHeight(),
                         frameMetadata.getRotation(),
-                        InputImage.IMAGE_FORMAT_NV21), activity)
-                .addOnSuccessListener(executor, results -> processLatestImage(activity));
+                        InputImage.IMAGE_FORMAT_NV21), productSharedViewModel)
+                .addOnSuccessListener(executor, results -> processLatestImage(productSharedViewModel));
     }
 
     @Override
     @RequiresApi(VERSION_CODES.KITKAT)
     @ExperimentalGetImage
-    public void processImageProxy(ImageProxy image, AppCompatActivity activity) {
+    public void processImageProxy(ImageProxy image, ProductSharedViewModel productSharedViewModel) {
         if (isShutdown || isPaused) {
             image.close();
             return;
@@ -72,17 +74,17 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
 
         requestDetectInImage(
                 InputImage.fromMediaImage(image.getImage(), image.getImageInfo().getRotationDegrees()),
-                activity)
+                productSharedViewModel)
                 .addOnCompleteListener(results -> image.close());
     }
 
     private Task<T> requestDetectInImage(
-            final InputImage image, AppCompatActivity activity) {
+            final InputImage image, ProductSharedViewModel productSharedViewModel) {
         return detectInImage(image)
                 .addOnSuccessListener(
                         executor,
                         results -> {
-                            VisionProcessorBase.this.onSuccess(results, activity);
+                            VisionProcessorBase.this.onSuccess(results, productSharedViewModel);
                         })
                 .addOnFailureListener(
                         executor,
@@ -113,7 +115,7 @@ public abstract class VisionProcessorBase<T> implements VisionImageProcessor {
 
     protected abstract Task<T> detectInImage(InputImage image);
 
-    protected abstract void onSuccess(@NonNull T results, AppCompatActivity activity);
+    protected abstract void onSuccess(@NonNull T results, ProductSharedViewModel productSharedViewModel);
 
     protected abstract void onFailure(@NonNull Exception e);
 }
