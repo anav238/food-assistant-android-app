@@ -88,10 +88,6 @@ public class NetworkManager
                         //product.setProductType(ProductType.OPEN_FOOD_FACTS);
                         productSharedViewModel.select(product);
                         System.out.println(product.toString());
-
-                        SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
-                        FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                        selectProductQuantityFragment.show(fragmentManager, "test");
                     }
                     else
                         ProductDataUtility.getProductById(barcode, activity);
@@ -102,8 +98,6 @@ public class NetworkManager
                 Log.i("response", "That didn't work!");
             }
         });
-
-        // Add the request to the RequestQueue.
         requestQueue.add(stringRequest);
     }
 

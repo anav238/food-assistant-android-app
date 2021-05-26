@@ -34,24 +34,18 @@ import java.util.Map;
 
 public class ProductConsumptionEffectsFragment extends DialogFragment {
 
-    private UserSharedViewModel userSharedViewModel;
-    private ProductSharedViewModel productSharedViewModel;
-    private ImageProcessorSharedViewModel imageProcessorSharedViewModel;
-
     @NotNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        userSharedViewModel = new ViewModelProvider(requireActivity()).get(UserSharedViewModel.class);
-        productSharedViewModel = new ViewModelProvider(requireActivity()).get(ProductSharedViewModel.class);
-        imageProcessorSharedViewModel = new ViewModelProvider(requireActivity()).get(ImageProcessorSharedViewModel.class);
+        UserSharedViewModel userSharedViewModel = new ViewModelProvider(requireActivity()).get(UserSharedViewModel.class);
+        ProductSharedViewModel productSharedViewModel = new ViewModelProvider(requireActivity()).get(ProductSharedViewModel.class);
+        ImageProcessorSharedViewModel imageProcessorSharedViewModel = new ViewModelProvider(requireActivity()).get(ImageProcessorSharedViewModel.class);
 
         AppUser user = userSharedViewModel.getSelected().getValue();
         Product product = productSharedViewModel.getSelected().getValue();
         VisionImageProcessor visionImageProcessor = imageProcessorSharedViewModel.getSelected().getValue();
 
         Double productQuantity = requireArguments().getDouble("productQuantity");
-        System.out.println(productQuantity);
-        System.out.println(product.toString());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -59,20 +53,11 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
         builder.setView(content)
                 .setMessage("Are you sure you want to consume this product?")
                 .setPositiveButton("Log Product", (dialog, id) -> {
-                    updateUserNutrientConsumption(productQuantity);
-
+                    //updateUserNutrientConsumption(productQuantity);
+                    Bundle result = new Bundle();
+                    result.putDouble("productQuantity", productQuantity);
+                    getParentFragmentManager().setFragmentResult("PROCESS_PRODUCT_SUCCESS", result);
                     dismiss();
-                    Context context = getActivity();
-                    CharSequence text = "Product logged!";
-                    int duration = Toast.LENGTH_SHORT;
-
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-
-                    if (visionImageProcessor != null) {
-                        visionImageProcessor.restart();
-                    }
                 })
                 .setNegativeButton(R.string.cancel, (dialog, id) -> {
                     // AppUser cancelled the dialog
@@ -81,6 +66,12 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
                     }
                 });
 
+        populateProductNutrientData(content, user, product, productQuantity);
+
+        return builder.create();
+    }
+
+    private void populateProductNutrientData(View content, AppUser user, Product product, double productQuantity) {
         TextView nutriScoreGradeTextView = content.findViewById(R.id.nutriScoreGrade);
         nutriScoreGradeTextView.setText(product.getNutriScoreGrade());
 
@@ -90,7 +81,7 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
         Map<String, Double> maxNutrientDVs = user.getMaximumNutrientDV();
         Map<String, Double> todayNutrientConsumption = user.getTodayNutrientConsumption();
         Map<String, Double> productNutrition = product.getNutriments();
-        Double productBaseQuantity = product.getBaseQuantity();
+        double productBaseQuantity = product.getBaseQuantity();
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
         for (String nutrient: Nutrients.nutrientDefaultDV.keySet()) {
@@ -108,30 +99,6 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
             TextView nutrientIncreaseTextView = content.findViewById(nutrientIncreaseTextViewId);
             nutrientIncreaseTextView.setText(decimalFormat.format(currNutrientPercentage) + "% ->" + decimalFormat.format(newNutrientPercentage) + "%");
         }
-        return builder.create();
-    }
-
-    private void updateUserNutrientConsumption(Double productQuantity) {
-        AppUser user = userSharedViewModel.getSelected().getValue();
-        Product product = productSharedViewModel.getSelected().getValue();
-
-        Map<String, Double> todayNutrientConsumption = user.getTodayNutrientConsumption();
-        Map<String, Double> productNutrients = product.getNutriments();
-        Double productBaseQuantity = product.getBaseQuantity();
-
-        for (String nutrient:todayNutrientConsumption.keySet()) {
-            String productNutrientKey = nutrient + "_value";
-            if (productNutrients.containsKey(productNutrientKey)) {
-                double newConsumption = todayNutrientConsumption.get(nutrient) + productNutrients.get(productNutrientKey) * (productQuantity / productBaseQuantity);
-                todayNutrientConsumption.put(nutrient, newConsumption);
-            }
-        }
-        user.updateTodayNutrientConsumption(todayNutrientConsumption);
-
-        List<String> historyIds = user.getHistoryIds();
-        historyIds.add(product.getId());
-        user.setHistoryIds(historyIds);
-        userSharedViewModel.select(user);
     }
 
     @Override

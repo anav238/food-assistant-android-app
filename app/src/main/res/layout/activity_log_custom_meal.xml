@@ -42,6 +42,7 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="14dp"
             android:gravity="center_vertical"
+            android:onClick="openScanProductActivity"
             android:orientation="horizontal"
             android:visibility="invisible"
             tools:visibility="visible">
@@ -106,6 +107,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/add_generic_food"
+                android:onClick="openLogGenericFoodActivity"
                 android:src="@drawable/ic_log_meal"
                 app:backgroundTint="@android:color/holo_green_light"
                 app:fabSize="mini" />

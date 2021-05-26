@@ -2,6 +2,7 @@ package com.example.food_assistant.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -45,5 +46,15 @@ public class LogCustomMealActivity extends AppCompatActivity {
         layoutFabLog.setVisibility(View.VISIBLE);
         fabAdd.setImageResource(R.drawable.ic_close);
         fabExpanded = true;
+    }
+
+    public void openScanProductActivity(View view) {
+        Intent intent = new Intent(LogCustomMealActivity.this, ScanProductActivity.class);
+        startActivity(intent);
+    }
+
+    public void openLogGenericFoodActivity(View view) {
+        Intent intent = new Intent(LogCustomMealActivity.this, LogGenericFoodActivity.class);
+        startActivity(intent);
     }
 }

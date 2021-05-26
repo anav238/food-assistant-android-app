@@ -6,10 +6,12 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
@@ -21,11 +23,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory;
 
 import com.example.food_assistant.Fragments.LogNewProductFragment;
+import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
+import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
+import com.example.food_assistant.Models.AppUser;
+import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.Utils.Listeners.StartNutritionalTableScanListener;
 import com.example.food_assistant.Utils.MLKit.BarcodeScannerProcessor;
 import com.example.food_assistant.Utils.MLKit.CameraXViewModel;
@@ -44,6 +51,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ScanProductActivity extends AppCompatActivity
         implements OnRequestPermissionsResultCallback, StartNutritionalTableScanListener {
@@ -52,8 +60,14 @@ public class ScanProductActivity extends AppCompatActivity
 
     private static final String BARCODE_SCANNING = "Barcode Scanning";
     private static final String TEXT_RECOGNITION = "Text Recognition";
+    private static final String SINGLE_SCAN_MODE = "Single Scan Mode";
+    private static final String MULTIPLE_SCAN_MODE = "Multiple Scan Mode";
+
     private static final String STATE_SELECTED_MODEL = "selected_model";
+    private static final String STATE_SELECTED_SCAN_MODE = "selected_scan_mode";
+
     private String selectedModel = BARCODE_SCANNING;
+    private String selectedScanMode = MULTIPLE_SCAN_MODE;
 
     private PreviewView previewView;
     private UserSharedViewModel userSharedViewModel;
@@ -78,6 +92,12 @@ public class ScanProductActivity extends AppCompatActivity
         cameraSelector = new CameraSelector.Builder().requireLensFacing(lensFacing).build();
         if (savedInstanceState != null) {
             selectedModel = savedInstanceState.getString(STATE_SELECTED_MODEL, BARCODE_SCANNING);
+            selectedScanMode = savedInstanceState.getString(STATE_SELECTED_SCAN_MODE, MULTIPLE_SCAN_MODE);
+        }
+        else {
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null && bundle.containsKey(STATE_SELECTED_MODEL))
+                selectedScanMode = bundle.getString(STATE_SELECTED_MODEL);
         }
 
         setContentView(R.layout.activity_scan_product);
@@ -99,6 +119,9 @@ public class ScanProductActivity extends AppCompatActivity
             getRuntimePermissions();
         }
 
+        setupFragmentResultListeners();
+
+
         productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
         imageProcessorSharedViewModel = new ViewModelProvider(this).get(ImageProcessorSharedViewModel.class);
@@ -108,8 +131,77 @@ public class ScanProductActivity extends AppCompatActivity
             UserDataUtility.getUserData(user, userSharedViewModel);
             userSharedViewModel.getSelected().observe(this, appUser -> {
                 UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
+                //if (selectedScanMode.equals(SINGLE_SCAN_MODE))
+                  //  finish();
             });
         }
+
+        productSharedViewModel.getSelected().observe(this, product -> {
+            processScannedProduct();
+        });
+    }
+
+    private void setupFragmentResultListeners() {
+        getSupportFragmentManager().setFragmentResultListener("GET_QUANTITY_SUCCESS", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+                double productQuantity = bundle.getDouble("productQuantity");
+                ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
+                Bundle args = new Bundle();
+                args.putDouble("productQuantity", productQuantity);
+                productConsumptionEffectsFragment.setArguments(args);
+                productConsumptionEffectsFragment.show(getSupportFragmentManager(), "test");
+            }
+        });
+
+        getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_SUCCESS", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+                double productQuantity = bundle.getDouble("productQuantity");
+                updateUserNutrientConsumption(productQuantity);
+
+                CharSequence text = "Product logged!";
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+
+                if (imageProcessor != null) {
+                    imageProcessor.restart();
+                }
+            }
+        });
+    }
+
+    private void processScannedProduct() {
+        if (selectedScanMode.equals(MULTIPLE_SCAN_MODE)) {
+            SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            selectProductQuantityFragment.show(fragmentManager, "test");
+        }
+    }
+
+    private void updateUserNutrientConsumption(Double productQuantity) {
+        AppUser user = userSharedViewModel.getSelected().getValue();
+        Product product = productSharedViewModel.getSelected().getValue();
+
+        Map<String, Double> todayNutrientConsumption = user.getTodayNutrientConsumption();
+        Map<String, Double> productNutrients = product.getNutriments();
+        Double productBaseQuantity = product.getBaseQuantity();
+
+        for (String nutrient:todayNutrientConsumption.keySet()) {
+            String productNutrientKey = nutrient + "_value";
+            if (productNutrients.containsKey(productNutrientKey)) {
+                double newConsumption = todayNutrientConsumption.get(nutrient) + productNutrients.get(productNutrientKey) * (productQuantity / productBaseQuantity);
+                todayNutrientConsumption.put(nutrient, newConsumption);
+            }
+        }
+        user.updateTodayNutrientConsumption(todayNutrientConsumption);
+
+        List<String> historyIds = user.getHistoryIds();
+        historyIds.add(product.getId());
+        user.setHistoryIds(historyIds);
+        userSharedViewModel.select(user);
     }
 
     @Override
@@ -176,10 +268,10 @@ public class ScanProductActivity extends AppCompatActivity
                 imageProcessor = new BarcodeScannerProcessor(this);
                 imageProcessorSharedViewModel.select(imageProcessor);
             }
-            else {
+            /*else {
                 Log.i(TAG, "Using on-device Text recognition Processor");
                 imageProcessor = new TextRecognitionProcessor(this);
-            }
+            }*/
         } catch (Exception e) {
             Log.e(TAG, "Can not create image processor: " + BARCODE_SCANNING, e);
             Toast.makeText(

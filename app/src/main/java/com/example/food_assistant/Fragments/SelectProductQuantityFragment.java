@@ -73,7 +73,24 @@ public class SelectProductQuantityFragment extends DialogFragment {
         {
             Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
             positiveButton.setOnClickListener(v -> {
-                ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
+                TextView productQuantityTextView = dialog.findViewById(R.id.product_quantity);
+                String productQuantityString = productQuantityTextView.getText().toString();
+                double productQuantity = -1.0;
+                try {
+                    productQuantity = Double.parseDouble(productQuantityString);
+                } catch (Exception e) {
+                    Log.i("INFO", "INVALID PROD QUANTITY");
+                    productQuantityTextView.setError("Please insert a valid product quantity!");
+                }
+
+                if (productQuantity != -1.0) {
+                    Bundle result = new Bundle();
+                    result.putDouble("productQuantity", productQuantity);
+                    getParentFragmentManager().setFragmentResult("GET_QUANTITY_SUCCESS", result);
+                    dismiss();
+                }
+
+                /*ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
                 Bundle args = new Bundle();
                 TextView productQuantityTextView = dialog.findViewById(R.id.product_quantity);
                 String productQuantityString = productQuantityTextView.getText().toString();
@@ -91,7 +108,7 @@ public class SelectProductQuantityFragment extends DialogFragment {
                     productConsumptionEffectsFragment.setArguments(args);
                     productConsumptionEffectsFragment.show(getParentFragmentManager(), "test");
                     dismiss();
-                }
+                }*/
             });
         }
     }

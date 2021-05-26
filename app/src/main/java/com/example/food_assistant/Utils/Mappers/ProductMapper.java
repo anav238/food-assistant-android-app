@@ -47,7 +47,8 @@ public class ProductMapper {
                 product.setBaseQuantity(productJson.get("product_quantity").getAsDouble());
 
             if (productJson.has("quantity")) {
-                String measurementUnit = productJson.get("quantity").getAsString().split("\\s+")[1];
+                String measurementUnit = productJson.get("quantity").getAsString();
+                measurementUnit = measurementUnit.replaceAll("[\\d.]", "");
                 product.setMeasurementUnit(measurementUnit);
             }
         }
