@@ -1,13 +1,18 @@
 package com.example.food_assistant.Activities;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
+import com.example.food_assistant.Utils.ActivityResultContracts.GetProduct;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class LogCustomMealActivity extends AppCompatActivity {
@@ -16,6 +21,7 @@ public class LogCustomMealActivity extends AppCompatActivity {
     private LinearLayout layoutFabScan;
     private LinearLayout layoutFabLog;
     private FloatingActionButton fabAdd;
+    private ActivityResultLauncher<String> openScanProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +30,20 @@ public class LogCustomMealActivity extends AppCompatActivity {
         layoutFabScan = findViewById(R.id.linearLayout_scan_product);
         layoutFabLog = findViewById(R.id.linearLayout_add_generic_food);
         fabAdd = findViewById(R.id.fab_add);
+
+        openScanProduct = registerForActivityResult(new GetProduct(),
+                new ActivityResultCallback<Product>() {
+                    @Override
+                    public void onActivityResult(Product product) {
+                        // Handle the returned Uri
+                        System.out.println(product);
+
+                        int duration = Toast.LENGTH_SHORT;
+                        Toast toast = Toast.makeText(getApplicationContext(), "Product added!", duration);
+                        toast.show();
+                    }
+                });
+
     }
 
     public void toggleSubMenusFab(View view) {
@@ -49,8 +69,8 @@ public class LogCustomMealActivity extends AppCompatActivity {
     }
 
     public void openScanProductActivity(View view) {
-        Intent intent = new Intent(LogCustomMealActivity.this, ScanProductActivity.class);
-        startActivity(intent);
+        openScanProduct.launch("Single Scan Mode");
+        closeSubMenusFab();
     }
 
     public void openLogGenericFoodActivity(View view) {

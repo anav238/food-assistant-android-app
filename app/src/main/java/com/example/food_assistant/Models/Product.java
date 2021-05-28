@@ -2,9 +2,10 @@ package com.example.food_assistant.Models;
 
 import com.example.food_assistant.Enums.ProductType;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class Product {
+public class Product implements Serializable {
     String id;
     String productName;
     double baseQuantity;

@@ -1,6 +1,8 @@
 package com.example.food_assistant.Activities;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -93,8 +95,8 @@ public class ScanProductActivity extends AppCompatActivity
         }
         else {
             Bundle bundle = getIntent().getExtras();
-            if (bundle != null && bundle.containsKey(STATE_SELECTED_MODEL))
-                selectedScanMode = bundle.getString(STATE_SELECTED_MODEL);
+            if (bundle != null && bundle.containsKey(STATE_SELECTED_SCAN_MODE))
+                selectedScanMode = bundle.getString(STATE_SELECTED_SCAN_MODE);
         }
 
         setContentView(R.layout.activity_scan_product);
@@ -118,7 +120,6 @@ public class ScanProductActivity extends AppCompatActivity
 
         setupFragmentResultListeners();
 
-
         productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
         imageProcessorSharedViewModel = new ViewModelProvider(this).get(ImageProcessorSharedViewModel.class);
@@ -128,8 +129,6 @@ public class ScanProductActivity extends AppCompatActivity
             UserDataUtility.getUserData(user, userSharedViewModel);
             userSharedViewModel.getSelected().observe(this, appUser -> {
                 UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
-                //if (selectedScanMode.equals(SINGLE_SCAN_MODE))
-                  //  finish();
             });
         }
 
@@ -187,10 +186,18 @@ public class ScanProductActivity extends AppCompatActivity
             scanProductNutritionalTableRequestFragment.show(fragmentManager, "test");
         }
         else {
+            System.out.println(selectedScanMode);
             if (selectedScanMode.equals(MULTIPLE_SCAN_MODE)) {
                 SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 selectProductQuantityFragment.show(fragmentManager, "test");
+            }
+            else {
+                System.out.println("test");
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("product", product);
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish();
             }
         }
     }

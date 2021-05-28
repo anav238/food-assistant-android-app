@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openScanProduct(View view) {
         Intent intent = new Intent(MainActivity.this, ScanProductActivity.class);
-        intent.putExtra("loggedUser", userSharedViewModel.getSelected().getValue());
+        //intent.putExtra("loggedUser", userSharedViewModel.getSelected().getValue());
         startActivity(intent);
     }
 

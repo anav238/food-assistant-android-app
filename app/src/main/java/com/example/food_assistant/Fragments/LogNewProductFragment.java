@@ -90,7 +90,6 @@ public class LogNewProductFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_scan_product_nutritional_table_request, container, false);
     }
 
