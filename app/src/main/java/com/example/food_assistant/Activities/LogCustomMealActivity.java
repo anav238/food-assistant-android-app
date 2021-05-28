@@ -1,24 +1,16 @@
 package com.example.food_assistant.Activities;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.food_assistant.Fragments.LogNewProductFragment;
-import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
-import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
-import com.example.food_assistant.Utils.ActivityResultContracts.GetProduct;
+import com.example.food_assistant.Utils.ActivityResultContracts.GetBrandedProduct;
+import com.example.food_assistant.Utils.ActivityResultContracts.GetGenericProduct;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class LogCustomMealActivity extends AppCompatActivity {
@@ -28,6 +20,7 @@ public class LogCustomMealActivity extends AppCompatActivity {
     private LinearLayout layoutFabLog;
     private FloatingActionButton fabAdd;
     private ActivityResultLauncher<String> openScanProduct;
+    private ActivityResultLauncher<String> openLogGenericFood;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +30,23 @@ public class LogCustomMealActivity extends AppCompatActivity {
         layoutFabLog = findViewById(R.id.linearLayout_add_generic_food);
         fabAdd = findViewById(R.id.fab_add);
 
-        openScanProduct = registerForActivityResult(new GetProduct(),
-                new ActivityResultCallback<Product>() {
-                    @Override
-                    public void onActivityResult(Product product) {
-                        System.out.println(product);
-
+        openScanProduct = registerForActivityResult(new GetBrandedProduct(),
+                product -> {
+                    if (product != null) {
                         int duration = Toast.LENGTH_SHORT;
                         Toast toast = Toast.makeText(getApplicationContext(), "Product added!", duration);
                         toast.show();
                     }
                 });
 
+        openLogGenericFood = registerForActivityResult(new GetGenericProduct(),
+                product -> {
+                    if (product != null) {
+                        int duration = Toast.LENGTH_SHORT;
+                        Toast toast = Toast.makeText(getApplicationContext(), "Product added!", duration);
+                        toast.show();
+                    }
+                });
 
     }
 
@@ -79,7 +77,8 @@ public class LogCustomMealActivity extends AppCompatActivity {
     }
 
     public void openLogGenericFoodActivity(View view) {
-        Intent intent = new Intent(LogCustomMealActivity.this, LogGenericFoodActivity.class);
-        startActivity(intent);
+        openLogGenericFood.launch("Single Log Mode");
+        closeSubMenusFab();
     }
+
 }

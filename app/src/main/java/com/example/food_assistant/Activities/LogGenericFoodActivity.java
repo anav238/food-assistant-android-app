@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,7 +24,6 @@ import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
-import com.example.food_assistant.Utils.ViewModels.ImageProcessorSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.ProductListSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
@@ -35,9 +36,13 @@ public class LogGenericFoodActivity extends AppCompatActivity {
 
     private NetworkManager networkManager;
 
+    private static final String SINGLE_LOG_MODE = "Single Log Mode";
+    private static final String MULTIPLE_LOG_MODE = "Multiple Log Mode";
+    private static final String STATE_SELECTED_LOG_MODE = "selected_log_mode";
+    private String selectedLogMode = MULTIPLE_LOG_MODE;
+
     private UserSharedViewModel userSharedViewModel;
     private ProductSharedViewModel productSharedViewModel;
-    private ProductListSharedViewModel productListSharedViewModel;
 
     private RecyclerView foodLookupRecyclerView;
     private GenericFoodLookupAdapter adapter;
@@ -46,6 +51,14 @@ public class LogGenericFoodActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_generic_food);
+        if (savedInstanceState != null) {
+            selectedLogMode = savedInstanceState.getString(STATE_SELECTED_LOG_MODE, MULTIPLE_LOG_MODE);
+        }
+        else {
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null && bundle.containsKey(STATE_SELECTED_LOG_MODE))
+                selectedLogMode = bundle.getString(STATE_SELECTED_LOG_MODE);
+        }
 
         networkManager = NetworkManager.getInstance(this);
 
@@ -64,19 +77,8 @@ public class LogGenericFoodActivity extends AppCompatActivity {
             });
         }
 
-        productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
-        productSharedViewModel.getSelected().observe(this, products -> {
-            SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
-            FragmentManager fragmentManager = this.getSupportFragmentManager();
-            selectProductQuantityFragment.show(fragmentManager, "test");
-        });
-
-        productListSharedViewModel = new ViewModelProvider(this).get(ProductListSharedViewModel.class);
-        productListSharedViewModel.getSelected().observe(this, products -> {
-            Log.i("Product list changed", products.toString());
-            adapter.setLocalDataSet(new ArrayList<>(products));
-            foodLookupRecyclerView.setAdapter(adapter);
-        });
+        setupObservers();
+        setupFragmentResultListeners();
 
         SearchView foodSearchView = findViewById(R.id.searchView_food);
         foodSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -93,7 +95,31 @@ public class LogGenericFoodActivity extends AppCompatActivity {
             }
         });
 
-        setupFragmentResultListeners();
+
+    }
+
+    private void setupObservers() {
+        productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
+        productSharedViewModel.getSelected().observe(this, product -> {
+            if (selectedLogMode.equals(MULTIPLE_LOG_MODE)) {
+                SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
+                FragmentManager fragmentManager = this.getSupportFragmentManager();
+                selectProductQuantityFragment.show(fragmentManager, "test");
+            }
+            else {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("product", product);
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish();
+            }
+        });
+
+        ProductListSharedViewModel productListSharedViewModel = new ViewModelProvider(this).get(ProductListSharedViewModel.class);
+        productListSharedViewModel.getSelected().observe(this, products -> {
+            Log.i("Product list changed", products.toString());
+            adapter.setLocalDataSet(new ArrayList<>(products));
+            foodLookupRecyclerView.setAdapter(adapter);
+        });
     }
 
     private void setupFragmentResultListeners() {

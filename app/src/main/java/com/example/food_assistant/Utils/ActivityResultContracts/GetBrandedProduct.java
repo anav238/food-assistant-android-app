@@ -12,7 +12,7 @@ import com.example.food_assistant.Activities.MainActivity;
 import com.example.food_assistant.Activities.ScanProductActivity;
 import com.example.food_assistant.Models.Product;
 
-public class GetProduct extends ActivityResultContract<String, Product> {
+public class GetBrandedProduct extends ActivityResultContract<String, Product> {
     @NonNull
     @Override
     public Intent createIntent(@NonNull Context context, String scanMode) {

@@ -204,14 +204,12 @@ public class ScanProductActivity extends AppCompatActivity
             scanProductNutritionalTableRequestFragment.show(fragmentManager, "test");
         }
         else {
-            System.out.println(selectedScanMode);
             if (selectedScanMode.equals(MULTIPLE_SCAN_MODE)) {
                 SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 selectProductQuantityFragment.show(fragmentManager, "test");
             }
             else {
-                System.out.println("test");
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("product", product);
                 setResult(Activity.RESULT_OK, resultIntent);
