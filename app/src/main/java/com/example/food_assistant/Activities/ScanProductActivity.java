@@ -150,11 +150,21 @@ public class ScanProductActivity extends AppCompatActivity
             }
         });
 
+        getSupportFragmentManager().setFragmentResultListener("GET_QUANTITY_CANCEL", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+               imageProcessor.restart();
+            }
+        });
+
         getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_SUCCESS", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
                 double productQuantity = bundle.getDouble("productQuantity");
-                updateUserNutrientConsumption(productQuantity);
+                AppUser user = userSharedViewModel.getSelected().getValue();
+                Product product = productSharedViewModel.getSelected().getValue();
+                user.updateUserNutrientConsumption(product, productQuantity);
+                userSharedViewModel.select(user);
 
                 CharSequence text = "Product logged!";
                 int duration = Toast.LENGTH_SHORT;
@@ -167,6 +177,14 @@ public class ScanProductActivity extends AppCompatActivity
                 }
             }
         });
+
+        getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_CANCEL", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+                imageProcessor.restart();
+            }
+        });
+
 
         getSupportFragmentManager().setFragmentResultListener("ADD_NEW_PRODUCT_TO_DB", this, new FragmentResultListener() {
             @Override
@@ -202,28 +220,7 @@ public class ScanProductActivity extends AppCompatActivity
         }
     }
 
-    private void updateUserNutrientConsumption(Double productQuantity) {
-        AppUser user = userSharedViewModel.getSelected().getValue();
-        Product product = productSharedViewModel.getSelected().getValue();
 
-        Map<String, Double> todayNutrientConsumption = user.getTodayNutrientConsumption();
-        Map<String, Double> productNutrients = product.getNutriments();
-        Double productBaseQuantity = product.getBaseQuantity();
-
-        for (String nutrient:todayNutrientConsumption.keySet()) {
-            String productNutrientKey = nutrient + "_value";
-            if (productNutrients.containsKey(productNutrientKey)) {
-                double newConsumption = todayNutrientConsumption.get(nutrient) + productNutrients.get(productNutrientKey) * (productQuantity / productBaseQuantity);
-                todayNutrientConsumption.put(nutrient, newConsumption);
-            }
-        }
-        user.updateTodayNutrientConsumption(todayNutrientConsumption);
-
-        List<String> historyIds = user.getHistoryIds();
-        historyIds.add(product.getId());
-        user.setHistoryIds(historyIds);
-        userSharedViewModel.select(user);
-    }
 
     @Override
     public void onResume() {

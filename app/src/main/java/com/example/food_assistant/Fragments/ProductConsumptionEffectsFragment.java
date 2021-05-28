@@ -39,11 +39,11 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
         // Use the Builder class for convenient dialog construction
         UserSharedViewModel userSharedViewModel = new ViewModelProvider(requireActivity()).get(UserSharedViewModel.class);
         ProductSharedViewModel productSharedViewModel = new ViewModelProvider(requireActivity()).get(ProductSharedViewModel.class);
-        ImageProcessorSharedViewModel imageProcessorSharedViewModel = new ViewModelProvider(requireActivity()).get(ImageProcessorSharedViewModel.class);
+        //ImageProcessorSharedViewModel imageProcessorSharedViewModel = new ViewModelProvider(requireActivity()).get(ImageProcessorSharedViewModel.class);
 
         AppUser user = userSharedViewModel.getSelected().getValue();
         Product product = productSharedViewModel.getSelected().getValue();
-        VisionImageProcessor visionImageProcessor = imageProcessorSharedViewModel.getSelected().getValue();
+        //VisionImageProcessor visionImageProcessor = imageProcessorSharedViewModel.getSelected().getValue();
 
         Double productQuantity = requireArguments().getDouble("productQuantity");
 
@@ -61,9 +61,12 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
                 })
                 .setNegativeButton(R.string.cancel, (dialog, id) -> {
                     // AppUser cancelled the dialog
-                    if (visionImageProcessor != null) {
+                    /*if (visionImageProcessor != null) {
                         visionImageProcessor.restart();
-                    }
+                    }*/
+                    Bundle result = new Bundle();
+                    getParentFragmentManager().setFragmentResult("PROCESS_PRODUCT_CANCEL", result);
+                    dismiss();
                 });
 
         populateProductNutrientData(content, user, product, productQuantity);

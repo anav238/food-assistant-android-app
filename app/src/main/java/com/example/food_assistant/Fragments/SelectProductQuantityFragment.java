@@ -23,20 +23,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class SelectProductQuantityFragment extends DialogFragment {
 
-    private UserSharedViewModel userSharedViewModel;
-    private ProductSharedViewModel productSharedViewModel;
-    private ImageProcessorSharedViewModel imageProcessorSharedViewModel;
-
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the Builder class for convenient dialog construction
-        userSharedViewModel = new ViewModelProvider(requireActivity()).get(UserSharedViewModel.class);
-        productSharedViewModel = new ViewModelProvider(requireActivity()).get(ProductSharedViewModel.class);
-        imageProcessorSharedViewModel = new ViewModelProvider(requireActivity()).get(ImageProcessorSharedViewModel.class);
-
-        VisionImageProcessor visionImageProcessor = imageProcessorSharedViewModel.getSelected().getValue();
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
@@ -49,7 +38,10 @@ public class SelectProductQuantityFragment extends DialogFragment {
                 })
                 .setNegativeButton(R.string.cancel, (dialog, id) -> {
                     // AppUser cancelled the dialog
-                    visionImageProcessor.restart();
+                   // visionImageProcessor.restart();
+                    Bundle result = new Bundle();
+                    getParentFragmentManager().setFragmentResult("GET_QUANTITY_CANCEL", result);
+                    dismiss();
                 });
 
         AlertDialog dialog = builder.create();

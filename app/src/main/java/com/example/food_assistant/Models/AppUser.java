@@ -97,7 +97,25 @@ public class AppUser implements Parcelable {
             todayNutrientConsumption.put(nutrient, 0.0);
         nutrientConsumptionHistory.put(dateString, todayNutrientConsumption);
         return todayNutrientConsumption;
+    }
 
+    public void updateUserNutrientConsumption(Product product, Double productQuantity) {
+        Map<String, Double> todayNutrientConsumption = this.getTodayNutrientConsumption();
+        Map<String, Double> productNutrients = product.getNutriments();
+        Double productBaseQuantity = product.getBaseQuantity();
+
+        for (String nutrient:todayNutrientConsumption.keySet()) {
+            String productNutrientKey = nutrient + "_value";
+            if (productNutrients.containsKey(productNutrientKey)) {
+                double newConsumption = todayNutrientConsumption.get(nutrient) + productNutrients.get(productNutrientKey) * (productQuantity / productBaseQuantity);
+                todayNutrientConsumption.put(nutrient, newConsumption);
+            }
+        }
+        this.updateTodayNutrientConsumption(todayNutrientConsumption);
+
+        List<String> historyIds = this.getHistoryIds();
+        historyIds.add(product.getId());
+        this.setHistoryIds(historyIds);
     }
 
     public void updateTodayNutrientConsumption(Map<String, Double> newNutrientConsumption) {

@@ -2,14 +2,20 @@ package com.example.food_assistant.Activities;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.food_assistant.Fragments.LogNewProductFragment;
+import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.ActivityResultContracts.GetProduct;
@@ -35,7 +41,6 @@ public class LogCustomMealActivity extends AppCompatActivity {
                 new ActivityResultCallback<Product>() {
                     @Override
                     public void onActivityResult(Product product) {
-                        // Handle the returned Uri
                         System.out.println(product);
 
                         int duration = Toast.LENGTH_SHORT;
@@ -43,6 +48,7 @@ public class LogCustomMealActivity extends AppCompatActivity {
                         toast.show();
                     }
                 });
+
 
     }
 
@@ -60,7 +66,6 @@ public class LogCustomMealActivity extends AppCompatActivity {
         fabExpanded = false;
     }
 
-    //Opens FAB submenus
     private void openSubMenusFab(){
         layoutFabScan.setVisibility(View.VISIBLE);
         layoutFabLog.setVisibility(View.VISIBLE);

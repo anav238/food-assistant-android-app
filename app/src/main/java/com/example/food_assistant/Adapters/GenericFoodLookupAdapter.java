@@ -34,9 +34,7 @@ public class GenericFoodLookupAdapter extends RecyclerView.Adapter<GenericFoodLo
             textView = view.findViewById(R.id.textView);
             textView.setOnClickListener(v -> {
                 productSharedViewModel.select(product);
-                SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
-                FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                selectProductQuantityFragment.show(fragmentManager, "test");
+
             });
         }
 
