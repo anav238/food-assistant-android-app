@@ -54,7 +54,7 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
     public CustomMealIngredientAdapter(List<Product> dataSet, MealIngredientListener mealIngredientListener) {
         items = dataSet;
         this.mealIngredientListener = mealIngredientListener;
-        setHasStableIds(true);
+        //setHasStableIds(true);
     }
 
     public void setItems(List<Product> items) {
@@ -73,7 +73,7 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
 
     @Override
     public void onBindViewHolder(CustomMealIngredientAdapter.ViewHolder viewHolder, final int position) {
-        viewHolder.setIsRecyclable(false);
+        //viewHolder.setIsRecyclable(false);
         viewHolder.setProduct(items.get(position));
     }
 
@@ -98,7 +98,11 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
     }
 
     public void removeItem(Product item) {
-        items.remove(item);
-        notifyDataSetChanged();
+        int position = items.indexOf(item);
+        System.out.println(position);
+        items.remove(position);
+        //notifyDataSetChanged();
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, 1);
     }
 }
