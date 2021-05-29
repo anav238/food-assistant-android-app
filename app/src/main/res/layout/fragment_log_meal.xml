@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="10dp"
-    tools:context=".Fragments.LogMealFragment"
-    android:orientation="vertical">
+    tools:context=".Fragments.LogMealFragment">
 
     <TextView
         android:id="@+id/textView"
@@ -25,8 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/scan_product_name"
-        android:onClick="openScanProduct"/>
+        android:onClick="openScanProduct"
+        android:text="@string/scan_product_name" />
 
     <Button
         android:id="@+id/button_log_generic_food"
@@ -53,7 +53,8 @@
         android:layout_marginBottom="2dp"
         android:fontFamily="sans-serif-medium"
         android:onClick="openRecipeAnalysisActivity"
-        android:text="@string/analyse_recipe_name" />
+        android:text="@string/analyse_recipe_name"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/manual_add_nutrients_button"
@@ -61,7 +62,19 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/manually_add_nutrients" />
+        android:text="@string/manually_add_nutrients"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:text="@string/go_back_in_time"
+        android:textSize="18sp"
+        android:textStyle="italic" />
 
     <Button
         android:id="@+id/favorite_meals_button"
@@ -69,8 +82,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/favorite_meals"
-        android:onClick="openFavoritesActivity"/>
+        android:onClick="openFavoritesActivity"
+        android:text="@string/favorite_meals" />
 
     <Button
         android:id="@+id/previous_meals_button"
@@ -78,7 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/previous_meals"
-        android:onClick="openPreviousMealsActivity"/>
+        android:onClick="openPreviousMealsActivity"
+        android:text="@string/previous_meals" />
 
 </LinearLayout>

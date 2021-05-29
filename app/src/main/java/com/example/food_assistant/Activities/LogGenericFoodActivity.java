@@ -62,12 +62,6 @@ public class LogGenericFoodActivity extends AppCompatActivity {
 
         networkManager = NetworkManager.getInstance(this);
 
-        foodLookupRecyclerView = findViewById(R.id.recyclerView_food_lookup);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        foodLookupRecyclerView.setLayoutManager(layoutManager);
-        adapter = new GenericFoodLookupAdapter(new ArrayList<>(), this);
-        foodLookupRecyclerView.setAdapter(adapter);
-
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -77,9 +71,13 @@ public class LogGenericFoodActivity extends AppCompatActivity {
             });
         }
 
+        setupRecyclerView();
         setupObservers();
         setupFragmentResultListeners();
+        setupSearchViewListeners();
+    }
 
+    private void setupSearchViewListeners() {
         SearchView foodSearchView = findViewById(R.id.searchView_food);
         foodSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -94,8 +92,14 @@ public class LogGenericFoodActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
 
-
+    private void setupRecyclerView() {
+        foodLookupRecyclerView = findViewById(R.id.recyclerView_food_lookup);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        foodLookupRecyclerView.setLayoutManager(layoutManager);
+        adapter = new GenericFoodLookupAdapter(new ArrayList<>(), this);
+        foodLookupRecyclerView.setAdapter(adapter);
     }
 
     private void setupObservers() {
