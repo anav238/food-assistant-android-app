@@ -1,8 +1,10 @@
 package com.example.food_assistant.Adapters;
 
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,30 +18,42 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMealIngredientAdapter.ViewHolder> {
+
+    public interface MealIngredientListener {
+        void onPressEditButton(Product product);
+        void onPressRemoveButton(Product product);
+    }
+
+    private final MealIngredientListener mealIngredientListener;
     private List<Product> items;
-    private final AppCompatActivity activity;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
         private Product product;
 
-        public ViewHolder(View view, AppCompatActivity activity) {
+        public ViewHolder(View view, MealIngredientListener mealIngredientListener) {
             super(view);
             textView = view.findViewById(R.id.textView_ingredient);
-        }
-
-        public TextView getTextView() {
-            return textView;
+            ImageButton editButton = view.findViewById(R.id.imageButton_edit);
+            editButton.setOnClickListener(v -> mealIngredientListener.onPressEditButton(product));
+            ImageButton removeButton = view.findViewById(R.id.imageButton_remove);
+            removeButton.setOnClickListener(v -> mealIngredientListener.onPressRemoveButton(product));
         }
 
         public void setProduct(Product product) {
             this.product = product;
+            updateTextView();
         }
+
+        private void updateTextView() {
+            textView.setText(product.getProductName() + " - " + product.getBaseQuantity() + product.getMeasurementUnit());
+        }
+
     }
 
-    public CustomMealIngredientAdapter(List<Product> dataSet, AppCompatActivity activity) {
+    public CustomMealIngredientAdapter(List<Product> dataSet, MealIngredientListener mealIngredientListener) {
         items = dataSet;
-        this.activity = activity;
+        this.mealIngredientListener = mealIngredientListener;
         setHasStableIds(true);
     }
 
@@ -54,13 +68,12 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.list_item_custom_meal_ingredient, viewGroup, false);
 
-        return new CustomMealIngredientAdapter.ViewHolder(view, activity);
+        return new CustomMealIngredientAdapter.ViewHolder(view, mealIngredientListener);
     }
 
     @Override
     public void onBindViewHolder(CustomMealIngredientAdapter.ViewHolder viewHolder, final int position) {
         viewHolder.setIsRecyclable(false);
-        viewHolder.getTextView().setText(items.get(position).getProductName());
         viewHolder.setProduct(items.get(position));
     }
 
@@ -81,6 +94,11 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
 
     public void addItem(Product item) {
         items.add(item);
+        notifyDataSetChanged();
+    }
+
+    public void removeItem(Product item) {
+        items.remove(item);
         notifyDataSetChanged();
     }
 }

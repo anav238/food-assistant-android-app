@@ -1,7 +1,11 @@
 package com.example.food_assistant.Activities;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,15 +18,18 @@ import android.widget.Toast;
 
 import com.example.food_assistant.Adapters.CustomMealIngredientAdapter;
 import com.example.food_assistant.Adapters.GenericFoodLookupAdapter;
+import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
+import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.ActivityResultContracts.GetBrandedProduct;
 import com.example.food_assistant.Utils.ActivityResultContracts.GetGenericProduct;
+import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class LogCustomMealActivity extends AppCompatActivity {
+public class LogCustomMealActivity extends AppCompatActivity implements CustomMealIngredientAdapter.MealIngredientListener {
 
     private boolean fabExpanded = false;
     private LinearLayout layoutFabScan;
@@ -34,6 +41,8 @@ public class LogCustomMealActivity extends AppCompatActivity {
     private RecyclerView mealIngredientsRecyclerView;
     private CustomMealIngredientAdapter adapter;
 
+    private ProductSharedViewModel productSharedViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +51,19 @@ public class LogCustomMealActivity extends AppCompatActivity {
         layoutFabLog = findViewById(R.id.linearLayout_add_generic_food);
         fabAdd = findViewById(R.id.fab_add);
 
+        productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
+
         setupActivityResultLaunchers();
         setupMealIngredientsRecyclerView();
+        setupFragmentResultListeners();
+    }
+
+    private void setupFragmentResultListeners() {
+        getSupportFragmentManager().setFragmentResultListener("GET_QUANTITY_SUCCESS", this, (requestKey, bundle) -> {
+            double productQuantity = bundle.getDouble("productQuantity");
+            Product product = productSharedViewModel.getSelected().getValue();
+            product.setBaseQuantity(productQuantity);
+        });
     }
 
     private void setupMealIngredientsRecyclerView() {
@@ -72,6 +92,7 @@ public class LogCustomMealActivity extends AppCompatActivity {
         if (adapter.getItemCount() == 0) {
             TextView noIngredientsTextView = findViewById(R.id.textView_no_ingredients);
             noIngredientsTextView.setVisibility(View.GONE);
+            mealIngredientsRecyclerView.setVisibility(View.VISIBLE);
         }
         adapter.addItem(product);
     }
@@ -107,4 +128,21 @@ public class LogCustomMealActivity extends AppCompatActivity {
         closeSubMenusFab();
     }
 
+    @Override
+    public void onPressEditButton(Product product) {
+        productSharedViewModel.select(product);
+        SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
+        FragmentManager fragmentManager = this.getSupportFragmentManager();
+        selectProductQuantityFragment.show(fragmentManager, "test");
+    }
+
+    @Override
+    public void onPressRemoveButton(Product product) {
+        adapter.removeItem(product);
+        if (adapter.getItemCount() == 0) {
+            TextView noIngredientsTextView = findViewById(R.id.textView_no_ingredients);
+            noIngredientsTextView.setVisibility(View.VISIBLE);
+            mealIngredientsRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
 }
