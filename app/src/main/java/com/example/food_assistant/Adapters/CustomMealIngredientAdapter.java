@@ -6,12 +6,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
-import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +52,7 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
     @Override
     public CustomMealIngredientAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.custom_meal_ingredient_list_item, viewGroup, false);
+                .inflate(R.layout.list_item_custom_meal_ingredient, viewGroup, false);
 
         return new CustomMealIngredientAdapter.ViewHolder(view, activity);
     }

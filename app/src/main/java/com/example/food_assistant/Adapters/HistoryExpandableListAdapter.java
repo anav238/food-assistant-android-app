@@ -55,7 +55,7 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
         //if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.list_item, null);
+            convertView = layoutInflater.inflate(R.layout.list_item_nutrient_intake, null);
 
             Map<String, Double> maxNutrientDVs = user.getMaximumNutrientDV();
             Map<String, Double> daysNutrientConsumption = expandableListDetail.get(expandableListTitle.get(listPosition));

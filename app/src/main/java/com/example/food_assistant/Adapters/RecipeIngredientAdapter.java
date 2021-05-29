@@ -7,18 +7,12 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
-import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.Models.RecipeIngredient;
 import com.example.food_assistant.R;
-import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 
 import java.util.List;
 
@@ -72,7 +66,7 @@ public class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredie
     public RecipeIngredientAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.recipe_ingredient_list_item, viewGroup, false);
+                .inflate(R.layout.list_item_recipe_ingredient, viewGroup, false);
 
         return new RecipeIngredientAdapter.ViewHolder(view, activity);
     }

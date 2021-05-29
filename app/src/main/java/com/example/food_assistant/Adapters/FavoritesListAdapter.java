@@ -22,7 +22,7 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdap
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.favorites_list_item, viewGroup, false);
+                .inflate(R.layout.list_item_favorites, viewGroup, false);
 
         return new ViewHolder(view);
     }

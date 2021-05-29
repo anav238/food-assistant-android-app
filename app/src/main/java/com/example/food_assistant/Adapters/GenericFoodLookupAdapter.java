@@ -5,16 +5,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.example.food_assistant.R;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.food_assistant.Models.Product;
 import java.util.List;
-import com.example.food_assistant.R;
+
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 
 public class GenericFoodLookupAdapter extends RecyclerView.Adapter<GenericFoodLookupAdapter.ViewHolder> {
@@ -62,7 +60,7 @@ public class GenericFoodLookupAdapter extends RecyclerView.Adapter<GenericFoodLo
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.food_lookup_list_item, viewGroup, false);
+                .inflate(R.layout.list_item_food_lookup, viewGroup, false);
 
         return new ViewHolder(view, activity);
     }
