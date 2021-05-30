@@ -3,6 +3,8 @@ package com.example.food_assistant.Activities;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
@@ -12,22 +14,32 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.opengl.Visibility;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.food_assistant.Adapters.CustomMealIngredientAdapter;
 import com.example.food_assistant.Adapters.GenericFoodLookupAdapter;
+import com.example.food_assistant.Fragments.NutrientIntakeFragment;
 import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
+import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.ActivityResultContracts.GetBrandedProduct;
 import com.example.food_assistant.Utils.ActivityResultContracts.GetGenericProduct;
+import com.example.food_assistant.Utils.Constants.Nutrients;
+import com.example.food_assistant.Utils.Firebase.UserDataUtility;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
+import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LogCustomMealActivity extends AppCompatActivity implements CustomMealIngredientAdapter.MealIngredientListener {
 
@@ -41,7 +53,9 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
     private RecyclerView mealIngredientsRecyclerView;
     private CustomMealIngredientAdapter adapter;
 
+    private UserSharedViewModel userSharedViewModel;
     private ProductSharedViewModel productSharedViewModel;
+    private int currentItemAdapterPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +66,14 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
         fabAdd = findViewById(R.id.fab_add);
 
         productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
+        userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            UserDataUtility.getUserData(user, userSharedViewModel);
+            userSharedViewModel.getSelected().observe(this, appUser -> {
+                UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
+            });
+        }
 
         setupActivityResultLaunchers();
         setupMealIngredientsRecyclerView();
@@ -61,8 +83,8 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
     private void setupFragmentResultListeners() {
         getSupportFragmentManager().setFragmentResultListener("GET_QUANTITY_SUCCESS", this, (requestKey, bundle) -> {
             double productQuantity = bundle.getDouble("productQuantity");
-            Product product = productSharedViewModel.getSelected().getValue();
-            product.setBaseQuantity(productQuantity);
+            adapter.editItemQuantity(currentItemAdapterPosition, productQuantity);
+            updateNutritionalValuesFragment();
         });
     }
 
@@ -85,6 +107,8 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
     private void processAddedProduct(Product product) {
         if (product == null)
             return;
+
+        product.setBaseQuantity(0.0);
 
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(getApplicationContext(), "Product added!", duration);
@@ -129,20 +153,82 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
     }
 
     @Override
-    public void onPressEditButton(Product product) {
-        productSharedViewModel.select(product);
+    public void onPressEditButton(int productAdapterPosition) {
+        productSharedViewModel.select(adapter.itemAt(productAdapterPosition));
+        currentItemAdapterPosition = productAdapterPosition;
         SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
         FragmentManager fragmentManager = this.getSupportFragmentManager();
         selectProductQuantityFragment.show(fragmentManager, "test");
     }
 
     @Override
-    public void onPressRemoveButton(Product product) {
-        adapter.removeItem(product);
+    public void onPressRemoveButton(int productAdapterPosition) {
+        adapter.removeItem(productAdapterPosition);
+        updateNutritionalValuesFragment();
         if (adapter.getItemCount() == 0) {
             TextView noIngredientsTextView = findViewById(R.id.textView_no_ingredients);
             noIngredientsTextView.setVisibility(View.VISIBLE);
-            mealIngredientsRecyclerView.setVisibility(View.VISIBLE);
+            mealIngredientsRecyclerView.setVisibility(View.GONE);
         }
+    }
+
+    public void toggleShowNutritionalValues(View view) {
+        CheckBox showNutritionalValuesCheckbox = findViewById(R.id.checkBox_show_nutritional_values);
+        FragmentContainerView nutritionalValuesFragment = findViewById(R.id.fragment_nutritional_values);
+
+        if (!showNutritionalValuesCheckbox.isChecked())
+            nutritionalValuesFragment.setVisibility(View.GONE);
+        else {
+            nutritionalValuesFragment.setVisibility(View.VISIBLE);
+            updateNutritionalValuesFragment();
+        }
+    }
+
+    private void updateNutritionalValuesFragment() {
+        AppUser currentUser = userSharedViewModel.getSelected().getValue();
+        if (currentUser == null)
+            return;
+
+        Map<String, Double> maxNutrientDVs = currentUser.getMaximumNutrientDV();
+        Map<String, Double> mealNutritionalValues = computeMealNutritionalValues();
+        Bundle bundle = new Bundle();
+        bundle.putStringArray("nutrients", maxNutrientDVs.keySet().toArray(new String[maxNutrientDVs.keySet().size()]));
+        for (String nutrient : maxNutrientDVs.keySet()) {
+            int nutrientPercentage = (int) (mealNutritionalValues.get(nutrient) * 100 / maxNutrientDVs.get(nutrient));
+            bundle.putInt(nutrient, nutrientPercentage);
+        }
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag("todayNutrientIntake");
+
+        if (fragment == null) {
+            fragmentManager.beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.fragment_nutritional_values, NutrientIntakeFragment.class, bundle, "todayNutrientIntake")
+                    .commit();
+        } else
+            fragmentManager.beginTransaction().replace(R.id.fragment_nutritional_values, NutrientIntakeFragment.class, bundle, "todayNutrientIntake").commit();
+    }
+
+    private Map<String, Double> computeMealNutritionalValues() {
+        Map<String, Double> mealNutritionalValues = new HashMap<>();
+        for (String nutrient:Nutrients.nutrientDefaultDV.keySet())
+            mealNutritionalValues.put(nutrient, 0.0);
+
+        for (Product product:adapter.getItems()) {
+            Map<String, Double> currentProductNutrients = product.getNutriments();
+            System.out.println(currentProductNutrients);
+            for (String nutrient:currentProductNutrients.keySet()) {
+                String nutrientKey = nutrient.replace("_value", "");
+                double currentNutrientValue = 0.0;
+                if (mealNutritionalValues.containsKey(nutrient))
+                    currentNutrientValue = mealNutritionalValues.get(nutrientKey);
+
+                mealNutritionalValues.put(nutrientKey, currentNutrientValue + currentProductNutrients.get(nutrient) * product.getBaseQuantity() / 100.0);
+                System.out.println(product.getBaseQuantity());
+                System.out.println(currentProductNutrients.get(nutrient));
+            }
+        }
+        return mealNutritionalValues;
     }
 }

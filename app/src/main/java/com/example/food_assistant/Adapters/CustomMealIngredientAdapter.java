@@ -20,8 +20,8 @@ import java.util.List;
 public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMealIngredientAdapter.ViewHolder> {
 
     public interface MealIngredientListener {
-        void onPressEditButton(Product product);
-        void onPressRemoveButton(Product product);
+        void onPressEditButton(int productAdapterPosition);
+        void onPressRemoveButton(int productAdapterPosition);
     }
 
     private final MealIngredientListener mealIngredientListener;
@@ -35,9 +35,9 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
             super(view);
             textView = view.findViewById(R.id.textView_ingredient);
             ImageButton editButton = view.findViewById(R.id.imageButton_edit);
-            editButton.setOnClickListener(v -> mealIngredientListener.onPressEditButton(product));
+            editButton.setOnClickListener(v -> mealIngredientListener.onPressEditButton(getAdapterPosition()));
             ImageButton removeButton = view.findViewById(R.id.imageButton_remove);
-            removeButton.setOnClickListener(v -> mealIngredientListener.onPressRemoveButton(product));
+            removeButton.setOnClickListener(v -> mealIngredientListener.onPressRemoveButton(getAdapterPosition()));
         }
 
         public void setProduct(Product product) {
@@ -54,13 +54,8 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
     public CustomMealIngredientAdapter(List<Product> dataSet, MealIngredientListener mealIngredientListener) {
         items = dataSet;
         this.mealIngredientListener = mealIngredientListener;
-        //setHasStableIds(true);
     }
 
-    public void setItems(List<Product> items) {
-        this.items = items;
-        notifyDataSetChanged();
-    }
 
     @NotNull
     @Override
@@ -75,6 +70,10 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
     public void onBindViewHolder(CustomMealIngredientAdapter.ViewHolder viewHolder, final int position) {
         //viewHolder.setIsRecyclable(false);
         viewHolder.setProduct(items.get(position));
+    }
+
+    public List<Product> getItems() {
+        return items;
     }
 
     @Override
@@ -97,12 +96,18 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
         notifyDataSetChanged();
     }
 
-    public void removeItem(Product item) {
-        int position = items.indexOf(item);
-        System.out.println(position);
+    public void removeItem(int position) {
         items.remove(position);
-        //notifyDataSetChanged();
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, 1);
+    }
+
+    public Product itemAt(int position) {
+        return items.get(position);
+    }
+
+    public void editItemQuantity(int itemPosition, double newQuantity) {
+        items.get(itemPosition).setBaseQuantity(newQuantity);
+        notifyItemChanged(itemPosition);
     }
 }

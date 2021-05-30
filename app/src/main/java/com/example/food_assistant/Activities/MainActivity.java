@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         List<AuthUI.IdpConfig> providers = Collections.singletonList(
                 new AuthUI.IdpConfig.EmailBuilder().build());
 
-        // Create and launch sign-in intent
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             startActivityForResult(
