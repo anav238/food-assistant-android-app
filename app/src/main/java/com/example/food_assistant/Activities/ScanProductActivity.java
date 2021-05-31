@@ -10,7 +10,6 @@ import android.util.Log;
 import android.util.Size;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -51,7 +50,6 @@ import com.google.mlkit.common.MlKitException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -152,11 +150,8 @@ public class ScanProductActivity extends AppCompatActivity
                 Map<String, Double> initialNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(initialNutrientValues, currentUser);
                 Map<String, Double> productNutrientValues = currentProduct.getNutriments();
 
-                Map<String, Double> totalNutrientValues = NutrientCalculator.computeNutritionValuesSum(initialNutrientValues, productNutrientValues);
+                Map<String, Double> totalNutrientValues = NutrientCalculator.addProductNutritionToUserDailyNutrition(initialNutrientValues, productNutrientValues, productQuantity);
                 Map<String, Double> totalNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(totalNutrientValues, currentUser);
-
-                System.out.println(totalNutrientValues);
-                System.out.println(totalNutrientPercentages);
 
                 Bundle newFragmentBundle = new Bundle();
                 newFragmentBundle.putDouble("productQuantity", productQuantity);

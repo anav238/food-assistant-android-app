@@ -12,19 +12,19 @@ import java.util.Map;
 
 public class NutrientCalculator {
 
-    public static Map<String, Double> computeNutritionValuesSum(Map<String, Double> firstNutritionTable, Map<String, Double> secondNutritionTable) {
+    public static Map<String, Double> addProductNutritionToUserDailyNutrition(Map<String, Double> userNutrition, Map<String, Double> productNutrition, double productQuantity) {
         Map<String, Double> nutritionSum = new HashMap<>();
 
-        for (String nutrient:firstNutritionTable.keySet()) {
-            double totalNutrientValue = firstNutritionTable.get(nutrient);
-            if (secondNutritionTable.containsKey(nutrient))
-                totalNutrientValue += secondNutritionTable.get(nutrient);
+        for (String nutrient:userNutrition.keySet()) {
+            double totalNutrientValue = userNutrition.get(nutrient);
+            if (productNutrition.containsKey(nutrient))
+                totalNutrientValue += productNutrition.get(nutrient) * productQuantity / 100.0;
             nutritionSum.put(nutrient, totalNutrientValue);
         }
 
-        for (String nutrient:secondNutritionTable.keySet()) {
-            if (!firstNutritionTable.containsKey(nutrient))
-                nutritionSum.put(nutrient, secondNutritionTable.get(nutrient));
+        for (String nutrient:productNutrition.keySet()) {
+            if (!userNutrition.containsKey(nutrient))
+                nutritionSum.put(nutrient, productNutrition.get(nutrient) * productQuantity / 100);
         }
 
         return nutritionSum;

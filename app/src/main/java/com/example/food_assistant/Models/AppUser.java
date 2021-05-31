@@ -105,9 +105,8 @@ public class AppUser implements Parcelable {
         Double productBaseQuantity = product.getBaseQuantity();
 
         for (String nutrient:todayNutrientConsumption.keySet()) {
-            String productNutrientKey = nutrient + "_value";
-            if (productNutrients.containsKey(productNutrientKey)) {
-                double newConsumption = todayNutrientConsumption.get(nutrient) + productNutrients.get(productNutrientKey) * (productQuantity / productBaseQuantity);
+            if (productNutrients.containsKey(nutrient)) {
+                double newConsumption = todayNutrientConsumption.get(nutrient) + productNutrients.get(nutrient) * (productQuantity / productBaseQuantity);
                 todayNutrientConsumption.put(nutrient, newConsumption);
             }
         }
