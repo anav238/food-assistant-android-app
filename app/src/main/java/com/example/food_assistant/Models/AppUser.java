@@ -3,6 +3,7 @@ package com.example.food_assistant.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.food_assistant.Utils.Nutrition.NutrientCalculator;
 import com.example.food_assistant.Utils.Nutrition.Nutrients;
 
 import java.text.SimpleDateFormat;
@@ -99,7 +100,7 @@ public class AppUser implements Parcelable {
         return todayNutrientConsumption;
     }
 
-    public void updateUserNutrientConsumption(Product product, Double productQuantity) {
+    public void updateUserNutrientConsumptionWithProduct(Product product, Double productQuantity) {
         Map<String, Double> todayNutrientConsumption = this.getTodayNutrientConsumption();
         Map<String, Double> productNutrients = product.getNutriments();
         Double productBaseQuantity = product.getBaseQuantity();
@@ -115,6 +116,12 @@ public class AppUser implements Parcelable {
         List<String> historyIds = this.getHistoryIds();
         historyIds.add(product.getId());
         this.setHistoryIds(historyIds);
+    }
+
+    public void updateUserNutrientConsumptionWithMeal(Meal meal, Double mealQuantity) {
+        Map<String, Double> todayNutrientConsumption = this.getTodayNutrientConsumption();
+        todayNutrientConsumption = NutrientCalculator.addMealNutritionToUserDailyNutrition(todayNutrientConsumption, meal, mealQuantity);
+        this.updateTodayNutrientConsumption(todayNutrientConsumption);
     }
 
     public void updateTodayNutrientConsumption(Map<String, Double> newNutrientConsumption) {

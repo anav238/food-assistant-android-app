@@ -18,9 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ScanProductNutritionalTableRequestFragment extends DialogFragment {
 
-    public ScanProductNutritionalTableRequestFragment() {
-        // Required empty public constructor
-    }
+    public ScanProductNutritionalTableRequestFragment() { }
 
     @NotNull
     @Override
@@ -36,11 +34,12 @@ public class ScanProductNutritionalTableRequestFragment extends DialogFragment {
                 .setMessage(R.string.scan_product_nutritional_table_request)
                 .setPositiveButton("Yes", (dialog, id) -> {
                     Bundle result = new Bundle();
-                    getParentFragmentManager().setFragmentResult("ADD_NEW_PRODUCT_TO_DB", result);
+                    getParentFragmentManager().setFragmentResult("ADD_NEW_PRODUCT_TO_DB_SUCCESS", result);
                 })
                 .setNegativeButton("No", (dialog, id) -> {
-                    // AppUser cancelled the dialog
-                    visionImageProcessor.restart();
+                    Bundle result = new Bundle();
+                    getParentFragmentManager().setFragmentResult("ADD_NEW_PRODUCT_TO_DB_CANCEL", result);
+                    dismiss();
                 });
 
         AlertDialog dialog = builder.create();

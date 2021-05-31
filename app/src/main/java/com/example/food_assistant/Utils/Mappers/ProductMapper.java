@@ -47,8 +47,10 @@ public class ProductMapper {
             if (productJson.has("nutrient_levels"))
                 product.setNutrientLevels(gson.fromJson(productJson.get("nutrient_levels").getAsJsonObject(), HashMap.class));
 
-            if (productJson.has("product_quantity"))
-                product.setBaseQuantity(productJson.get("product_quantity").getAsDouble());
+            //if (productJson.has("product_quantity"))
+                //product.setBaseQuantity(productJson.get("product_quantity").getAsDouble());
+
+            product.setBaseQuantity(100.0);
 
             if (productJson.has("quantity")) {
                 String measurementUnit = productJson.get("quantity").getAsString();

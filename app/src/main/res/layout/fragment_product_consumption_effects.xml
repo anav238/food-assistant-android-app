@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elegantTextHeight="true"
-        android:text="This product's nutritional scores:"
+        android:text="Nutritional scores:"
         android:textSize="18sp" />
 
     <LinearLayout
@@ -58,7 +58,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"
         android:elegantTextHeight="true"
-        android:text="By consuming this product, your intake of nutrients will increase like this:"
+        android:text="By consuming this, your intake of nutrients will increase like this:"
         android:textSize="18sp" />
 
     <TableLayout

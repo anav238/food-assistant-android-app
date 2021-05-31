@@ -160,7 +160,7 @@ public class LogGenericFoodActivity extends AppCompatActivity {
             double productQuantity = bundle.getDouble("productQuantity");
             AppUser user = userSharedViewModel.getSelected().getValue();
             Product product = productSharedViewModel.getSelected().getValue();
-            user.updateUserNutrientConsumption(product, productQuantity);
+            user.updateUserNutrientConsumptionWithProduct(product, productQuantity);
             userSharedViewModel.select(user);
 
             CharSequence text = "Product logged!";

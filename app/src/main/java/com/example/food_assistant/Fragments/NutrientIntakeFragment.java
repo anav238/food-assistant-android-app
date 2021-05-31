@@ -15,28 +15,9 @@ import android.widget.TextView;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.Nutrition.Nutrients;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class NutrientIntakeFragment extends Fragment {
 
-    private static List<String> nutrients;
-    private static List<String> values;
-
-    public NutrientIntakeFragment() {
-        // Required empty public constructor
-    }
-
-    public static NutrientIntakeFragment newInstance(ArrayList<String> nutrients, ArrayList<Integer> values) {
-        NutrientIntakeFragment fragment = new NutrientIntakeFragment();
-        Bundle args = new Bundle();
-
-        args.putStringArrayList("nutrients", nutrients);
-        args.putIntegerArrayList("values", values);
-        fragment.setArguments(args);
-
-        return fragment;
-    }
+    public NutrientIntakeFragment() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +32,7 @@ public class NutrientIntakeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_nutrient_intake, container, false);
         for (String nutrient:nutrients) {
             int nutrientPercentage = requireArguments().getInt(nutrient);
+            System.out.println(nutrientPercentage);
             String progressBarIdString = "progressBar_" + nutrient.replace("-", "_");
             Resources res = getResources();
             int progressBarId = res.getIdentifier(progressBarIdString, "id", this.getActivity().getPackageName());
@@ -81,7 +63,7 @@ public class NutrientIntakeFragment extends Fragment {
             String textViewIdString = "textView_" + nutrient.replace("-", "_") + "_percentage";
             int textViewId = res.getIdentifier(textViewIdString, "id", this.getActivity().getPackageName());
             TextView nutrientTextView = view.findViewById(textViewId);
-            nutrientTextView.setText(String.valueOf(nutrientPercentage) + "%");
+            nutrientTextView.setText(nutrientPercentage + "%");
         }
         return view;
     }

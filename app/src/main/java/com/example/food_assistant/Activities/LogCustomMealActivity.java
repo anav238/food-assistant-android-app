@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.food_assistant.Adapters.CustomMealIngredientAdapter;
 import com.example.food_assistant.Fragments.NutrientIntakeFragment;
+import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Ingredient;
@@ -85,13 +88,27 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
             double productQuantity = bundle.getDouble("productQuantity");
 
             Ingredient oldIngredient = adapter.itemAt(currentItemAdapterPosition);
-            meal.removeIngredient(oldIngredient);
+            meal.removeIngredient(oldIngredient);;
 
             Ingredient updatedIngredient = new Ingredient(adapter.itemAt(currentItemAdapterPosition).getProduct(), productQuantity);
+            meal.addIngredient(updatedIngredient);
             adapter.editIngredient(currentItemAdapterPosition, updatedIngredient);
 
             updateNutritionalValuesFragment();
         });
+
+        getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_SUCCESS", this, (requestKey, bundle) -> {
+            AppUser user = userSharedViewModel.getSelected().getValue();
+            user.updateUserNutrientConsumptionWithMeal(meal, meal.getTotalQuantity());
+            userSharedViewModel.select(user);
+
+            CharSequence text = "Meal logged!";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        });
+
     }
 
     private void setupMealIngredientsRecyclerView() {
@@ -114,7 +131,6 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
         if (product == null)
             return;
 
-        product.setBaseQuantity(0.0);
         meal.addIngredient(new Ingredient(product, 0.0));
 
         int duration = Toast.LENGTH_SHORT;
@@ -124,6 +140,9 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
             TextView noIngredientsTextView = findViewById(R.id.textView_no_ingredients);
             noIngredientsTextView.setVisibility(View.GONE);
             mealIngredientsRecyclerView.setVisibility(View.VISIBLE);
+
+            Button logMealButton = findViewById(R.id.button_log_meal);
+            logMealButton.setEnabled(true);
         }
         adapter.addItem(new Ingredient(product, 0.0));
     }
@@ -178,6 +197,9 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
             TextView noIngredientsTextView = findViewById(R.id.textView_no_ingredients);
             noIngredientsTextView.setVisibility(View.VISIBLE);
             mealIngredientsRecyclerView.setVisibility(View.GONE);
+
+            Button logMealButton = findViewById(R.id.button_log_meal);
+            logMealButton.setEnabled(false);
         }
     }
 
@@ -200,6 +222,9 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
 
         Map<String, Double> mealNutritionalValues = meal.getMealNutrition();
         Map<String, Double> nutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(mealNutritionalValues, currentUser);
+
+        System.out.println(mealNutritionalValues);
+
         Bundle bundle = new Bundle();
         bundle.putStringArray("nutrients", nutrientPercentages.keySet().toArray(new String[nutrientPercentages.keySet().size()]));
         for (String nutrient : nutrientPercentages.keySet())
@@ -220,11 +245,26 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
 
 
     public void logMeal(View view) {
-        /*
+        AppUser currentUser = userSharedViewModel.getSelected().getValue();
+
+        Map<String, Double> initialNutrientValues = currentUser.getTodayNutrientConsumption();
+        Map<String, Double> initialNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(initialNutrientValues, currentUser);
+
+        Map<String, Double> totalNutrientValues = NutrientCalculator.addMealNutritionToUserDailyNutrition(initialNutrientValues, meal, meal.getTotalQuantity());
+        Map<String, Double> totalNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(totalNutrientValues, currentUser);
+
+        Bundle newFragmentBundle = new Bundle();
+        newFragmentBundle.putDouble("productQuantity", meal.getTotalQuantity());
+        newFragmentBundle.putStringArray("nutrients", totalNutrientPercentages.keySet().toArray(new String[totalNutrientPercentages.keySet().size()]));
+
+        for (String nutrient:initialNutrientPercentages.keySet())
+            newFragmentBundle.putDouble(nutrient + "_initial", initialNutrientPercentages.get(nutrient));
+
+        for (String nutrient:totalNutrientPercentages.keySet())
+            newFragmentBundle.putDouble(nutrient + "_final", totalNutrientPercentages.get(nutrient));
+
         ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
-        Bundle args = new Bundle();
-        args.putDouble("productQuantity", productQuantity);
-        productConsumptionEffectsFragment.setArguments(args);
-        productConsumptionEffectsFragment.show(getSupportFragmentManager(), "test");*/
+        productConsumptionEffectsFragment.setArguments(newFragmentBundle);
+        productConsumptionEffectsFragment.show(getSupportFragmentManager(), "test");
     }
 }

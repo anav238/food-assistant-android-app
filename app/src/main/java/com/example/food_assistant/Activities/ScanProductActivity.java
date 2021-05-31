@@ -169,50 +169,40 @@ public class ScanProductActivity extends AppCompatActivity
             }
         });
 
-        getSupportFragmentManager().setFragmentResultListener("GET_QUANTITY_CANCEL", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
-               imageProcessor.restart();
-            }
-        });
+        getSupportFragmentManager().setFragmentResultListener("GET_QUANTITY_CANCEL", this, (requestKey, bundle) -> imageProcessor.restart());
 
-        getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_SUCCESS", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
-                double productQuantity = bundle.getDouble("productQuantity");
-                AppUser user = userSharedViewModel.getSelected().getValue();
-                Product product = productSharedViewModel.getSelected().getValue();
-                user.updateUserNutrientConsumption(product, productQuantity);
-                userSharedViewModel.select(user);
+        getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_SUCCESS", this, (requestKey, bundle) -> {
+            double productQuantity = bundle.getDouble("productQuantity");
+            AppUser user = userSharedViewModel.getSelected().getValue();
+            Product product = productSharedViewModel.getSelected().getValue();
+            user.updateUserNutrientConsumptionWithProduct(product, productQuantity);
+            userSharedViewModel.select(user);
 
-                CharSequence text = "Product logged!";
-                int duration = Toast.LENGTH_SHORT;
-                Toast toast = Toast.makeText(getApplicationContext(), text, duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
+            CharSequence text = "Product logged!";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
 
-                if (imageProcessor != null) {
-                    imageProcessor.restart();
-                }
-            }
-        });
-
-        getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_CANCEL", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+            if (imageProcessor != null) {
                 imageProcessor.restart();
             }
         });
 
+        getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_CANCEL",
+                this, (requestKey, bundle) -> imageProcessor.restart());
 
-        getSupportFragmentManager().setFragmentResultListener("ADD_NEW_PRODUCT_TO_DB", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
-                LogNewProductFragment logNewProductFragment = new LogNewProductFragment();
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                logNewProductFragment.show(fragmentManager, "test");
-            }
+
+        getSupportFragmentManager().setFragmentResultListener("ADD_NEW_PRODUCT_TO_DB_SUCCESS",
+                this, (requestKey, bundle) -> {
+            LogNewProductFragment logNewProductFragment = new LogNewProductFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            logNewProductFragment.show(fragmentManager, "test");
         });
+
+        getSupportFragmentManager().setFragmentResultListener("ADD_NEW_PRODUCT_TO_DB_SUCCESS_CANCEL",
+                this, (requestKey, bundle) -> imageProcessor.restart());
+
 
     }
 

@@ -1,11 +1,7 @@
 package com.example.food_assistant.Utils.Nutrition;
 
-import android.os.Bundle;
-
 import com.example.food_assistant.Models.AppUser;
-import com.example.food_assistant.Models.Ingredient;
 import com.example.food_assistant.Models.Meal;
-import com.example.food_assistant.Models.Product;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +25,26 @@ public class NutrientCalculator {
 
         return nutritionSum;
     }
+
+    public static Map<String, Double> addMealNutritionToUserDailyNutrition(Map<String, Double> userNutrition, Meal meal, Double mealConsumedQuantity) {
+        Map<String, Double> mealNutrition = meal.getMealNutrition();
+        Map<String, Double> nutritionSum = new HashMap<>();
+
+        for (String nutrient:userNutrition.keySet()) {
+            double totalNutrientValue = userNutrition.get(nutrient);
+            if (mealNutrition.containsKey(nutrient))
+                totalNutrientValue += mealNutrition.get(nutrient) * mealConsumedQuantity / meal.getTotalQuantity();
+            nutritionSum.put(nutrient, totalNutrientValue);
+        }
+
+        for (String nutrient:mealNutrition.keySet()) {
+            if (!userNutrition.containsKey(nutrient))
+                nutritionSum.put(nutrient, mealNutrition.get(nutrient));
+        }
+
+        return nutritionSum;
+    }
+
 
     public static Map<String, Double> getNutrientsPercentageFromMaximumDV(Map<String, Double> nutrients, AppUser appUser) {
         Map<String, Double> maxNutrientDVs = appUser.getMaximumNutrientDV();
