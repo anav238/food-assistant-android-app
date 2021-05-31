@@ -13,7 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.food_assistant.R;
-import com.example.food_assistant.Utils.Constants.Nutrients;
+import com.example.food_assistant.Utils.Nutrition.Nutrients;
 
 import java.util.ArrayList;
 import java.util.List;

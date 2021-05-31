@@ -2,23 +2,17 @@ package com.example.food_assistant.Fragments;
 
 import android.app.Dialog;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.food_assistant.R;
-import com.example.food_assistant.Utils.Listeners.StartNutritionalTableScanListener;
 import com.example.food_assistant.Utils.MLKit.VisionImageProcessor;
 import com.example.food_assistant.Utils.ViewModels.ImageProcessorSharedViewModel;
-import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
-import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 
 import org.jetbrains.annotations.NotNull;
 

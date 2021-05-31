@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.food_assistant.Models.Ingredient;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
 
@@ -25,11 +26,11 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
     }
 
     private final MealIngredientListener mealIngredientListener;
-    private List<Product> items;
+    private List<Ingredient> items;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
-        private Product product;
+        private Ingredient ingredient;
 
         public ViewHolder(View view, MealIngredientListener mealIngredientListener) {
             super(view);
@@ -40,22 +41,17 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
             removeButton.setOnClickListener(v -> mealIngredientListener.onPressRemoveButton(getAdapterPosition()));
         }
 
-        public void setProduct(Product product) {
-            this.product = product;
-            updateTextView();
+        public void setIngredient(Ingredient ingredient) {
+            this.ingredient = ingredient;
+            CharSequence updatedText = ingredient.getProduct().getProductName() + " - " + ingredient.getQuantity() + ingredient.getProduct().getMeasurementUnit();
+            textView.setText(updatedText);
         }
-
-        private void updateTextView() {
-            textView.setText(product.getProductName() + " - " + product.getBaseQuantity() + product.getMeasurementUnit());
-        }
-
     }
 
-    public CustomMealIngredientAdapter(List<Product> dataSet, MealIngredientListener mealIngredientListener) {
+    public CustomMealIngredientAdapter(List<Ingredient> dataSet, MealIngredientListener mealIngredientListener) {
         items = dataSet;
         this.mealIngredientListener = mealIngredientListener;
     }
-
 
     @NotNull
     @Override
@@ -68,11 +64,10 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
 
     @Override
     public void onBindViewHolder(CustomMealIngredientAdapter.ViewHolder viewHolder, final int position) {
-        //viewHolder.setIsRecyclable(false);
-        viewHolder.setProduct(items.get(position));
+        viewHolder.setIngredient(items.get(position));
     }
 
-    public List<Product> getItems() {
+    public List<Ingredient> getItems() {
         return items;
     }
 
@@ -91,7 +86,7 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
         return position;
     }
 
-    public void addItem(Product item) {
+    public void addItem(Ingredient item) {
         items.add(item);
         notifyDataSetChanged();
     }
@@ -102,12 +97,12 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
         notifyItemRangeChanged(position, 1);
     }
 
-    public Product itemAt(int position) {
+    public Ingredient itemAt(int position) {
         return items.get(position);
     }
 
-    public void editItemQuantity(int itemPosition, double newQuantity) {
-        items.get(itemPosition).setBaseQuantity(newQuantity);
+    public void editIngredient(int itemPosition, Ingredient editedIngredient) {
+        items.set(itemPosition, editedIngredient);
         notifyItemChanged(itemPosition);
     }
 }

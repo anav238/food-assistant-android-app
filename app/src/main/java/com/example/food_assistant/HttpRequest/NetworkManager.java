@@ -4,41 +4,27 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.food_assistant.Enums.ProductType;
-import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
-import com.example.food_assistant.Models.FoodDataCentralProduct;
 import com.example.food_assistant.Models.OpenFoodFactsProduct;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.Utils.Firebase.ProductDataUtility;
 import com.example.food_assistant.Utils.Mappers.ProductMapper;
 import com.example.food_assistant.Utils.ViewModels.ProductListSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
-import com.example.food_assistant.Utils.ViewModels.RecipeSharedViewModel;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.DataNode;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -157,31 +143,4 @@ public class NetworkManager
         requestQueue.add(stringRequest);
     }
 
-    public void getRecipeFromUrl(String url, AppCompatActivity activity) {
-        RecipeSharedViewModel recipeSharedViewModel = new ViewModelProvider(activity).get(RecipeSharedViewModel.class);
-        Gson gson = new Gson();
-        Thread thread = new Thread(() -> {
-            try  {
-                Document document = Jsoup.connect(url).timeout(10000).get();
-                Elements scriptElements = document.select("script[type$=application/ld+json]");
-
-                for (Element element:scriptElements) {
-                    for (DataNode node : element.dataNodes()) {
-                        System.out.println(node.getWholeData());
-                        JsonObject recipeJson = gson.fromJson(node.getWholeData(), JsonObject.class);
-                        System.out.println(recipeJson.toString());
-                        // Object jsonObject = JsonUtils.fromString(node.getWholeData());
-                        // Object compact = JsonLdProcessor.compact(jsonObject, new HashMap<>(), new JsonLdOptions());
-                        //String compactContent = JsonUtils.toString(compact);
-                        //System.out.println(compactContent);
-                    }
-                    System.out.println("-------------------");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        thread.start();
-
-    }
 }

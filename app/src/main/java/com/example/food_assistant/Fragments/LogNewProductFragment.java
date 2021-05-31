@@ -9,7 +9,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +17,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.food_assistant.Models.AppUser;
-import com.example.food_assistant.Models.OpenFoodFactsProduct;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
-import com.example.food_assistant.Utils.Constants.Nutrients;
+import com.example.food_assistant.Utils.Nutrition.Nutrients;
 import com.example.food_assistant.Utils.Firebase.ProductDataUtility;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
 import com.example.food_assistant.Utils.MLKit.VisionImageProcessor;
@@ -39,7 +36,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class LogNewProductFragment extends DialogFragment {
 

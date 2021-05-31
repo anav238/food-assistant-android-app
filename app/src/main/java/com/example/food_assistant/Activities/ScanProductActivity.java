@@ -40,6 +40,7 @@ import com.example.food_assistant.Utils.MLKit.CameraXViewModel;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.MLKit.VisionImageProcessor;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
+import com.example.food_assistant.Utils.Nutrition.NutrientCalculator;
 import com.example.food_assistant.Utils.ViewModels.ImageProcessorSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
@@ -50,6 +51,7 @@ import com.google.mlkit.common.MlKitException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -133,6 +135,7 @@ public class ScanProductActivity extends AppCompatActivity
         }
 
         productSharedViewModel.getSelected().observe(this, product -> {
+            Log.i("INFO", "Scanned product" + product.toString());
             processScannedProduct(product);
         });
     }
@@ -142,10 +145,31 @@ public class ScanProductActivity extends AppCompatActivity
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
                 double productQuantity = bundle.getDouble("productQuantity");
+                Product currentProduct = productSharedViewModel.getSelected().getValue();
+                AppUser currentUser = userSharedViewModel.getSelected().getValue();
+
+                Map<String, Double> initialNutrientValues = currentUser.getTodayNutrientConsumption();
+                Map<String, Double> initialNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(initialNutrientValues, currentUser);
+                Map<String, Double> productNutrientValues = currentProduct.getNutriments();
+
+                Map<String, Double> totalNutrientValues = NutrientCalculator.computeNutritionValuesSum(initialNutrientValues, productNutrientValues);
+                Map<String, Double> totalNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(totalNutrientValues, currentUser);
+
+                System.out.println(totalNutrientValues);
+                System.out.println(totalNutrientPercentages);
+
+                Bundle newFragmentBundle = new Bundle();
+                newFragmentBundle.putDouble("productQuantity", productQuantity);
+                newFragmentBundle.putStringArray("nutrients", totalNutrientPercentages.keySet().toArray(new String[totalNutrientPercentages.keySet().size()]));
+
+                for (String nutrient:initialNutrientPercentages.keySet())
+                    newFragmentBundle.putDouble(nutrient + "_initial", initialNutrientPercentages.get(nutrient));
+
+                for (String nutrient:totalNutrientPercentages.keySet())
+                    newFragmentBundle.putDouble(nutrient + "_final", totalNutrientPercentages.get(nutrient));
+
                 ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
-                Bundle args = new Bundle();
-                args.putDouble("productQuantity", productQuantity);
-                productConsumptionEffectsFragment.setArguments(args);
+                productConsumptionEffectsFragment.setArguments(newFragmentBundle);
                 productConsumptionEffectsFragment.show(getSupportFragmentManager(), "test");
             }
         });

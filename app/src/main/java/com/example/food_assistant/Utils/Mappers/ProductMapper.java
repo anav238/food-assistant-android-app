@@ -1,10 +1,9 @@
 package com.example.food_assistant.Utils.Mappers;
 
 import com.example.food_assistant.Enums.ProductType;
-import com.example.food_assistant.Models.FoodDataCentralProduct;
 import com.example.food_assistant.Models.OpenFoodFactsProduct;
 import com.example.food_assistant.Models.Product;
-import com.example.food_assistant.Utils.Constants.Nutrients;
+import com.example.food_assistant.Utils.Nutrition.Nutrients;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -17,7 +16,6 @@ import java.util.Map;
 
 public class ProductMapper {
     public static OpenFoodFactsProduct mapOpenFoodFactsProduct(JsonObject productJson) {
-        System.out.println(productJson);
         Gson gson = new Gson();
         OpenFoodFactsProduct product = new OpenFoodFactsProduct();
         if (productJson.has("product")) {
@@ -37,8 +35,14 @@ public class ProductMapper {
                 product.setNutriScoreGrade(productJson.get("nutriscore_grade").getAsString().toUpperCase());
 
             if (productJson.has("nutriments")) {
-                System.out.println(productJson.get("nutriments"));
-                product.setNutriments(gson.fromJson(productJson.get("nutriments").getAsJsonObject(), HashMap.class));
+                Map<String, Double> allNutriments = gson.fromJson(productJson.get("nutriments").getAsJsonObject(), HashMap.class);
+                Map<String, Double> supportedNutriments = new HashMap<>();
+                for (String nutrient:Nutrients.nutrientDefaultDV.keySet()) {
+                    String nutrientKeyMapping = nutrient + "_100g";
+                    if (allNutriments.containsKey(nutrientKeyMapping))
+                        supportedNutriments.put(nutrient, allNutriments.get(nutrientKeyMapping));
+                }
+                product.setNutriments(supportedNutriments);
             }
             if (productJson.has("nutrient_levels"))
                 product.setNutrientLevels(gson.fromJson(productJson.get("nutrient_levels").getAsJsonObject(), HashMap.class));

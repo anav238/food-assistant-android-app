@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void authenticateUser() {
-        // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Collections.singletonList(
                 new AuthUI.IdpConfig.EmailBuilder().build());
 
@@ -124,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void openScanProduct(View view) {
         Intent intent = new Intent(MainActivity.this, ScanProductActivity.class);
-        //intent.putExtra("loggedUser", userSharedViewModel.getSelected().getValue());
         startActivity(intent);
     }
 
@@ -148,8 +146,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void openRecipeAnalysisActivity(View view) {
-        Intent intent = new Intent(MainActivity.this, RecipeAnalysisActivity.class);
-        startActivity(intent);
-    }
 }

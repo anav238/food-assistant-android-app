@@ -1,4 +1,4 @@
-package com.example.food_assistant.Utils.Constants;
+package com.example.food_assistant.Utils.Nutrition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,13 +25,13 @@ public class Nutrients {
     }};
 
     public static Map<String, String> foodDataCentralNutrientMapping = new HashMap<String, String>() {{
-        put("Fatty acids, total saturated", "saturated-fat_value");
-        put("Protein", "proteins_value");
-        put("Total lipid (fat)", "fat_value");
-        put("Energy", "energy-kcal_value");
-        put("Sugars, total including NLEA", "sugars_value");
-        put("Carbohydrate, by difference", "carbohydrates_value");
-        put("Sodium, Na", "salt_value");
-        put("Fiber, total dietary", "fiber_value");
+        put("Fatty acids, total saturated", "saturated-fat");
+        put("Protein", "proteins");
+        put("Total lipid (fat)", "fat");
+        put("Energy", "energy-kcal");
+        put("Sugars, total including NLEA", "sugars");
+        put("Carbohydrate, by difference", "carbohydrates");
+        put("Sodium, Na", "salt");
+        put("Fiber, total dietary", "fiber");
     }};
 }

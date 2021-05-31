@@ -1,7 +1,6 @@
 package com.example.food_assistant.Fragments;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -10,42 +9,50 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.food_assistant.Models.AppUser;
-import com.example.food_assistant.Models.OpenFoodFactsProduct;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
-import com.example.food_assistant.Utils.MLKit.VisionImageProcessor;
-import com.example.food_assistant.Utils.Constants.Nutrients;
-import com.example.food_assistant.Utils.ViewModels.ImageProcessorSharedViewModel;
+import com.example.food_assistant.Utils.Nutrition.Nutrients;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ProductConsumptionEffectsFragment extends DialogFragment {
 
     @NotNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the Builder class for convenient dialog construction
-        UserSharedViewModel userSharedViewModel = new ViewModelProvider(requireActivity()).get(UserSharedViewModel.class);
+
         ProductSharedViewModel productSharedViewModel = new ViewModelProvider(requireActivity()).get(ProductSharedViewModel.class);
-        //ImageProcessorSharedViewModel imageProcessorSharedViewModel = new ViewModelProvider(requireActivity()).get(ImageProcessorSharedViewModel.class);
-
-        AppUser user = userSharedViewModel.getSelected().getValue();
         Product product = productSharedViewModel.getSelected().getValue();
-        //VisionImageProcessor visionImageProcessor = imageProcessorSharedViewModel.getSelected().getValue();
 
-        Double productQuantity = requireArguments().getDouble("productQuantity");
+        double productQuantity = requireArguments().getDouble("productQuantity");
+
+        String[] nutrients = requireArguments().getStringArray("nutrients");
+
+        Map<String, Double> initialNutrientValues = new HashMap<>();
+        Map<String, Double> finalNutrientValues = new HashMap<>();
+        for (String nutrient:nutrients) {
+            double nutrientInitialPercentage = requireArguments().getDouble(nutrient + "_initial");
+            double nutrientFinalPercentage = requireArguments().getDouble(nutrient + "_final");
+            initialNutrientValues.put(nutrient, nutrientInitialPercentage);
+            finalNutrientValues.put(nutrient, nutrientFinalPercentage);
+        }
+
+        System.out.println(requireArguments().toString());
+        System.out.println(productQuantity);
+        System.out.println(nutrients.toString());
+        System.out.println(initialNutrientValues);
+        System.out.println(finalNutrientValues);
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -53,55 +60,41 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
         builder.setView(content)
                 .setMessage("Are you sure you want to consume this product?")
                 .setPositiveButton("Log Product", (dialog, id) -> {
-                    //updateUserNutrientConsumption(productQuantity);
                     Bundle result = new Bundle();
                     result.putDouble("productQuantity", productQuantity);
                     getParentFragmentManager().setFragmentResult("PROCESS_PRODUCT_SUCCESS", result);
                     dismiss();
                 })
                 .setNegativeButton(R.string.cancel, (dialog, id) -> {
-                    // AppUser cancelled the dialog
-                    /*if (visionImageProcessor != null) {
-                        visionImageProcessor.restart();
-                    }*/
                     Bundle result = new Bundle();
                     getParentFragmentManager().setFragmentResult("PROCESS_PRODUCT_CANCEL", result);
                     dismiss();
                 });
 
-        populateProductNutrientData(content, user, product, productQuantity);
+        populateProductNutrientData(content, product, initialNutrientValues, finalNutrientValues);
 
         return builder.create();
     }
 
-    private void populateProductNutrientData(View content, AppUser user, Product product, double productQuantity) {
+    private void populateProductNutrientData(View content, Product product, Map<String, Double> initialNutrientValues, Map<String, Double> finalNutrientValues) {
         TextView nutriScoreGradeTextView = content.findViewById(R.id.nutriScoreGrade);
         nutriScoreGradeTextView.setText(product.getNutriScoreGrade());
 
         TextView novaScoreGradeTextView = content.findViewById(R.id.novaScoreGrade);
         novaScoreGradeTextView.setText(product.getNovaGroup());
 
-        Map<String, Double> maxNutrientDVs = user.getMaximumNutrientDV();
-        Map<String, Double> todayNutrientConsumption = user.getTodayNutrientConsumption();
-        Map<String, Double> productNutrition = product.getNutriments();
-        double productBaseQuantity = product.getBaseQuantity();
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-        for (String nutrient: Nutrients.nutrientDefaultDV.keySet()) {
-            double currNutrientPercentage = (todayNutrientConsumption.get(nutrient) * 100 / maxNutrientDVs.get(nutrient));
-            double newNutrientPercentage = currNutrientPercentage;
-
-            String productNutrientKey = nutrient + "_value";
-            if (productNutrition.containsKey(productNutrientKey))
-                newNutrientPercentage = ((todayNutrientConsumption.get(nutrient) + Math.floor(productNutrition.get(productNutrientKey) * (productQuantity / productBaseQuantity))) * 100 / maxNutrientDVs.get(nutrient));
-
+        for (String nutrient:initialNutrientValues.keySet()) {
             String nutrientIncreaseTextViewIdString = "textView_" + nutrient.replace("-", "_") + "_increase";
             Resources res = getResources();
             int nutrientIncreaseTextViewId = res.getIdentifier(nutrientIncreaseTextViewIdString, "id", this.getActivity().getPackageName());
 
             TextView nutrientIncreaseTextView = content.findViewById(nutrientIncreaseTextViewId);
-            nutrientIncreaseTextView.setText(decimalFormat.format(currNutrientPercentage) + "% ->" + decimalFormat.format(newNutrientPercentage) + "%");
+            CharSequence nutrientIncreaseText = decimalFormat.format(initialNutrientValues.get(nutrient)) + "% ->" + decimalFormat.format(finalNutrientValues.get(nutrient)) + "%";
+            nutrientIncreaseTextView.setText(nutrientIncreaseText);
         }
+
     }
 
     @Override

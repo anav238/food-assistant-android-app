@@ -3,7 +3,7 @@ package com.example.food_assistant.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.food_assistant.Utils.Constants.Nutrients;
+import com.example.food_assistant.Utils.Nutrition.Nutrients;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
