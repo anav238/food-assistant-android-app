@@ -24,6 +24,7 @@ import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
+import com.example.food_assistant.Utils.Nutrition.NutrientCalculator;
 import com.example.food_assistant.Utils.ViewModels.ProductListSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
@@ -31,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class LogGenericFoodActivity extends AppCompatActivity {
 
@@ -127,33 +129,45 @@ public class LogGenericFoodActivity extends AppCompatActivity {
     }
 
     private void setupFragmentResultListeners() {
-        getSupportFragmentManager().setFragmentResultListener("GET_QUANTITY_SUCCESS", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
-                double productQuantity = bundle.getDouble("productQuantity");
-                ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
-                Bundle args = new Bundle();
-                args.putDouble("productQuantity", productQuantity);
-                productConsumptionEffectsFragment.setArguments(args);
-                productConsumptionEffectsFragment.show(getSupportFragmentManager(), "test");
-            }
+        getSupportFragmentManager().setFragmentResultListener("GET_QUANTITY_SUCCESS", this, (requestKey, bundle) -> {
+            double productQuantity = bundle.getDouble("productQuantity");
+            AppUser currentUser = userSharedViewModel.getSelected().getValue();
+            Product currentProduct = productSharedViewModel.getSelected().getValue();
+
+            Map<String, Double> initialNutrientValues = currentUser.getTodayNutrientConsumption();
+            Map<String, Double> initialNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(initialNutrientValues, currentUser);
+            Map<String, Double> productNutrientValues = currentProduct.getNutriments();
+
+            Map<String, Double> totalNutrientValues = NutrientCalculator.addProductNutritionToUserDailyNutrition(initialNutrientValues, productNutrientValues, productQuantity);
+            Map<String, Double> totalNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(totalNutrientValues, currentUser);
+
+            Bundle newFragmentBundle = new Bundle();
+            newFragmentBundle.putDouble("productQuantity", productQuantity);
+            newFragmentBundle.putStringArray("nutrients", totalNutrientPercentages.keySet().toArray(new String[totalNutrientPercentages.keySet().size()]));
+
+            for (String nutrient:initialNutrientPercentages.keySet())
+                newFragmentBundle.putDouble(nutrient + "_initial", initialNutrientPercentages.get(nutrient));
+
+            for (String nutrient:totalNutrientPercentages.keySet())
+                newFragmentBundle.putDouble(nutrient + "_final", totalNutrientPercentages.get(nutrient));
+
+            ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
+            productConsumptionEffectsFragment.setArguments(newFragmentBundle);
+            productConsumptionEffectsFragment.show(getSupportFragmentManager(), "test");
         });
 
-        getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_SUCCESS", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
-                double productQuantity = bundle.getDouble("productQuantity");
-                AppUser user = userSharedViewModel.getSelected().getValue();
-                Product product = productSharedViewModel.getSelected().getValue();
-                user.updateUserNutrientConsumption(product, productQuantity);
-                userSharedViewModel.select(user);
+        getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_SUCCESS", this, (requestKey, bundle) -> {
+            double productQuantity = bundle.getDouble("productQuantity");
+            AppUser user = userSharedViewModel.getSelected().getValue();
+            Product product = productSharedViewModel.getSelected().getValue();
+            user.updateUserNutrientConsumption(product, productQuantity);
+            userSharedViewModel.select(user);
 
-                CharSequence text = "Product logged!";
-                int duration = Toast.LENGTH_SHORT;
-                Toast toast = Toast.makeText(getApplicationContext(), text, duration);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-            }
+            CharSequence text = "Product logged!";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
         });
 
     }

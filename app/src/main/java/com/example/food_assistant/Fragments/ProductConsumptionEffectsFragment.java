@@ -47,13 +47,6 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
             finalNutrientValues.put(nutrient, nutrientFinalPercentage);
         }
 
-        System.out.println(requireArguments().toString());
-        System.out.println(productQuantity);
-        System.out.println(nutrients.toString());
-        System.out.println(initialNutrientValues);
-        System.out.println(finalNutrientValues);
-
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View content = inflater.inflate(R.layout.fragment_product_consumption_effects, null);
