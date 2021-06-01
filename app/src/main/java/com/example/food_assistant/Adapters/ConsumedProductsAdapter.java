@@ -30,18 +30,28 @@ public class ConsumedProductsAdapter extends RecyclerView.Adapter<ConsumedProduc
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
         private final ImageButton favoriteButton;
+        private boolean isFavorite = false;
 
         public ViewHolder(View view, ConsumedProductsAdapter.ConsumedProductListener consumedProductListener) {
             super(view);
             textView = view.findViewById(R.id.textView_ingredient);
             favoriteButton = view.findViewById(R.id.imageButton_favorite);
-            favoriteButton.setOnClickListener(v -> consumedProductListener.onPressFavoriteButton(getAdapterPosition()));
+            favoriteButton.setOnClickListener(v -> {
+                isFavorite = !isFavorite;
+                toggleFavoriteButton();
+                consumedProductListener.onPressFavoriteButton(getAdapterPosition());
+            });
             ImageButton infoButton = view.findViewById(R.id.imageButton_info);
             infoButton.setOnClickListener(v -> consumedProductListener.onPressInfoButton(getAdapterPosition()));
         }
 
         public void setProductIdentifier(ProductIdentifier productIdentifier, boolean isFavorite) {
             textView.setText(productIdentifier.getProductName());
+            this.isFavorite = isFavorite;
+            toggleFavoriteButton();
+        }
+
+        private void toggleFavoriteButton() {
             if (isFavorite)
                 favoriteButton.setImageResource(R.drawable.ic_favorite);
             else
@@ -53,6 +63,7 @@ public class ConsumedProductsAdapter extends RecyclerView.Adapter<ConsumedProduc
         this.items = items;
         this.areFavorites = areFavorites;
         this.consumedProductListener = consumedProductListener;
+        System.out.println(items.toString());
     }
 
     @NotNull
@@ -90,6 +101,14 @@ public class ConsumedProductsAdapter extends RecyclerView.Adapter<ConsumedProduc
 
     public ProductIdentifier itemAt(int position) {
         return items.get(position);
+    }
+
+    public boolean getIsFavorite(int position) {
+        return areFavorites[position];
+    }
+
+    public void setIsFavorite(int position, boolean value) {
+        areFavorites[position] = value;
     }
 
 }

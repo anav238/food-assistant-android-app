@@ -37,22 +37,18 @@ public class NetworkManager
 
     public RequestQueue requestQueue;
 
-    private NetworkManager(Context context)
-    {
+    private NetworkManager(Context context) {
         requestQueue = Volley.newRequestQueue(context.getApplicationContext());
     }
 
-    public static synchronized NetworkManager getInstance(Context context)
-    {
+    public static synchronized NetworkManager getInstance(Context context) {
         if (null == instance)
             instance = new NetworkManager(context);
         return instance;
     }
 
-    public static synchronized NetworkManager getInstance()
-    {
-        if (null == instance)
-        {
+    public static synchronized NetworkManager getInstance() {
+        if (null == instance) {
             throw new IllegalStateException(NetworkManager.class.getSimpleName() +
                     " is not initialized, call getInstance(...) first");
         }
@@ -76,12 +72,7 @@ public class NetworkManager
                     else
                         ProductDataUtility.getProductById(barcode, productSharedViewModel);
 
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i("response", "That didn't work!");
-            }
-        });
+                }, error -> Log.i("response", "That didn't work!"));
         requestQueue.add(stringRequest);
     }
 
@@ -143,11 +134,12 @@ public class NetworkManager
     }
 
     public void getProductDetailsByFoodDataCentralId(String productId, ProductSharedViewModel productSharedViewModel) {
-        String url = "https://api.nal.usda.gov/fdc/v1/foods/search";
+        String url = "https://api.nal.usda.gov/fdc/v1/food/" + productId;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 responseString -> {
                     JsonObject responseJson = new Gson().fromJson(responseString, JsonObject.class);
+                    System.out.println(responseJson);
                     if (responseJson.has("description")) {
                         Product product = ProductMapper.mapFoodDataCentralProduct(responseJson);
                         product.setId(productId);
@@ -156,6 +148,7 @@ public class NetworkManager
                         System.out.println(product.toString());
                     }
                     else {
+                        System.out.println(responseJson);
                         // No foods found
                     }
                 },

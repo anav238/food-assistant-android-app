@@ -92,12 +92,12 @@ public class AppUser {
         this.updateTodayNutrientConsumption(todayNutrientConsumption);
 
         ProductIdentifier productIdentifier = new ProductIdentifier(product.getId(), product.getProductName(), product.getProductType());
-        if (productHistory.contains(productIdentifier)) {
+        if (productHistory.contains(productIdentifier))
             productHistory.remove(productIdentifier);
-        }
-        productHistory.add(productIdentifier);
+
+        productHistory.add(0, productIdentifier);
         if (productHistory.size() > 30)
-            productHistory.remove(0);
+            productHistory.remove(productHistory.size() - 1);
         System.out.println(productHistory);
     }
 
@@ -124,6 +124,14 @@ public class AppUser {
 
     public void addProductFavorite(Product product) {
         productFavorites.add(new ProductIdentifier(product.getId(), product.getProductName(), product.getProductType()));
+    }
+
+    public void addProductFavorite(ProductIdentifier productIdentifier) {
+        productFavorites.add(productIdentifier);
+    }
+
+    public void removeProductFavorite(ProductIdentifier productIdentifier) {
+        productFavorites.remove(productIdentifier);
     }
 
     public List<ProductIdentifier> getProductHistory() {

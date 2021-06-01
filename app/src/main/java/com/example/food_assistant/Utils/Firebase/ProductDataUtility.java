@@ -58,6 +58,7 @@ public class ProductDataUtility {
     }
 
     public static void getProductByIdentifier(ProductIdentifier productIdentifier, ProductSharedViewModel productSharedViewModel) {
+        Log.i("INFO", "PRODUCT IDENTIFIER" + productIdentifier);
         ProductType productType = productIdentifier.getProductType();
         String productId = productIdentifier.getId();
         if (productType == ProductType.CUSTOM)

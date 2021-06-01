@@ -32,7 +32,6 @@ public class NutrientIntakeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_nutrient_intake, container, false);
         for (String nutrient:nutrients) {
             int nutrientPercentage = requireArguments().getInt(nutrient);
-            System.out.println(nutrientPercentage);
             String progressBarIdString = "progressBar_" + nutrient.replace("-", "_");
             Resources res = getResources();
             int progressBarId = res.getIdentifier(progressBarIdString, "id", this.getActivity().getPackageName());

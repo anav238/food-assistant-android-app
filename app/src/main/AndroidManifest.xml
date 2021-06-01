@@ -15,10 +15,6 @@
         <activity android:name=".Activities.LogCustomMealActivity" />
         <activity android:name=".Activities.LogGenericFoodActivity" />
         <activity
-            android:name=".Activities.ProductInfoActivity"
-            android:label="Product Info"
-            android:parentActivityName=".Activities.FavoritesActivity" />
-        <activity
             android:name=".Activities.FavoritesActivity"
             android:label="Favorites"
             android:parentActivityName=".Activities.MainActivity" />

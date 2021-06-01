@@ -13,12 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
-import com.example.food_assistant.Utils.Nutrition.Nutrients;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
-import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -70,10 +67,10 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
     }
 
     private void populateProductNutrientData(View content, Product product, Map<String, Double> initialNutrientValues, Map<String, Double> finalNutrientValues) {
-        TextView nutriScoreGradeTextView = content.findViewById(R.id.nutriScoreGrade);
+        TextView nutriScoreGradeTextView = content.findViewById(R.id.textView_nutriscore_grade);
         nutriScoreGradeTextView.setText(product.getNutriScoreGrade());
 
-        TextView novaScoreGradeTextView = content.findViewById(R.id.novaScoreGrade);
+        TextView novaScoreGradeTextView = content.findViewById(R.id.textView_novascore_grade);
         novaScoreGradeTextView.setText(product.getNovaGroup());
 
         DecimalFormat decimalFormat = new DecimalFormat("#.##");

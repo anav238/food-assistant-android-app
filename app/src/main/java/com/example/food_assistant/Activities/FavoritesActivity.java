@@ -41,12 +41,8 @@ public class FavoritesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
 
-        // BEGIN_INCLUDE(initializeRecyclerView)
         mRecyclerView = (RecyclerView) findViewById(R.id.favoritesRecyclerView);
 
-        // LinearLayoutManager is used here, this will layout the elements in a similar fashion
-        // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
-        // elements are laid out.
         mLayoutManager = new LinearLayoutManager(this);
 
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
@@ -77,11 +73,6 @@ public class FavoritesActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Set RecyclerView's LayoutManager to the one given.
-     *
-     * @param layoutManagerType Type of layout manager to switch to.
-     */
     public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
         int scrollPosition = 0;
 
@@ -110,8 +101,7 @@ public class FavoritesActivity extends AppCompatActivity {
     }
 
     public void openProductInfo(View view) {
-        Intent intent = new Intent(FavoritesActivity.this, ProductInfoActivity.class);
-        startActivity(intent);
+
     }
 
     public void switchFavorite(View view) {

@@ -93,6 +93,8 @@ public class ProductMapper {
         Product product = new Product();
         Map<String, Double> productNutriments = new HashMap<>();
 
+        if (productJson.has("fdcId"))
+            product.setId(productJson.get("fdcId").getAsString());
 
         if (productJson.has("description"))
             product.setProductName(productJson.get("description").getAsString());
@@ -104,7 +106,23 @@ public class ProductMapper {
         JsonArray foodNutrients = productJson.get("foodNutrients").getAsJsonArray();
         for (JsonElement nutrientElement:foodNutrients) {
             JsonObject nutrientObject = nutrientElement.getAsJsonObject();
-            if (nutrientObject.has("nutrientName")) {
+            if (!nutrientObject.has("nutrientName") && nutrientObject.has("nutrient")) {
+                double nutrientQuantity = 0.0;
+                if (nutrientObject.has("amount"))
+                    nutrientQuantity = nutrientObject.get("amount").getAsDouble();
+                nutrientObject = nutrientObject.getAsJsonObject("nutrient");
+                String nutrientName = nutrientObject.get("name").getAsString();
+                if (foodDataCentralNutrients.contains(nutrientName)) {
+                    String nutrientNameMapping = Nutrients.foodDataCentralNutrientMapping.get(nutrientName);
+                    String nutrientMeasurementUnit = nutrientObject.get("unitName").getAsString();
+                    if (!nutrientMeasurementUnit.equals("kJ")) {
+                        if (nutrientMeasurementUnit.toUpperCase().equals("MG"))
+                            nutrientQuantity /= 1000;
+                        productNutriments.put(nutrientNameMapping, nutrientQuantity);
+                    }
+                }
+            }
+            else if (nutrientObject.has("nutrientName")) {
                 String nutrientName = nutrientObject.get("nutrientName").getAsString();
                 if (foodDataCentralNutrients.contains(nutrientName)) {
                     String nutrientNameMapping = Nutrients.foodDataCentralNutrientMapping.get(nutrientName);
@@ -122,6 +140,7 @@ public class ProductMapper {
         product.setNutriments(productNutriments);
         product.setBaseQuantity(100.0);
         product.setMeasurementUnit("g");
+        product.setProductType(ProductType.FOOD_DATA_CENTRAL);
         return product;
     }
 }

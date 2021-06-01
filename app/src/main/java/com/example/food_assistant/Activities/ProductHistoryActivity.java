@@ -3,6 +3,7 @@ package com.example.food_assistant.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.service.autofill.UserData;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -14,9 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.food_assistant.Adapters.ConsumedProductsAdapter;
-import com.example.food_assistant.Adapters.CustomMealIngredientAdapter;
-import com.example.food_assistant.Adapters.GenericFoodLookupAdapter;
-import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
+import com.example.food_assistant.Fragments.ProductInfoFragment;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.example.food_assistant.HttpRequest.NetworkManager;
 import com.example.food_assistant.Models.AppUser;
@@ -25,8 +24,6 @@ import com.example.food_assistant.Models.ProductIdentifier;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.Firebase.ProductDataUtility;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
-import com.example.food_assistant.Utils.Nutrition.NutrientCalculator;
-import com.example.food_assistant.Utils.ViewModels.ProductListSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,21 +50,18 @@ public class ProductHistoryActivity extends AppCompatActivity implements Consume
         networkManager = NetworkManager.getInstance(this);
 
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
+        productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             UserDataUtility.getUserData(user, userSharedViewModel);
             userSharedViewModel.getSelected().observe(this, appUser -> {
-                UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
+                List<ProductIdentifier> productIdentifiers = appUser.getProductHistory();
+                boolean[] areFavorites = ProductDataUtility.determineIfProductsAreFavoriteForUser(productIdentifiers, appUser);
+                setupRecyclerView(productIdentifiers, areFavorites);
             });
         }
 
-        AppUser appUser = userSharedViewModel.getSelected().getValue();
-        List<ProductIdentifier> productIdentifiers = appUser.getProductHistory();
-        boolean[] areFavorites = ProductDataUtility.determineIfProductsAreFavoriteForUser(productIdentifiers, appUser);
-
-        setupRecyclerView(productIdentifiers, areFavorites);
-        //setupObservers();
-        //setupFragmentResultListeners();
     }
 
     private void setupRecyclerView(List<ProductIdentifier> productIdentifiers, boolean[] areFavorites) {
@@ -81,80 +75,29 @@ public class ProductHistoryActivity extends AppCompatActivity implements Consume
 
     @Override
     public void onPressFavoriteButton(int productAdapterPosition) {
-
+        AppUser currentUser = userSharedViewModel.getSelected().getValue();
+        if (currentUser != null) {
+            if (!adapter.getIsFavorite(productAdapterPosition)) {
+                currentUser.addProductFavorite(adapter.itemAt(productAdapterPosition));
+                adapter.setIsFavorite(productAdapterPosition, true);
+            }
+            else {
+                currentUser.removeProductFavorite(adapter.itemAt(productAdapterPosition));
+                adapter.setIsFavorite(productAdapterPosition, false);
+            }
+            UserDataUtility.updateUserDataToDb(FirebaseAuth.getInstance().getCurrentUser(), userSharedViewModel);
+        }
     }
 
     @Override
     public void onPressInfoButton(int productAdapterPosition) {
-
-    }
-
-    /*
-    private void setupObservers() {
-        productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
         productSharedViewModel.getSelected().observe(this, product -> {
-            if (selectedLogMode.equals(MULTIPLE_LOG_MODE)) {
-                SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
-                FragmentManager fragmentManager = this.getSupportFragmentManager();
-                selectProductQuantityFragment.show(fragmentManager, "test");
-            }
-            else {
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("product", product);
-                setResult(Activity.RESULT_OK, resultIntent);
-                finish();
-            }
+            ProductInfoFragment productInfoFragment = new ProductInfoFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            productInfoFragment.show(fragmentManager, "test");
         });
-
-        ProductListSharedViewModel productListSharedViewModel = new ViewModelProvider(this).get(ProductListSharedViewModel.class);
-        productListSharedViewModel.getSelected().observe(this, products -> {
-            Log.i("Product list changed", products.toString());
-            adapter.setLocalDataSet(new ArrayList<>(products));
-            foodLookupRecyclerView.setAdapter(adapter);
-        });
+        System.out.println(adapter.itemAt(productAdapterPosition));
+        ProductDataUtility.getProductByIdentifier(adapter.itemAt(productAdapterPosition), productSharedViewModel);
     }
 
-    private void setupFragmentResultListeners() {
-        getSupportFragmentManager().setFragmentResultListener("GET_QUANTITY_SUCCESS", this, (requestKey, bundle) -> {
-            double productQuantity = bundle.getDouble("productQuantity");
-            AppUser currentUser = userSharedViewModel.getSelected().getValue();
-            Product currentProduct = productSharedViewModel.getSelected().getValue();
-
-            Map<String, Double> initialNutrientValues = currentUser.getTodayNutrientConsumption();
-            Map<String, Double> initialNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(initialNutrientValues, currentUser);
-            Map<String, Double> productNutrientValues = currentProduct.getNutriments();
-
-            Map<String, Double> totalNutrientValues = NutrientCalculator.addProductNutritionToUserDailyNutrition(initialNutrientValues, productNutrientValues, productQuantity);
-            Map<String, Double> totalNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(totalNutrientValues, currentUser);
-
-            Bundle newFragmentBundle = new Bundle();
-            newFragmentBundle.putDouble("productQuantity", productQuantity);
-            newFragmentBundle.putStringArray("nutrients", totalNutrientPercentages.keySet().toArray(new String[totalNutrientPercentages.keySet().size()]));
-
-            for (String nutrient:initialNutrientPercentages.keySet())
-                newFragmentBundle.putDouble(nutrient + "_initial", initialNutrientPercentages.get(nutrient));
-
-            for (String nutrient:totalNutrientPercentages.keySet())
-                newFragmentBundle.putDouble(nutrient + "_final", totalNutrientPercentages.get(nutrient));
-
-            ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
-            productConsumptionEffectsFragment.setArguments(newFragmentBundle);
-            productConsumptionEffectsFragment.show(getSupportFragmentManager(), "test");
-        });
-
-        getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_SUCCESS", this, (requestKey, bundle) -> {
-            double productQuantity = bundle.getDouble("productQuantity");
-            AppUser user = userSharedViewModel.getSelected().getValue();
-            Product product = productSharedViewModel.getSelected().getValue();
-            user.updateUserNutrientConsumptionWithProduct(product, productQuantity);
-            userSharedViewModel.select(user);
-
-            CharSequence text = "Product logged!";
-            int duration = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-        });
-
-    }*/
 }

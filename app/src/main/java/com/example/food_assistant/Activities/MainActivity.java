@@ -136,6 +136,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void openProductHistoryActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, ProductHistoryActivity.class);
+        startActivity(intent);
+    }
+
     public void openLogGenericFoodActivity(View view) {
         Intent intent = new Intent(MainActivity.this, LogGenericFoodActivity.class);
         startActivity(intent);
