@@ -49,7 +49,7 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
         View content = inflater.inflate(R.layout.fragment_product_consumption_effects, null);
         builder.setView(content)
                 .setMessage("Are you sure you want to consume this?")
-                .setPositiveButton("Log Product", (dialog, id) -> {
+                .setPositiveButton("Yes", (dialog, id) -> {
                     Bundle result = new Bundle();
                     result.putDouble("productQuantity", productQuantity);
                     getParentFragmentManager().setFragmentResult("PROCESS_PRODUCT_SUCCESS", result);

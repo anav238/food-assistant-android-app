@@ -105,6 +105,17 @@ public class AppUser {
         Map<String, Double> todayNutrientConsumption = this.getTodayNutrientConsumption();
         todayNutrientConsumption = NutrientCalculator.addMealNutritionToUserDailyNutrition(todayNutrientConsumption, meal, mealQuantity);
         this.updateTodayNutrientConsumption(todayNutrientConsumption);
+
+        for (Ingredient ingredient:meal.getIngredients()) {
+            Product product = ingredient.getProduct();
+            ProductIdentifier productIdentifier = new ProductIdentifier(product.getId(), product.getProductName(), product.getProductType());
+            if (productHistory.contains(productIdentifier))
+                productHistory.remove(productIdentifier);
+
+            productHistory.add(0, productIdentifier);
+            if (productHistory.size() > 30)
+                productHistory.remove(productHistory.size() - 1);
+        }
     }
 
     public void updateTodayNutrientConsumption(Map<String, Double> newNutrientConsumption) {

@@ -31,12 +31,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         if (carbsView != null)
             showNutrientMaxQuantity(carbsView);
 
-        //SwitchPreference carbsPreference = findPreference("carbs_shown");
-        /*carbsPreference.setOnPreferenceClickListener(preference -> {
-            View carbsViewListener = requireActivity().findViewById(R.id.carbs);
-            showNutrientMaxQuantity(carbsViewListener);
-            return true;
-        });*/
     }
 
     public void showNutrientMaxQuantity(View v) {
