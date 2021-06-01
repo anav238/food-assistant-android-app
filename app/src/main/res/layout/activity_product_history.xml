@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="20dp"
-    tools:context=".Activities.ProductHistoryActivity">
+    tools:context=".Activities.ConsumedProductsActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_consumed_products"

@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.food_assistant.Models.AppUser;
@@ -40,10 +42,9 @@ public class ProductInfoFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-        //LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_product_info, null);
 
-        builder.setView(view).setPositiveButton("Close", (dialog, which) -> dismiss());
+        builder.setView(view);
 
         AlertDialog dialog = builder.create();
         dialog.setCancelable(false);
@@ -65,15 +66,16 @@ public class ProductInfoFragment extends DialogFragment {
             TextView novaScoreGradeTextView = view.findViewById(R.id.textView_novascore_grade);
             novaScoreGradeTextView.setText(product.getNovaGroup());
 
-            FragmentContainerView fragmentContainerView = view.findViewById(R.id.fragment_nutritional_values);
-            setupProductNutritionFragment(appUser, product, fragmentContainerView);
-        }
+            setupProductNutritionFragment(appUser, product);
 
+            Button closeButton = view.findViewById(R.id.button_close);
+            closeButton.setOnClickListener(v -> dismiss());
+        }
 
         return view;
     }
 
-    private void setupProductNutritionFragment(AppUser appUser, Product product, FragmentContainerView fragmentContainerView) {
+    private void setupProductNutritionFragment(AppUser appUser, Product product) {
         System.out.println(product);
         Map<String, Double> nutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(product.getNutriments(), appUser);
 

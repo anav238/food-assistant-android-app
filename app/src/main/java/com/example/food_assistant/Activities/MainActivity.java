@@ -126,18 +126,15 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void openFavoritesActivity(View view) {
-        Intent intent = new Intent(MainActivity.this, FavoritesActivity.class);
-        startActivity(intent);
-    }
-
-    public void openPreviousMealsActivity(View view) {
-        Intent intent = new Intent(MainActivity.this, FavoritesActivity.class);
+    public void openFavoriteProductsActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, ConsumedProductsActivity.class);
+        intent.putExtra("mode", "favorites");
         startActivity(intent);
     }
 
     public void openProductHistoryActivity(View view) {
-        Intent intent = new Intent(MainActivity.this, ProductHistoryActivity.class);
+        Intent intent = new Intent(MainActivity.this, ConsumedProductsActivity.class);
+        intent.putExtra("mode", "history");
         startActivity(intent);
     }
 

@@ -30,10 +30,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class ProductHistoryActivity extends AppCompatActivity implements ConsumedProductsAdapter.ConsumedProductListener {
+public class ConsumedProductsActivity extends AppCompatActivity implements ConsumedProductsAdapter.ConsumedProductListener {
+
+    private String mode;
 
     private NetworkManager networkManager;
     private UserSharedViewModel userSharedViewModel;
@@ -47,6 +50,9 @@ public class ProductHistoryActivity extends AppCompatActivity implements Consume
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_history);
 
+        Intent intent = getIntent();
+        mode = intent.getStringExtra("mode");
+
         networkManager = NetworkManager.getInstance(this);
 
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
@@ -56,9 +62,18 @@ public class ProductHistoryActivity extends AppCompatActivity implements Consume
         if (user != null) {
             UserDataUtility.getUserData(user, userSharedViewModel);
             userSharedViewModel.getSelected().observe(this, appUser -> {
-                List<ProductIdentifier> productIdentifiers = appUser.getProductHistory();
-                boolean[] areFavorites = ProductDataUtility.determineIfProductsAreFavoriteForUser(productIdentifiers, appUser);
-                setupRecyclerView(productIdentifiers, areFavorites);
+                if (mode.equals("history")) {
+                    List<ProductIdentifier> productIdentifiers = appUser.getProductHistory();
+                    boolean[] areFavorites = ProductDataUtility.determineIfProductsAreFavoriteForUser(productIdentifiers, appUser);
+                    setupRecyclerView(productIdentifiers, areFavorites);
+                }
+                else {
+                    List<ProductIdentifier> productIdentifiers = appUser.getProductFavorites();
+                    boolean[] areFavorites = new boolean[productIdentifiers.size()];
+                    Arrays.fill(areFavorites, Boolean.TRUE);
+                    setupRecyclerView(productIdentifiers, areFavorites);
+                }
+
             });
         }
 
