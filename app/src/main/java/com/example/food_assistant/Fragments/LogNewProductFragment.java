@@ -123,8 +123,7 @@ public class LogNewProductFragment extends DialogFragment {
                     if (addToFavorites.isChecked()) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         AppUser appUser = userSharedViewModel.getSelected().getValue();
-                        List<String> favoritesIds = appUser.getFavoritesIds();
-                        favoritesIds.add(product.getId());
+                        appUser.addProductFavorite(product);
                         userSharedViewModel.select(appUser);
                         UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
                     }

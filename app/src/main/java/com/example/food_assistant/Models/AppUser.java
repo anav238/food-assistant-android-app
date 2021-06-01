@@ -1,8 +1,5 @@
 package com.example.food_assistant.Models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.example.food_assistant.Utils.Nutrition.NutrientCalculator;
 import com.example.food_assistant.Utils.Nutrition.Nutrients;
 
@@ -13,12 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AppUser implements Parcelable {
+public class AppUser {
     String name = "";
     String email = "";
     Map<String, Map<String, Double>> nutrientConsumptionHistory = new HashMap<>();
-    List<String> favoritesIds = new ArrayList<>();
-    List<String> historyIds = new ArrayList<>();
+    List<ProductIdentifier> productFavorites = new ArrayList<>();
+    List<ProductIdentifier> productHistory = new ArrayList<>();
     Map<String, Double> maximumNutrientDV = new HashMap<>();
 
     public AppUser() {
@@ -47,33 +44,14 @@ public class AppUser implements Parcelable {
         nutrientConsumptionHistory.put(dateString, todayNutrientConsumption);
     }
 
-    protected AppUser(Parcel in) {
-        name = in.readString();
-        email = in.readString();
-        favoritesIds = in.createStringArrayList();
-        historyIds = in.createStringArrayList();
-    }
-
-    public static final Creator<AppUser> CREATOR = new Creator<AppUser>() {
-        @Override
-        public AppUser createFromParcel(Parcel in) {
-            return new AppUser(in);
-        }
-
-        @Override
-        public AppUser[] newArray(int size) {
-            return new AppUser[size];
-        }
-    };
-
     @Override
     public String toString() {
         return "AppUser{" +
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", nutrientConsumptionHistory=" + nutrientConsumptionHistory +
-                ", favoriteProductsBarcodes=" + favoritesIds +
-                ", historyProductsBarcodes=" + historyIds +
+                ", favoriteProductsBarcodes=" + productFavorites +
+                ", historyProductsBarcodes=" + productHistory +
                 ", maximumDailyNutrientConsumption=" + maximumNutrientDV +
                 '}';
     }
@@ -113,9 +91,14 @@ public class AppUser implements Parcelable {
         }
         this.updateTodayNutrientConsumption(todayNutrientConsumption);
 
-        List<String> historyIds = this.getHistoryIds();
-        historyIds.add(product.getId());
-        this.setHistoryIds(historyIds);
+        ProductIdentifier productIdentifier = new ProductIdentifier(product.getId(), product.getProductName(), product.getProductType());
+        if (productHistory.contains(productIdentifier)) {
+            productHistory.remove(productIdentifier);
+        }
+        productHistory.add(productIdentifier);
+        if (productHistory.size() > 30)
+            productHistory.remove(0);
+        System.out.println(productHistory);
     }
 
     public void updateUserNutrientConsumptionWithMeal(Meal meal, Double mealQuantity) {
@@ -135,12 +118,16 @@ public class AppUser implements Parcelable {
         return nutrientConsumptionHistory;
     }
 
-    public List<String> getFavoritesIds() {
-        return favoritesIds;
+    public List<ProductIdentifier> getProductFavorites() {
+        return productFavorites;
     }
 
-    public List<String> getHistoryIds() {
-        return historyIds;
+    public void addProductFavorite(Product product) {
+        productFavorites.add(new ProductIdentifier(product.getId(), product.getProductName(), product.getProductType()));
+    }
+
+    public List<ProductIdentifier> getProductHistory() {
+        return productHistory;
     }
 
     public Map<String, Double> getMaximumNutrientDV() {
@@ -159,30 +146,15 @@ public class AppUser implements Parcelable {
         this.nutrientConsumptionHistory = nutrientConsumptionHistory;
     }
 
-    public void setFavoritesIds(List<String> favoritesIds) {
-        this.favoritesIds = favoritesIds;
-    }
-
-    public void setHistoryIds(List<String> historyIds) {
-        this.historyIds = historyIds;
-    }
-
     public void setMaximumNutrientDV(Map<String, Double> maximumNutrientDV) {
         this.maximumNutrientDV = maximumNutrientDV;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setProductFavorites(List<ProductIdentifier> productFavorites) {
+        this.productFavorites = productFavorites;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.email);
-        dest.writeMap(this.nutrientConsumptionHistory);
-        dest.writeMap(this.maximumNutrientDV);
-        dest.writeList(favoritesIds);
-        dest.writeList(historyIds);
+    public void setProductHistory(List<ProductIdentifier> productHistory) {
+        this.productHistory = productHistory;
     }
 }

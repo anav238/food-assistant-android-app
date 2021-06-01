@@ -9,7 +9,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.food_assistant.Enums.ProductType;
 import com.example.food_assistant.Fragments.ScanProductNutritionalTableRequestFragment;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
+import com.example.food_assistant.HttpRequest.NetworkManager;
+import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Product;
+import com.example.food_assistant.Models.ProductIdentifier;
 import com.example.food_assistant.Utils.Mappers.ProductMapper;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.google.firebase.database.DatabaseReference;
@@ -18,8 +21,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.List;
+
 public class ProductDataUtility {
     private static DatabaseReference mDatabase;
+    private static NetworkManager networkManager = NetworkManager.getInstance();
 
     public static void logProductData(Product product) {
         if (mDatabase == null)
@@ -38,10 +44,6 @@ public class ProductDataUtility {
                 product.setId(productId);
                 product.setProductType(ProductType.CUSTOM);
                 productSharedViewModel.select(product);
-
-                /*ScanProductNutritionalTableRequestFragment scanProductNutritionalTableRequestFragment = new ScanProductNutritionalTableRequestFragment();
-                FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                scanProductNutritionalTableRequestFragment.show(fragmentManager, "test");*/
             }
             else {
                 Log.d("firebase", String.valueOf(task.getResult().getValue()));
@@ -51,12 +53,32 @@ public class ProductDataUtility {
                 Product product = ProductMapper.mapFirebaseProduct(productObject);
                 product.setProductType(ProductType.CUSTOM);
                 productSharedViewModel.select(product);
-
-                /*SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
-                FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                selectProductQuantityFragment.show(fragmentManager, "test");*/
             }
         });
     }
 
+    public static void getProductByIdentifier(ProductIdentifier productIdentifier, ProductSharedViewModel productSharedViewModel) {
+        ProductType productType = productIdentifier.getProductType();
+        String productId = productIdentifier.getId();
+        if (productType == ProductType.CUSTOM)
+            getProductById(productId, productSharedViewModel);
+        else if (productType == ProductType.OPEN_FOOD_FACTS)
+            networkManager.getProductDetailsByBarcode(productId, productSharedViewModel);
+        else if (productType == ProductType.FOOD_DATA_CENTRAL)
+            networkManager.getProductDetailsByFoodDataCentralId(productId, productSharedViewModel);
+    }
+
+    public static boolean[] determineIfProductsAreFavoriteForUser(List<ProductIdentifier> productIdentifiers, AppUser appUser) {
+        boolean[] areFavorites = new boolean[productIdentifiers.size()];
+        List<ProductIdentifier> productFavorites = appUser.getProductFavorites();
+        int i = 0;
+        for (ProductIdentifier productIdentifier:productIdentifiers) {
+            if (productFavorites.contains(productIdentifier))
+                areFavorites[i] = true;
+            else
+                areFavorites[i] = false;
+            i++;
+        }
+        return areFavorites;
+    }
 }

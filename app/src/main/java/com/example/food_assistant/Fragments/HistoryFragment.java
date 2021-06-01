@@ -9,7 +9,7 @@ import android.widget.ExpandableListView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.food_assistant.Adapters.HistoryExpandableListAdapter;
+import com.example.food_assistant.Adapters.NutritionHistoryExpandableListAdapter;
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
@@ -48,7 +48,7 @@ public class HistoryFragment extends Fragment {
         AppUser user = userSharedViewModel.getSelected().getValue();
         Map<String, Map<String, Double>> nutrientConsumptionHistory = user.getNutrientConsumptionHistory();
 
-        elv.setAdapter(new HistoryExpandableListAdapter(requireActivity(), getContext(), user, new ArrayList<>(nutrientConsumptionHistory.keySet()), nutrientConsumptionHistory));
+        elv.setAdapter(new NutritionHistoryExpandableListAdapter(requireActivity(), getContext(), user, new ArrayList<>(nutrientConsumptionHistory.keySet()), nutrientConsumptionHistory));
         return v;
     }
 

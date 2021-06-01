@@ -137,10 +137,38 @@ public class NetworkManager
                 params.put("X-Api-Key", "cwfnwhmRjkaCVAVCqicCcGas6Rp3gXcoyljdIKhz");
                 return params;
             }
-
         };
 
         requestQueue.add(stringRequest);
     }
 
+    public void getProductDetailsByFoodDataCentralId(String productId, ProductSharedViewModel productSharedViewModel) {
+        String url = "https://api.nal.usda.gov/fdc/v1/foods/search";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                responseString -> {
+                    JsonObject responseJson = new Gson().fromJson(responseString, JsonObject.class);
+                    if (responseJson.has("description")) {
+                        Product product = ProductMapper.mapFoodDataCentralProduct(responseJson);
+                        product.setId(productId);
+                        product.setProductType(ProductType.FOOD_DATA_CENTRAL);
+                        productSharedViewModel.select(product);
+                        System.out.println(product.toString());
+                    }
+                    else {
+                        // No foods found
+                    }
+                },
+                error -> Log.e("VOLLEY", error.toString())) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String,String> params = new HashMap<>();
+                params.put("X-Api-Key", "cwfnwhmRjkaCVAVCqicCcGas6Rp3gXcoyljdIKhz");
+                return params;
+            }
+        };
+
+        requestQueue.add(stringRequest);
+    }
 }

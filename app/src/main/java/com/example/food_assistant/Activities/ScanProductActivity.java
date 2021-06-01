@@ -125,12 +125,8 @@ public class ScanProductActivity extends AppCompatActivity
         imageProcessorSharedViewModel = new ViewModelProvider(this).get(ImageProcessorSharedViewModel.class);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
+        if (user != null)
             UserDataUtility.getUserData(user, userSharedViewModel);
-            userSharedViewModel.getSelected().observe(this, appUser -> {
-                UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
-            });
-        }
 
         productSharedViewModel.getSelected().observe(this, product -> {
             Log.i("INFO", "Scanned product" + product.toString());
@@ -176,7 +172,11 @@ public class ScanProductActivity extends AppCompatActivity
             AppUser user = userSharedViewModel.getSelected().getValue();
             Product product = productSharedViewModel.getSelected().getValue();
             user.updateUserNutrientConsumptionWithProduct(product, productQuantity);
+            System.out.println(user.getProductHistory());
             userSharedViewModel.select(user);
+
+            UserDataUtility.updateUserDataToDb(FirebaseAuth.getInstance().getCurrentUser(), userSharedViewModel);
+
 
             CharSequence text = "Product logged!";
             int duration = Toast.LENGTH_SHORT;
@@ -200,7 +200,7 @@ public class ScanProductActivity extends AppCompatActivity
             logNewProductFragment.show(fragmentManager, "test");
         });
 
-        getSupportFragmentManager().setFragmentResultListener("ADD_NEW_PRODUCT_TO_DB_SUCCESS_CANCEL",
+        getSupportFragmentManager().setFragmentResultListener("ADD_NEW_PRODUCT_TO_DB_CANCEL",
                 this, (requestKey, bundle) -> imageProcessor.restart());
 
 

@@ -33,6 +33,7 @@ public class UserDataUtility {
                 JsonElement userElement = gson.toJsonTree(task.getResult().getValue());
                 JsonObject userObject = (JsonObject) userElement;
                 AppUser appUser = UserMapper.map(userObject);
+                System.out.println("Current app user:" + appUser);
                 appUser.setName(user.getDisplayName());
                 appUser.setEmail(user.getEmail());
                 userSharedViewModel.select(appUser);

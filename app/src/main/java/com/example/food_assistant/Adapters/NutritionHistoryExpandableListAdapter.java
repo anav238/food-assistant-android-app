@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
+public class NutritionHistoryExpandableListAdapter extends BaseExpandableListAdapter {
 
     private final FragmentActivity activity;
     private final Context context;
@@ -28,8 +28,8 @@ public class HistoryExpandableListAdapter extends BaseExpandableListAdapter {
     private final List<String> expandableListTitle;
     private final Map<String, Map<String, Double>> expandableListDetail;
 
-    public HistoryExpandableListAdapter(FragmentActivity activity, Context context, AppUser user, List<String> expandableListTitle,
-                                        Map<String, Map<String, Double>> expandableListDetail) {
+    public NutritionHistoryExpandableListAdapter(FragmentActivity activity, Context context, AppUser user, List<String> expandableListTitle,
+                                                 Map<String, Map<String, Double>> expandableListDetail) {
         this.activity = activity;
         this.context = context;
         this.user = user;
