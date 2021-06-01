@@ -1,59 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <PreferenceCategory
-            app:title="@string/nutrients_setting_category_text"
-            app:iconSpaceReserved="false">
-        <androidx.preference.SwitchPreferenceCompat
-            android:id="@+id/carbs"
-            android:layout_width="match_parent"
-            android:defaultValue="true"
-            android:key="carbs_shown"
-            android:title="@string/carbs_name"
-            app:iconSpaceReserved="false"
-            android:onClick="showNutrientMaxQuantity"/>
-        <EditTextPreference
-            app:key="carbs_max1"
-            app:title="Your signature"
-            app:isPreferenceVisible="false"/>
-        <androidx.preference.SwitchPreferenceCompat
-            android:layout_width="match_parent"
-            android:defaultValue="true"
-            android:key="sugars_shown"
-            android:title="@string/sugars_name"
-            app:iconSpaceReserved="false"/>
-        <androidx.preference.SwitchPreferenceCompat
-            android:layout_width="match_parent"
-            android:defaultValue="true"
-            android:key="fats_shown"
-            android:title="@string/fats_name"
-            app:iconSpaceReserved="false"/>
-        <androidx.preference.SwitchPreferenceCompat
-            android:layout_width="match_parent"
-            android:defaultValue="true"
-            android:key="saturated_fats_shown"
-            android:title="@string/saturated_fats_name"
-            app:iconSpaceReserved="false"/>
-        <androidx.preference.SwitchPreferenceCompat
-            android:layout_width="match_parent"
-            android:defaultValue="true"
-            android:key="proteins_shown"
-            android:title="@string/proteins_name"
-            app:iconSpaceReserved="false"/>
-        <androidx.preference.SwitchPreferenceCompat
-            android:layout_width="match_parent"
-            android:defaultValue="true"
-            android:key="fiber_shown"
-            android:title="@string/fiber_name"
-            app:iconSpaceReserved="false"/>
-        <androidx.preference.SwitchPreferenceCompat
-            android:layout_width="match_parent"
-            android:defaultValue="true"
-            android:key="salt_shown"
-            android:title="@string/salt_name"
-            app:iconSpaceReserved="false"/>
-    </PreferenceCategory>
     <PreferenceCategory
             android:title="Maximum values per nutrients (in grams)"
             app:iconSpaceReserved="false">

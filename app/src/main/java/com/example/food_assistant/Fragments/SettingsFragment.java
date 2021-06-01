@@ -26,31 +26,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
-
-        View carbsView = requireActivity().findViewById(R.id.carbs);
-        if (carbsView != null)
-            showNutrientMaxQuantity(carbsView);
-
-    }
-
-    public void showNutrientMaxQuantity(View v) {
-
-        String nutrient = "";
-
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(requireActivity());
-
-        String shownValueKey = nutrient + "_shown";
-        String maxValueKey = nutrient + "_max1";
-
-        boolean nutrientShown = sharedPreferences.getBoolean(shownValueKey, true);
-
-        if(nutrientShown) {
-            EditTextPreference carbsPreference = findPreference(maxValueKey);
-            if (carbsPreference != null) {
-                carbsPreference.setVisible(true);
-            }
-        }
     }
 
 }
