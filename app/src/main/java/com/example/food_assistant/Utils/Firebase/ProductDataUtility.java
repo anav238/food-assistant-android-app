@@ -13,6 +13,7 @@ import com.example.food_assistant.HttpRequest.NetworkManager;
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.Models.ProductIdentifier;
+import com.example.food_assistant.Utils.EventListeners.ProductDataFetchListener;
 import com.example.food_assistant.Utils.Mappers.ProductMapper;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.google.firebase.database.DatabaseReference;
@@ -54,19 +55,43 @@ public class ProductDataUtility {
                 product.setProductType(ProductType.CUSTOM);
                 productSharedViewModel.select(product);
             }
-        }).addOnFailureListener(task -> {});
+        }).addOnFailureListener(error -> {});
     }
 
-    public static void getProductByIdentifier(ProductIdentifier productIdentifier, ProductSharedViewModel productSharedViewModel) {
+    public static void getProductById(String productId, ProductDataFetchListener productDataFetchListener) {
+        if (mDatabase == null)
+            mDatabase = FirebaseDatabase.getInstance("https://foodassistant-43fda-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
+
+        mDatabase.child("products").child(productId).get().addOnCompleteListener(task -> {
+            Log.i("productData", task.getResult().toString());
+            if (!task.isSuccessful() || task.getResult().getValue() == null) {
+                Product product = new Product();
+                product.setId(productId);
+                product.setProductType(ProductType.CUSTOM);
+                productDataFetchListener.onFetchNotFound();
+            }
+            else {
+                Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                Gson gson = new Gson();
+                JsonElement productElement = gson.toJsonTree(task.getResult().getValue());
+                JsonObject productObject = (JsonObject) productElement;
+                Product product = ProductMapper.mapFirebaseProduct(productObject);
+                product.setProductType(ProductType.CUSTOM);
+                productDataFetchListener.onFetchSuccess(product);
+            }
+        }).addOnFailureListener(error -> {productDataFetchListener.onFetchFailure(error.getMessage());});
+    }
+
+    public static void getProductByIdentifier(ProductIdentifier productIdentifier, ProductDataFetchListener productDataFetchListener) {
         Log.i("INFO", "PRODUCT IDENTIFIER" + productIdentifier);
         ProductType productType = productIdentifier.getProductType();
         String productId = productIdentifier.getId();
         if (productType == ProductType.CUSTOM)
-            getProductById(productId, productSharedViewModel);
+            getProductById(productId, productDataFetchListener);
         else if (productType == ProductType.OPEN_FOOD_FACTS)
-            networkManager.getProductDetailsByBarcode(productId, productSharedViewModel);
+            networkManager.getProductDetailsByBarcode(productId, productDataFetchListener);
         else if (productType == ProductType.FOOD_DATA_CENTRAL)
-            networkManager.getProductDetailsByFoodDataCentralId(productId, productSharedViewModel);
+            networkManager.getProductDetailsByFoodDataCentralId(productId, productDataFetchListener);
     }
 
     public static boolean[] determineIfProductsAreFavoriteForUser(List<ProductIdentifier> productIdentifiers, AppUser appUser) {

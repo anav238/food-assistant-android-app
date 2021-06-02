@@ -16,6 +16,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.food_assistant.Enums.ProductType;
 import com.example.food_assistant.Models.OpenFoodFactsProduct;
 import com.example.food_assistant.Models.Product;
+import com.example.food_assistant.Utils.EventListeners.ProductDataFetchListener;
 import com.example.food_assistant.Utils.Firebase.ProductDataUtility;
 import com.example.food_assistant.Utils.Mappers.ProductMapper;
 import com.example.food_assistant.Utils.ViewModels.ProductListSharedViewModel;
@@ -76,6 +77,27 @@ public class NetworkManager
         requestQueue.add(stringRequest);
     }
 
+    public void getProductDetailsByBarcode(String barcode, ProductDataFetchListener productDataFetchListener) {
+        String url = "https://world.openfoodfacts.org/api/v0/product/" + barcode + ".json";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                responseString -> {
+                    Log.i("response", responseString);
+                    JsonObject responseJson = new Gson().fromJson(responseString, JsonObject.class);
+                    if (responseJson.has("product")) {
+                        OpenFoodFactsProduct product = ProductMapper.mapOpenFoodFactsProduct(responseJson);
+                        product.setId(barcode);
+                        product.setProductType(ProductType.OPEN_FOOD_FACTS);
+                        productDataFetchListener.onFetchSuccess(product);
+                        System.out.println(product.toString());
+                    }
+                    else
+                        ProductDataUtility.getProductById(barcode, productDataFetchListener);
+
+                }, error -> productDataFetchListener.onFetchFailure(error.getMessage()));
+        requestQueue.add(stringRequest);
+    }
+
     public void searchFoodByName(String name, AppCompatActivity activity) {
         String url = "https://api.nal.usda.gov/fdc/v1/foods/search";
         ProductListSharedViewModel productListSharedViewModel = new ViewModelProvider(activity).get(ProductListSharedViewModel.class);
@@ -133,7 +155,7 @@ public class NetworkManager
         requestQueue.add(stringRequest);
     }
 
-    public void getProductDetailsByFoodDataCentralId(String productId, ProductSharedViewModel productSharedViewModel) {
+    public void getProductDetailsByFoodDataCentralId(String productId, ProductDataFetchListener productDataFetchListener) {
         String url = "https://api.nal.usda.gov/fdc/v1/food/" + productId;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -144,15 +166,13 @@ public class NetworkManager
                         Product product = ProductMapper.mapFoodDataCentralProduct(responseJson);
                         product.setId(productId);
                         product.setProductType(ProductType.FOOD_DATA_CENTRAL);
-                        productSharedViewModel.select(product);
+                        productDataFetchListener.onFetchSuccess(product);
                         System.out.println(product.toString());
                     }
-                    else {
-                        System.out.println(responseJson);
-                        // No foods found
-                    }
+                    else
+                        productDataFetchListener.onFetchNotFound();
                 },
-                error -> Log.e("VOLLEY", error.toString())) {
+                error -> productDataFetchListener.onFetchFailure(error.getMessage())) {
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {

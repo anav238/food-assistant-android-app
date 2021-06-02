@@ -141,12 +141,16 @@ public class AppUser {
         productFavorites.add(productIdentifier);
     }
 
-    public void removeProductFavorite(ProductIdentifier productIdentifier) {
+    public void removeProductFromFavorites(ProductIdentifier productIdentifier) {
         productFavorites.remove(productIdentifier);
     }
 
     public List<ProductIdentifier> getProductHistory() {
         return productHistory;
+    }
+
+    public void removeProductFromHistory(ProductIdentifier productIdentifier) {
+        productHistory.remove(productIdentifier);
     }
 
     public Map<String, Double> getMaximumNutrientDV() {

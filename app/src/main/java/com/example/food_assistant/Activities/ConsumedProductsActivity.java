@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -15,8 +16,10 @@ import com.example.food_assistant.Adapters.ConsumedProductsAdapter;
 import com.example.food_assistant.Fragments.ProductInfoFragment;
 import com.example.food_assistant.HttpRequest.NetworkManager;
 import com.example.food_assistant.Models.AppUser;
+import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.Models.ProductIdentifier;
 import com.example.food_assistant.R;
+import com.example.food_assistant.Utils.EventListeners.ProductDataFetchListener;
 import com.example.food_assistant.Utils.Firebase.ProductDataUtility;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
@@ -27,7 +30,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 import java.util.List;
 
-public class ConsumedProductsActivity extends AppCompatActivity implements ConsumedProductsAdapter.ConsumedProductListener {
+public class ConsumedProductsActivity extends AppCompatActivity implements ConsumedProductsAdapter.ConsumedProductListener, ProductDataFetchListener {
 
     private String mode;
     private UserSharedViewModel userSharedViewModel;
@@ -35,6 +38,8 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
 
     private RecyclerView consumedProductsRecyclerView;
     private ConsumedProductsAdapter adapter;
+
+    private int currentAdapterPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,22 +99,54 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
                 adapter.setIsFavorite(productAdapterPosition, true);
             }
             else {
-                currentUser.removeProductFavorite(adapter.itemAt(productAdapterPosition));
+                currentUser.removeProductFromFavorites(adapter.itemAt(productAdapterPosition));
                 adapter.setIsFavorite(productAdapterPosition, false);
             }
+            UserDataUtility.updateUserDataToDb(FirebaseAuth.getInstance().getCurrentUser(), userSharedViewModel);
+        }
+        currentAdapterPosition = productAdapterPosition;
+    }
+
+    @Override
+    public void onPressInfoButton(int productAdapterPosition) {
+        //TODO: Show loading overlay
+        ProductDataUtility.getProductByIdentifier(adapter.itemAt(productAdapterPosition), this);
+        currentAdapterPosition = productAdapterPosition;
+    }
+
+    @Override
+    public void onFetchSuccess(Product product) {
+        productSharedViewModel.select(product);
+
+        ProductInfoFragment productInfoFragment = new ProductInfoFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        productInfoFragment.show(fragmentManager, "test");
+    }
+
+    @Override
+    public void onFetchNotFound() {
+        new AlertDialog.Builder(this)
+                .setTitle("Error fetching product data")
+                .setMessage("This product does not exist anymore.")
+                .setPositiveButton("Close", null)
+                .show();
+        ProductIdentifier productIdentifier = adapter.itemAt(currentAdapterPosition);
+        AppUser currentUser = userSharedViewModel.getSelected().getValue();
+        if (currentUser != null) {
+            currentUser.removeProductFromFavorites(productIdentifier);
+            currentUser.removeProductFromHistory(productIdentifier);
             UserDataUtility.updateUserDataToDb(FirebaseAuth.getInstance().getCurrentUser(), userSharedViewModel);
         }
     }
 
     @Override
-    public void onPressInfoButton(int productAdapterPosition) {
-        productSharedViewModel.getSelected().observe(this, product -> {
-            ProductInfoFragment productInfoFragment = new ProductInfoFragment();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            productInfoFragment.show(fragmentManager, "test");
-        });
-        System.out.println(adapter.itemAt(productAdapterPosition));
-        ProductDataUtility.getProductByIdentifier(adapter.itemAt(productAdapterPosition), productSharedViewModel);
-    }
+    public void onFetchFailure(String errorMessage) {
+        new AlertDialog.Builder(this)
+                .setTitle("Error fetching product data")
+                .setMessage("Error cause: " + errorMessage + ". If this is a connection error, retry after reconnecting to the Internet.")
 
+                .setPositiveButton("Ok", null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
 }
