@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Activities.LogCustomMealActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+<FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
-    tools:context=".Activities.LogCustomMealActivity">
+    android:padding="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -154,3 +158,4 @@
         android:src="@drawable/ic_plus" />
 
 </FrameLayout>
+</ScrollView>

@@ -8,12 +8,8 @@ import android.view.ViewGroup;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.food_assistant.R;
-import com.example.food_assistant.Utils.MLKit.VisionImageProcessor;
-import com.example.food_assistant.Utils.ViewModels.ImageProcessorSharedViewModel;
-
 import org.jetbrains.annotations.NotNull;
 
 public class ScanProductNutritionalTableRequestFragment extends DialogFragment {

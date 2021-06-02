@@ -144,7 +144,6 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
         new AlertDialog.Builder(this)
                 .setTitle("Error fetching product data")
                 .setMessage("Error cause: " + errorMessage + ". If this is a connection error, retry after reconnecting to the Internet.")
-
                 .setPositiveButton("Ok", null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
