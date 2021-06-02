@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.R;
@@ -61,6 +62,9 @@ public class DayNutritionFragment extends Fragment {
 
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag("todayNutrientIntake");
+
+        ProgressBar progressBar = getView().findViewById(R.id.progress_bar_nutrient_intake);
+        progressBar.setVisibility(View.GONE);
 
         if (fragment == null) {
             fragmentManager.beginTransaction()

@@ -32,6 +32,15 @@
         android:textSize="18sp"
         android:textStyle="italic" />
 
+    <ProgressBar
+        android:id="@+id/progress_bar_nutrient_intake"
+        style="@style/Base.Widget.AppCompat.ProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="visible" />
+
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nutrientIntakeContainer"
         android:layout_width="match_parent"

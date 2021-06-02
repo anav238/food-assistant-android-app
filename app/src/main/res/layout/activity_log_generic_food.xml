@@ -16,6 +16,14 @@
 
     </SearchView>
 
+    <ProgressBar
+        android:id="@+id/progress_bar_load_food"
+        style="@style/Base.Widget.AppCompat.ProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_food_lookup"
         android:layout_width="match_parent"

@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -43,9 +45,9 @@ public class LogGenericFoodActivity extends AppCompatActivity {
     private UserSharedViewModel userSharedViewModel;
     private ProductSharedViewModel productSharedViewModel;
 
-
     private RecyclerView foodLookupRecyclerView;
     private GenericFoodLookupAdapter adapter;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,8 @@ public class LogGenericFoodActivity extends AppCompatActivity {
                 UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
             });
         }
+
+        progressBar = findViewById(R.id.progress_bar_load_food);
 
         setupRecyclerView();
         setupObservers();
@@ -120,6 +124,7 @@ public class LogGenericFoodActivity extends AppCompatActivity {
 
         ProductListSharedViewModel productListSharedViewModel = new ViewModelProvider(this).get(ProductListSharedViewModel.class);
         productListSharedViewModel.getSelected().observe(this, products -> {
+            progressBar.setVisibility(View.GONE);
             Log.i("Product list changed", products.toString());
             adapter.setLocalDataSet(new ArrayList<>(products));
             foodLookupRecyclerView.setAdapter(adapter);
@@ -171,6 +176,7 @@ public class LogGenericFoodActivity extends AppCompatActivity {
     }
 
     private void updateFoodListWithQuery(String query) {
+        progressBar.setVisibility(View.VISIBLE);
         networkManager.searchFoodByName(query, this);
     }
 }

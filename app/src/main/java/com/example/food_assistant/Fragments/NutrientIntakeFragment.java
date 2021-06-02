@@ -64,6 +64,7 @@ public class NutrientIntakeFragment extends Fragment {
             TextView nutrientTextView = view.findViewById(textViewId);
             nutrientTextView.setText(nutrientPercentage + "%");
         }
+
         return view;
     }
 }
