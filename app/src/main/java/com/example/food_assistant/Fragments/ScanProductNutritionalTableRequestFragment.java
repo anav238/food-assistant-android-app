@@ -23,9 +23,6 @@ public class ScanProductNutritionalTableRequestFragment extends DialogFragment {
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        ImageProcessorSharedViewModel imageProcessorSharedViewModel = new ViewModelProvider(requireActivity()).get(ImageProcessorSharedViewModel.class);
-        VisionImageProcessor visionImageProcessor = imageProcessorSharedViewModel.getSelected().getValue();
-
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
@@ -34,11 +31,11 @@ public class ScanProductNutritionalTableRequestFragment extends DialogFragment {
                 .setMessage(R.string.scan_product_nutritional_table_request)
                 .setPositiveButton("Yes", (dialog, id) -> {
                     Bundle result = new Bundle();
-                    getParentFragmentManager().setFragmentResult("ADD_NEW_PRODUCT_TO_DB_SUCCESS", result);
+                    getParentFragmentManager().setFragmentResult("ADD_NEW_PRODUCT_TO_DB_REQUEST_SUCCESS", result);
                 })
                 .setNegativeButton("No", (dialog, id) -> {
                     Bundle result = new Bundle();
-                    getParentFragmentManager().setFragmentResult("ADD_NEW_PRODUCT_TO_DB_CANCEL", result);
+                    getParentFragmentManager().setFragmentResult("ADD_NEW_PRODUCT_TO_DB_REQUEST_CANCEL", result);
                     dismiss();
                 });
 
@@ -52,7 +49,6 @@ public class ScanProductNutritionalTableRequestFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_scan_product_nutritional_table_request, container, false);
     }
 }

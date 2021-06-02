@@ -7,6 +7,15 @@
     android:padding="20dp"
     tools:context=".Activities.ConsumedProductsActivity">
 
+    <TextView
+        android:id="@+id/textView_no_products"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/nothing_to_see_here_yet"
+        android:visibility="gone"
+        tools:layout_editor_absoluteX="53dp"
+        tools:layout_editor_absoluteY="42dp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_consumed_products"
         android:layout_width="match_parent"

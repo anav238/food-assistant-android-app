@@ -1,12 +1,9 @@
 package com.example.food_assistant.Activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.service.autofill.UserData;
-import android.util.Log;
-import android.view.Gravity;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -16,10 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.food_assistant.Adapters.ConsumedProductsAdapter;
 import com.example.food_assistant.Fragments.ProductInfoFragment;
-import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.example.food_assistant.HttpRequest.NetworkManager;
 import com.example.food_assistant.Models.AppUser;
-import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.Models.ProductIdentifier;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.Firebase.ProductDataUtility;
@@ -29,16 +24,12 @@ import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class ConsumedProductsActivity extends AppCompatActivity implements ConsumedProductsAdapter.ConsumedProductListener {
 
     private String mode;
-
-    private NetworkManager networkManager;
     private UserSharedViewModel userSharedViewModel;
     private ProductSharedViewModel productSharedViewModel;
 
@@ -48,12 +39,12 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_history);
+        setContentView(R.layout.activity_consumed_products);
 
         Intent intent = getIntent();
         mode = intent.getStringExtra("mode");
 
-        networkManager = NetworkManager.getInstance(this);
+        NetworkManager networkManager = NetworkManager.getInstance(this);
 
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
         productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
@@ -80,12 +71,18 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
     }
 
     private void setupRecyclerView(List<ProductIdentifier> productIdentifiers, boolean[] areFavorites) {
-        consumedProductsRecyclerView = findViewById(R.id.recyclerView_consumed_products);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        consumedProductsRecyclerView.setLayoutManager(layoutManager);
+        if (productIdentifiers.size() > 0) {
+            consumedProductsRecyclerView = findViewById(R.id.recyclerView_consumed_products);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+            consumedProductsRecyclerView.setLayoutManager(layoutManager);
 
-        adapter = new ConsumedProductsAdapter(productIdentifiers, areFavorites, this);
-        consumedProductsRecyclerView.setAdapter(adapter);
+            adapter = new ConsumedProductsAdapter(productIdentifiers, areFavorites, this);
+            consumedProductsRecyclerView.setAdapter(adapter);
+        }
+        else {
+            TextView noProductsTextView = findViewById(R.id.textView_no_products);
+            noProductsTextView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

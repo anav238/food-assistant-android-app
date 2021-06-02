@@ -42,19 +42,13 @@ public class LogNewProductFragment extends DialogFragment {
     private UserSharedViewModel userSharedViewModel;
     private ProductSharedViewModel productSharedViewModel;
 
-    public LogNewProductFragment() {
-        // Required empty public constructor
-    }
+    public LogNewProductFragment() { }
 
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the Builder class for convenient dialog construction
-        ImageProcessorSharedViewModel imageProcessorSharedViewModel = new ViewModelProvider(requireActivity()).get(ImageProcessorSharedViewModel.class);
         userSharedViewModel = new ViewModelProvider(requireActivity()).get(UserSharedViewModel.class);
         productSharedViewModel = new ViewModelProvider(requireActivity()).get(ProductSharedViewModel.class);
-
-        VisionImageProcessor visionImageProcessor = imageProcessorSharedViewModel.getSelected().getValue();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -66,8 +60,9 @@ public class LogNewProductFragment extends DialogFragment {
 
                 })
                 .setNegativeButton("Cancel", (dialog, id) -> {
-                    // AppUser cancelled the dialog
-                    visionImageProcessor.restart();
+                    Bundle result = new Bundle();
+                    getParentFragmentManager().setFragmentResult("ADD_NEW_PRODUCT_TO_DB_CANCEL", result);
+                    dismiss();
                 });
 
         AlertDialog dialog = builder.create();
@@ -106,16 +101,7 @@ public class LogNewProductFragment extends DialogFragment {
                 if (product.getId().length() == 0)
                     isValidProduct = false;
 
-                EditText productQuantityEditText = dialog.findViewById(R.id.editText_product_quantity);
-                double baseQuantity = 0.0, consumedQuantity = 0.0;
-                try {
-                    baseQuantity = Double.parseDouble(productQuantityEditText.getText().toString());
-                    product.setBaseQuantity(baseQuantity);
-                }
-                catch (Exception e) {
-                    productQuantityEditText.setError("Please enter a valid product quantity.");
-                    isValidProduct = false;
-                }
+                product.setBaseQuantity(100.0);
 
                 if (isValidProduct) {
                     ProductDataUtility.logProductData(product);
@@ -161,7 +147,7 @@ public class LogNewProductFragment extends DialogFragment {
             EditText nutrientQuantityEditText = dialog.findViewById(editTextId);
             try {
                 double nutrientQuantity = Double.parseDouble(nutrientQuantityEditText.getText().toString());
-                nutrientQuantities.put(nutrient + "_value", nutrientQuantity);
+                nutrientQuantities.put(nutrient, nutrientQuantity);
             }
             catch (Exception e) {
                 nutrientQuantityEditText.setError("Please enter a valid quantity.");

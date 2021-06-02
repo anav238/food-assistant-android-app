@@ -54,7 +54,7 @@ public class ProductDataUtility {
                 product.setProductType(ProductType.CUSTOM);
                 productSharedViewModel.select(product);
             }
-        });
+        }).addOnFailureListener(task -> {});
     }
 
     public static void getProductByIdentifier(ProductIdentifier productIdentifier, ProductSharedViewModel productSharedViewModel) {

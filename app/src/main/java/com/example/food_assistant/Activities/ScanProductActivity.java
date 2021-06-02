@@ -193,12 +193,15 @@ public class ScanProductActivity extends AppCompatActivity
                 this, (requestKey, bundle) -> imageProcessor.restart());
 
 
-        getSupportFragmentManager().setFragmentResultListener("ADD_NEW_PRODUCT_TO_DB_SUCCESS",
+        getSupportFragmentManager().setFragmentResultListener("ADD_NEW_PRODUCT_TO_DB_REQUEST_SUCCESS",
                 this, (requestKey, bundle) -> {
             LogNewProductFragment logNewProductFragment = new LogNewProductFragment();
             FragmentManager fragmentManager = getSupportFragmentManager();
             logNewProductFragment.show(fragmentManager, "test");
         });
+
+        getSupportFragmentManager().setFragmentResultListener("ADD_NEW_PRODUCT_TO_DB_REQUEST_CANCEL",
+                this, (requestKey, bundle) -> imageProcessor.restart());
 
         getSupportFragmentManager().setFragmentResultListener("ADD_NEW_PRODUCT_TO_DB_CANCEL",
                 this, (requestKey, bundle) -> imageProcessor.restart());

@@ -66,22 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         AuthUI.getInstance()
                 .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        /*List<AuthUI.IdpConfig> providers = Collections.singletonList(
-                                new AuthUI.IdpConfig.EmailBuilder().build());
-
-                        startActivityForResult(
-                                AuthUI.getInstance()
-                                        .createSignInIntentBuilder()
-                                        .setAvailableProviders(providers)
-                                        .setTheme(R.style.Theme_Foodassistant_NoActionBar)
-                                        .build(),
-                                RC_SIGN_IN);*/
-
-                        finish();
-                    }
-                });
+                .addOnCompleteListener(task -> finish());
     }
 
 }
