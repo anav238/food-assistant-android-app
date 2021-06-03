@@ -40,7 +40,6 @@ public class SettingsActivity extends AppCompatActivity {
         if (ab != null)
             ab.setDisplayHomeAsUpEnabled(true);
 
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String name = user.getDisplayName();
@@ -48,6 +47,12 @@ public class SettingsActivity extends AppCompatActivity {
             TextView usernameTextView = findViewById(R.id.usernameTextView);
             usernameTextView.setText(name);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
@@ -63,7 +68,6 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void logoutUser(View view) {
-
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnCompleteListener(task -> finish());

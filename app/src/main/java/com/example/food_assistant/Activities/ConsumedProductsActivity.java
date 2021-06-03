@@ -3,6 +3,7 @@ package com.example.food_assistant.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -36,7 +37,6 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
     private UserSharedViewModel userSharedViewModel;
     private ProductSharedViewModel productSharedViewModel;
 
-    private RecyclerView consumedProductsRecyclerView;
     private ConsumedProductsAdapter adapter;
 
     private int currentAdapterPosition = 0;
@@ -77,7 +77,7 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
 
     private void setupRecyclerView(List<ProductIdentifier> productIdentifiers, boolean[] areFavorites) {
         if (productIdentifiers.size() > 0) {
-            consumedProductsRecyclerView = findViewById(R.id.recyclerView_consumed_products);
+            RecyclerView consumedProductsRecyclerView = findViewById(R.id.recyclerView_consumed_products);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             consumedProductsRecyclerView.setLayoutManager(layoutManager);
 
@@ -109,13 +109,17 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
 
     @Override
     public void onPressInfoButton(int productAdapterPosition) {
-        //TODO: Show loading overlay
+        LinearLayout loadingLayout = findViewById(R.id.linearLayout_loading);
+        loadingLayout.setVisibility(View.VISIBLE);
         ProductDataUtility.getProductByIdentifier(adapter.itemAt(productAdapterPosition), this);
         currentAdapterPosition = productAdapterPosition;
     }
 
     @Override
     public void onFetchSuccess(Product product) {
+        LinearLayout loadingLayout = findViewById(R.id.linearLayout_loading);
+        loadingLayout.setVisibility(View.GONE);
+
         productSharedViewModel.select(product);
 
         ProductInfoFragment productInfoFragment = new ProductInfoFragment();

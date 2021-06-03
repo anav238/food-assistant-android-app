@@ -1,23 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp"
     tools:context=".Activities.ConsumedProductsActivity">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp">
+            <TextView
+                android:id="@+id/textView_no_products"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/nothing_to_see_here_yet"
+                android:visibility="gone"
+                tools:layout_editor_absoluteX="53dp"
+                tools:layout_editor_absoluteY="42dp" />
 
-    <TextView
-        android:id="@+id/textView_no_products"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/nothing_to_see_here_yet"
-        android:visibility="gone"
-        tools:layout_editor_absoluteX="53dp"
-        tools:layout_editor_absoluteY="42dp" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_consumed_products"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_consumed_products"
+        </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout_loading"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:background="#CC000000"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progress_bar_nutrient_intake"
+            style="@style/Base.Widget.AppCompat.ProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="visible" />
+
+    </LinearLayout>
+</FrameLayout>
