@@ -6,45 +6,60 @@
             app:iconSpaceReserved="false">
         <EditTextPreference
             android:layout_width="match_parent"
-            android:defaultValue="20"
-            android:key="carbs_max"
+            android:defaultValue="300"
+            android:key="carbohydrates_max"
             android:title="@string/carbs_name"
+            android:inputType="numberDecimal"
             app:iconSpaceReserved="false"/>
         <EditTextPreference
             android:layout_width="match_parent"
-            android:defaultValue="20"
+            android:defaultValue="50"
             android:key="sugars_max"
             android:title="@string/sugars_name"
+            android:inputType="numberDecimal"
             app:iconSpaceReserved="false"/>
         <EditTextPreference
             android:layout_width="match_parent"
-            android:defaultValue="20"
-            android:key="fats_max"
+            android:defaultValue="78"
+            android:key="fat_max"
             android:title="@string/fats_name"
+            android:inputType="numberDecimal"
             app:iconSpaceReserved="false"/>
         <EditTextPreference
             android:layout_width="match_parent"
             android:defaultValue="20"
-            android:key="saturated_fats_max"
+            android:key="saturated-fat_max"
             android:title="@string/saturated_fats_name"
+            android:inputType="numberDecimal"
             app:iconSpaceReserved="false"/>
         <EditTextPreference
             android:layout_width="match_parent"
-            android:defaultValue="20"
-            android:key="proteins_max"
+            android:defaultValue="50"
+            android:key="protein_max"
             android:title="@string/proteins_name"
+            android:inputType="numberDecimal"
             app:iconSpaceReserved="false"/>
         <EditTextPreference
             android:layout_width="match_parent"
             android:defaultValue="20"
             android:key="fiber_max"
             android:title="@string/fiber_name"
+            android:inputType="numberDecimal"
             app:iconSpaceReserved="false"/>
         <EditTextPreference
             android:layout_width="match_parent"
-            android:defaultValue="20"
+            android:defaultValue="2.4"
             android:key="salt_max"
             android:title="@string/salt_name"
+            android:inputType="numberDecimal"
             app:iconSpaceReserved="false"/>
+        <EditTextPreference
+            android:layout_width="match_parent"
+            android:defaultValue="2000"
+            android:key="energy-kcal_max"
+            android:title="@string/calories_name"
+            android:inputType="numberDecimal"
+            app:iconSpaceReserved="false"/>
+
     </PreferenceCategory>
 </PreferenceScreen>
