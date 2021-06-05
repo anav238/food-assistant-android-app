@@ -17,4 +17,15 @@ public class Ingredient {
         return quantity;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (object == this)
+            return true;
+        if (!(object instanceof Ingredient))
+            return false;
+        Ingredient other = (Ingredient) object;
+        return this.quantity.equals(other.quantity) && this.product.getId().equals(other.product.getId()) && this.product.getProductType() == other.product.getProductType();
+    }
+
+
 }

@@ -30,6 +30,7 @@ import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.ActivityResultContracts.GetBrandedProduct;
 import com.example.food_assistant.Utils.ActivityResultContracts.GetGenericProduct;
+import com.example.food_assistant.Utils.Firebase.MealDataUtility;
 import com.example.food_assistant.Utils.Nutrition.NutrientCalculator;
 import com.example.food_assistant.Utils.Nutrition.Nutrients;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
@@ -86,7 +87,7 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
             double productQuantity = bundle.getDouble("productQuantity");
 
             Ingredient oldIngredient = adapter.itemAt(currentItemAdapterPosition);
-            meal.removeIngredient(oldIngredient);;
+            meal.removeIngredient(oldIngredient);
 
             Ingredient updatedIngredient = new Ingredient(adapter.itemAt(currentItemAdapterPosition).getProduct(), productQuantity);
             meal.addIngredient(updatedIngredient);
@@ -96,6 +97,8 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
         });
 
         getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_SUCCESS", this, (requestKey, bundle) -> {
+            MealDataUtility.logMealData(meal);
+
             AppUser user = appDataManager.getAppUser();
             user.updateUserNutrientConsumptionWithMeal(meal, meal.getTotalQuantity());
             appDataManager.setAppUser(user);

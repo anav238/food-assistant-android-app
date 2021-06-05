@@ -1,24 +1,38 @@
 package com.example.food_assistant.Models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-public class Meal {
+public class Meal implements Serializable {
+    private String id;
     private String name = "Untitled meal";
     private List<Ingredient> ingredients = new ArrayList<>();
     private Map<String, Double> mealNutrition = new HashMap<>();
     private double totalQuantity = 0.0;
 
-    public Meal() { }
+    public Meal() {
+        this.id = UUID.randomUUID().toString();
+    }
 
     public Meal(List<Ingredient> ingredients) {
+        this.id = UUID.randomUUID().toString();
         for (Ingredient ingredient:ingredients)
             addIngredient(ingredient);
     }
 
     public Meal(String name, List<Ingredient> ingredients) {
+        this.id = UUID.randomUUID().toString();
+        this.name = name;
+        for (Ingredient ingredient:ingredients)
+            addIngredient(ingredient);
+    }
+
+    public Meal(String id, String name, List<Ingredient> ingredients) {
+        this.id = id;
         this.name = name;
         for (Ingredient ingredient:ingredients)
             addIngredient(ingredient);
@@ -57,16 +71,18 @@ public class Meal {
     }
 
     public void removeIngredient(Ingredient ingredient) {
-        ingredients.remove(ingredient);
-        totalQuantity -= ingredient.getQuantity();
+        if (ingredients.contains(ingredient)) {
+            ingredients.remove(ingredient);
+            totalQuantity -= ingredient.getQuantity();
 
-        Map<String, Double> ingredientNutrition = ingredient.getProduct().getNutriments();
-        for (String nutrient:ingredientNutrition.keySet()) {
-            double nutrientTotalValue = 0.0;
-            if (mealNutrition.containsKey(nutrient))
-                nutrientTotalValue = mealNutrition.get(nutrient);
-            nutrientTotalValue -= ingredientNutrition.get(nutrient) * ingredient.getQuantity() / ingredient.getProduct().getBaseQuantity();
-            mealNutrition.put(nutrient, nutrientTotalValue);
+            Map<String, Double> ingredientNutrition = ingredient.getProduct().getNutriments();
+            for (String nutrient : ingredientNutrition.keySet()) {
+                double nutrientTotalValue = 0.0;
+                if (mealNutrition.containsKey(nutrient))
+                    nutrientTotalValue = mealNutrition.get(nutrient);
+                nutrientTotalValue -= ingredientNutrition.get(nutrient) * ingredient.getQuantity() / ingredient.getProduct().getBaseQuantity();
+                mealNutrition.put(nutrient, nutrientTotalValue);
+            }
         }
     }
 
@@ -76,5 +92,9 @@ public class Meal {
 
     public double getTotalQuantity() {
         return totalQuantity;
+    }
+
+    public String getId() {
+        return id;
     }
 }
