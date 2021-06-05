@@ -91,19 +91,14 @@ public class MainActivity extends AppCompatActivity {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if (resultCode == RESULT_OK) {
-                // Successfully signed in
-                Log.i("TEST", "TEST");
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 UserDataUtility.getUserData(user, userSharedViewModel);
+                Log.i("USER LOGIN", user.getDisplayName());
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
                 // response.getError().getErrorCode() and handle the error.
                 // ...
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                //if (user != null)
-                    //updateNutrientProgressBars();
-                //UserDataUtility.logUserData(user);
             }
         }
     }
