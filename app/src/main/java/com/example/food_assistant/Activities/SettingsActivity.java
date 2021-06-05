@@ -2,6 +2,7 @@ package com.example.food_assistant.Activities;
 
 import android.os.Bundle;
 
+import com.example.food_assistant.Models.AppDataManager;
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private AppDataManager appDataManager;
     private UserSharedViewModel userSharedViewModel;
 
     @Override
@@ -43,17 +45,15 @@ public class SettingsActivity extends AppCompatActivity {
         if (ab != null)
             ab.setDisplayHomeAsUpEnabled(true);
 
+        appDataManager = AppDataManager.getInstance();
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        AppUser user = appDataManager.getAppUser();
         if (user != null) {
-            String name = user.getDisplayName();
-
+            String name = user.getName();
             TextView usernameTextView = findViewById(R.id.usernameTextView);
             usernameTextView.setText(name);
-
-            UserDataUtility.getUserData(user, userSharedViewModel);
-            userSharedViewModel.getSelected().observe(this, appUser -> populateNutrientValues());
+            populateNutrientValues();
         }
     }
 
@@ -81,7 +81,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void populateNutrientValues() {
-        AppUser user = userSharedViewModel.getSelected().getValue();
+        AppUser user = appDataManager.getAppUser();
         if (user != null) {
             Map<String, Double> userNutrientValues = user.getMaximumNutrientDV();
             for (String nutrient:userNutrientValues.keySet()) {
@@ -94,7 +94,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void saveChanges(View view) {
-        AppUser user = userSharedViewModel.getSelected().getValue();
+        AppUser user = appDataManager.getAppUser();
         if (user != null) {
             Map<String, Double> userNutrientValues = user.getMaximumNutrientDV();
             for (String nutrient:userNutrientValues.keySet()) {
@@ -111,13 +111,15 @@ public class SettingsActivity extends AppCompatActivity {
             }
             user.setMaximumNutrientDV(userNutrientValues);
         }
+        userSharedViewModel.select(user);
+        appDataManager.setAppUser(user);
         UserDataUtility.updateUserDataToDb(FirebaseAuth.getInstance().getCurrentUser(), userSharedViewModel);
         Toast toast = Toast.makeText(this, "Changes saved!", Toast.LENGTH_SHORT);
         toast.show();
     }
 
     public void resetToDefaults(View view) {
-        AppUser user = userSharedViewModel.getSelected().getValue();
+        AppUser user = appDataManager.getAppUser();
         if (user != null) {
             user.setMaximumNutrientDV(Nutrients.nutrientDefaultDV);
             populateNutrientValues();
