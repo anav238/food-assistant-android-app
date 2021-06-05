@@ -2,19 +2,26 @@ package com.example.food_assistant.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.food_assistant.Adapters.ConsumedProductsAdapter;
+import com.example.food_assistant.Fragments.LogNewProductFragment;
+import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
 import com.example.food_assistant.Fragments.ProductInfoFragment;
+import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.example.food_assistant.HttpRequest.NetworkManager;
 import com.example.food_assistant.Models.AppDataManager;
 import com.example.food_assistant.Models.AppUser;
@@ -24,6 +31,7 @@ import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.EventListeners.ProductDataFetchListener;
 import com.example.food_assistant.Utils.Firebase.ProductDataUtility;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
+import com.example.food_assistant.Utils.Nutrition.NutrientCalculator;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +39,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class ConsumedProductsActivity extends AppCompatActivity implements ConsumedProductsAdapter.ConsumedProductListener, ProductDataFetchListener {
 
@@ -74,6 +83,7 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
             }
         }
 
+        setupFragmentResultListeners();
     }
 
     private void setupRecyclerView(List<ProductIdentifier> productIdentifiers, boolean[] areFavorites) {
@@ -89,6 +99,60 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
             TextView noProductsTextView = findViewById(R.id.textView_no_products);
             noProductsTextView.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setupFragmentResultListeners() {
+        getSupportFragmentManager().setFragmentResultListener("LOG_PRODUCT_REQUEST", this, (requestKey, bundle) -> {
+            SelectProductQuantityFragment selectProductQuantityFragment = new SelectProductQuantityFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            selectProductQuantityFragment.show(fragmentManager, "test");
+        });
+
+        getSupportFragmentManager().setFragmentResultListener("GET_QUANTITY_SUCCESS", this, (requestKey, bundle) -> {
+            double productQuantity = bundle.getDouble("productQuantity");
+            Product currentProduct = productSharedViewModel.getSelected().getValue();
+            AppUser currentUser = appDataManager.getAppUser();
+
+            Map<String, Double> initialNutrientValues = currentUser.getTodayNutrientConsumption();
+            Map<String, Double> initialNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(initialNutrientValues, currentUser);
+            Map<String, Double> productNutrientValues = currentProduct.getNutriments();
+
+            Map<String, Double> totalNutrientValues = NutrientCalculator.addProductNutritionToUserDailyNutrition(initialNutrientValues, productNutrientValues, productQuantity);
+            Map<String, Double> totalNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(totalNutrientValues, currentUser);
+
+            Bundle newFragmentBundle = new Bundle();
+            newFragmentBundle.putDouble("productQuantity", productQuantity);
+            newFragmentBundle.putStringArray("nutrients", totalNutrientPercentages.keySet().toArray(new String[totalNutrientPercentages.keySet().size()]));
+
+            for (String nutrient:initialNutrientPercentages.keySet())
+                newFragmentBundle.putDouble(nutrient + "_initial", initialNutrientPercentages.get(nutrient));
+
+            for (String nutrient:totalNutrientPercentages.keySet())
+                newFragmentBundle.putDouble(nutrient + "_final", totalNutrientPercentages.get(nutrient));
+
+            ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
+            productConsumptionEffectsFragment.setArguments(newFragmentBundle);
+            productConsumptionEffectsFragment.show(getSupportFragmentManager(), "test");
+        });
+
+        getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_SUCCESS", this, (requestKey, bundle) -> {
+            double productQuantity = bundle.getDouble("productQuantity");
+            AppUser user = appDataManager.getAppUser();
+            Product product = productSharedViewModel.getSelected().getValue();
+            user.updateUserNutrientConsumptionWithProduct(product, productQuantity);
+            appDataManager.setAppUser(user);
+            userSharedViewModel.select(user);
+
+            UserDataUtility.updateUserDataToDb(FirebaseAuth.getInstance().getCurrentUser(), userSharedViewModel);
+
+            CharSequence text = "Product logged!";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+
+        });
+
     }
 
     @Override
@@ -157,4 +221,5 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
+
 }

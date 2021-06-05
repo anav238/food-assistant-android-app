@@ -70,6 +70,13 @@ public class ProductInfoFragment extends DialogFragment {
 
             Button closeButton = view.findViewById(R.id.button_close);
             closeButton.setOnClickListener(v -> dismiss());
+
+            Button logProductButton = view.findViewById(R.id.button_log);
+            logProductButton.setOnClickListener(v -> {
+                Bundle result = new Bundle();
+                getParentFragmentManager().setFragmentResult("LOG_PRODUCT_REQUEST", result);
+                dismiss();
+            });
         }
 
         return view;
@@ -96,4 +103,6 @@ public class ProductInfoFragment extends DialogFragment {
         else
             fragmentManager.beginTransaction().replace(R.id.fragment_nutritional_values, NutrientIntakeFragment.class, bundle, "productNutrientIntake").commit();
     }
+
+
 }
