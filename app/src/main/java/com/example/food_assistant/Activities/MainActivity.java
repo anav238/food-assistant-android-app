@@ -1,10 +1,15 @@
 package com.example.food_assistant.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.food_assistant.HttpRequest.NetworkManager;
+import com.example.food_assistant.Models.AppDataManager;
+import com.example.food_assistant.Models.AppUser;
+import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
+import com.example.food_assistant.Utils.EventListeners.UserDataFetchListener;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 import com.firebase.ui.auth.AuthUI;
@@ -13,6 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -27,9 +33,10 @@ import android.view.View;
 import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements UserDataFetchListener {
 
     private static final int RC_SIGN_IN = 123;
+    private AppDataManager appDataManager;
     private UserSharedViewModel userSharedViewModel;
 
     @Override
@@ -45,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
         NetworkManager networkManager = NetworkManager.getInstance(this);
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
-        authenticateUser();
 
     }
 
@@ -58,18 +64,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            //UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
-        }
     }
 
     private void authenticateUser() {
-        List<AuthUI.IdpConfig> providers = Collections.singletonList(
-                new AuthUI.IdpConfig.EmailBuilder().build());
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
+            List<AuthUI.IdpConfig> providers = Collections.singletonList(
+                    new AuthUI.IdpConfig.EmailBuilder().build());
             startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
@@ -79,20 +80,19 @@ public class MainActivity extends AppCompatActivity {
                     RC_SIGN_IN);
         }
         else {
-            UserDataUtility.getUserData(user, userSharedViewModel);
+            UserDataUtility.getUserData(user, this);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                UserDataUtility.getUserData(user, userSharedViewModel);
+                UserDataUtility.getUserData(user, this);
                 Log.i("USER LOGIN", user.getDisplayName());
             } else {
                 // Sign in failed. If response is null the user canceled the
@@ -143,4 +143,24 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    public void onFetchSuccess(AppUser appUser) {
+        AppDataManager.initialize(appUser);
+        appDataManager = AppDataManager.getInstance();
+        userSharedViewModel.select(appUser);
+    }
+
+    @Override
+    public void onFetchNotFound() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        AppUser appUser = new AppUser(firebaseUser.getDisplayName(), firebaseUser.getEmail());
+        userSharedViewModel.select(appUser);
+    }
+
+    @Override
+    public void onFetchFailure(String errorMessage) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Oops! Something went wrong. Please check your Internet connection and retry registering/logging in. Error message: " + errorMessage);
+        builder.setPositiveButton("Retry", (dialog, which) -> authenticateUser());
+    }
 }

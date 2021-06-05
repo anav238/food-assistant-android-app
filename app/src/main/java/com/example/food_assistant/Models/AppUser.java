@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AppUser {
+
     String name = "";
     String email = "";
     Map<String, Map<String, Double>> nutrientConsumptionHistory = new HashMap<>();
