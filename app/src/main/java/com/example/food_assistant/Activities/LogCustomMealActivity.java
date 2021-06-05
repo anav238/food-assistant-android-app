@@ -22,6 +22,7 @@ import com.example.food_assistant.Adapters.CustomMealIngredientAdapter;
 import com.example.food_assistant.Fragments.NutrientIntakeFragment;
 import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
+import com.example.food_assistant.Models.AppDataManager;
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Ingredient;
 import com.example.food_assistant.Models.Meal;
@@ -59,6 +60,7 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
     private int currentItemAdapterPosition = -1;
 
     private Meal meal = new Meal();
+    private AppDataManager appDataManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,15 +70,11 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
         layoutFabLog = findViewById(R.id.linearLayout_add_generic_food);
         fabAdd = findViewById(R.id.fab_add);
 
+        appDataManager = AppDataManager.getInstance();
         productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            UserDataUtility.getUserData(user, userSharedViewModel);
-            userSharedViewModel.getSelected().observe(this, appUser -> {
-                UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
-            });
-        }
+
+        userSharedViewModel.select(appDataManager.getAppUser());
 
         setupActivityResultLaunchers();
         setupMealIngredientsRecyclerView();
@@ -98,9 +96,11 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
         });
 
         getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_SUCCESS", this, (requestKey, bundle) -> {
-            AppUser user = userSharedViewModel.getSelected().getValue();
+            AppUser user = appDataManager.getAppUser();
             user.updateUserNutrientConsumptionWithMeal(meal, meal.getTotalQuantity());
+            appDataManager.setAppUser(user);
             userSharedViewModel.select(user);
+            UserDataUtility.updateUserDataToDb(FirebaseAuth.getInstance().getCurrentUser(), userSharedViewModel);
 
             CharSequence text = "Meal logged!";
             int duration = Toast.LENGTH_SHORT;
@@ -216,7 +216,7 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
     }
 
     private void updateNutritionalValuesFragment() {
-        AppUser currentUser = userSharedViewModel.getSelected().getValue();
+        AppUser currentUser = appDataManager.getAppUser();
         if (currentUser == null)
             return;
 
@@ -245,7 +245,7 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
 
 
     public void logMeal(View view) {
-        AppUser currentUser = userSharedViewModel.getSelected().getValue();
+        AppUser currentUser = appDataManager.getAppUser();
 
         Map<String, Double> initialNutrientValues = currentUser.getTodayNutrientConsumption();
         Map<String, Double> initialNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(initialNutrientValues, currentUser);

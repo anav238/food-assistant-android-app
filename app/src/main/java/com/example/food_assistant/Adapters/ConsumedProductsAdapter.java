@@ -14,6 +14,7 @@ import com.example.food_assistant.R;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConsumedProductsAdapter extends RecyclerView.Adapter<ConsumedProductsAdapter.ViewHolder>  {
@@ -60,7 +61,7 @@ public class ConsumedProductsAdapter extends RecyclerView.Adapter<ConsumedProduc
     }
 
     public ConsumedProductsAdapter(List<ProductIdentifier> items, boolean[] areFavorites, ConsumedProductsAdapter.ConsumedProductListener consumedProductListener) {
-        this.items = items;
+        this.items =  new ArrayList<>(items);
         this.areFavorites = areFavorites;
         this.consumedProductListener = consumedProductListener;
         System.out.println(items.toString());
@@ -72,16 +73,14 @@ public class ConsumedProductsAdapter extends RecyclerView.Adapter<ConsumedProduc
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.list_item_consumed_product, viewGroup, false);
 
-        return new ConsumedProductsAdapter.ViewHolder(view, consumedProductListener);
+        ConsumedProductsAdapter.ViewHolder viewHolder = new ConsumedProductsAdapter.ViewHolder(view, consumedProductListener);
+        view.setOnClickListener(v -> consumedProductListener.onPressInfoButton(viewHolder.getAdapterPosition()));
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ConsumedProductsAdapter.ViewHolder viewHolder, final int position) {
         viewHolder.setProductIdentifier(items.get(position), areFavorites[position]);
-    }
-
-    public List<ProductIdentifier> getItems() {
-        return items;
     }
 
     @Override
@@ -100,6 +99,7 @@ public class ConsumedProductsAdapter extends RecyclerView.Adapter<ConsumedProduc
     }
 
     public ProductIdentifier itemAt(int position) {
+        System.out.println(items);
         return items.get(position);
     }
 

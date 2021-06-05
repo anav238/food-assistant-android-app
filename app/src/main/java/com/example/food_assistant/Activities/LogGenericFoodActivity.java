@@ -20,6 +20,7 @@ import com.example.food_assistant.Adapters.GenericFoodLookupAdapter;
 import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.example.food_assistant.HttpRequest.NetworkManager;
+import com.example.food_assistant.Models.AppDataManager;
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
@@ -49,6 +50,8 @@ public class LogGenericFoodActivity extends AppCompatActivity {
     private GenericFoodLookupAdapter adapter;
     private ProgressBar progressBar;
 
+    private AppDataManager appDataManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,15 +66,11 @@ public class LogGenericFoodActivity extends AppCompatActivity {
         }
 
         networkManager = NetworkManager.getInstance(this);
-
+        appDataManager = AppDataManager.getInstance();
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            UserDataUtility.getUserData(user, userSharedViewModel);
-            userSharedViewModel.getSelected().observe(this, appUser -> {
-                UserDataUtility.updateUserDataToDb(user, userSharedViewModel);
-            });
-        }
+        if (user != null)
+            userSharedViewModel.select(appDataManager.getAppUser());
 
         progressBar = findViewById(R.id.progress_bar_load_food);
 
@@ -134,7 +133,8 @@ public class LogGenericFoodActivity extends AppCompatActivity {
     private void setupFragmentResultListeners() {
         getSupportFragmentManager().setFragmentResultListener("GET_QUANTITY_SUCCESS", this, (requestKey, bundle) -> {
             double productQuantity = bundle.getDouble("productQuantity");
-            AppUser currentUser = userSharedViewModel.getSelected().getValue();
+            //AppUser currentUser = userSharedViewModel.getSelected().getValue();
+            AppUser currentUser = AppDataManager.getInstance().getAppUser();
             Product currentProduct = productSharedViewModel.getSelected().getValue();
 
             Map<String, Double> initialNutrientValues = currentUser.getTodayNutrientConsumption();
@@ -161,10 +161,12 @@ public class LogGenericFoodActivity extends AppCompatActivity {
 
         getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_SUCCESS", this, (requestKey, bundle) -> {
             double productQuantity = bundle.getDouble("productQuantity");
-            AppUser user = userSharedViewModel.getSelected().getValue();
+            AppUser user = AppDataManager.getInstance().getAppUser();
             Product product = productSharedViewModel.getSelected().getValue();
             user.updateUserNutrientConsumptionWithProduct(product, productQuantity);
+            appDataManager.setAppUser(user);
             userSharedViewModel.select(user);
+            UserDataUtility.updateUserDataToDb(FirebaseAuth.getInstance().getCurrentUser(), userSharedViewModel);
 
             CharSequence text = "Product logged!";
             int duration = Toast.LENGTH_SHORT;

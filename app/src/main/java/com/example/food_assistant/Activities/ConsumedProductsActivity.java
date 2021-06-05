@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.food_assistant.Adapters.ConsumedProductsAdapter;
 import com.example.food_assistant.Fragments.ProductInfoFragment;
 import com.example.food_assistant.HttpRequest.NetworkManager;
+import com.example.food_assistant.Models.AppDataManager;
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.Models.ProductIdentifier;
@@ -40,6 +41,7 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
     private ConsumedProductsAdapter adapter;
 
     private int currentAdapterPosition = 0;
+    private AppDataManager appDataManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,26 +53,25 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
 
         NetworkManager networkManager = NetworkManager.getInstance(this);
 
+        appDataManager = AppDataManager.getInstance();
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
         productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            UserDataUtility.getUserData(user, userSharedViewModel);
-            userSharedViewModel.getSelected().observe(this, appUser -> {
-                if (mode.equals("history")) {
-                    List<ProductIdentifier> productIdentifiers = appUser.getProductHistory();
-                    boolean[] areFavorites = ProductDataUtility.determineIfProductsAreFavoriteForUser(productIdentifiers, appUser);
-                    setupRecyclerView(productIdentifiers, areFavorites);
-                }
-                else {
-                    List<ProductIdentifier> productIdentifiers = appUser.getProductFavorites();
-                    boolean[] areFavorites = new boolean[productIdentifiers.size()];
-                    Arrays.fill(areFavorites, Boolean.TRUE);
-                    setupRecyclerView(productIdentifiers, areFavorites);
-                }
-
-            });
+            AppUser appUser = appDataManager.getAppUser();
+            userSharedViewModel.select(appUser);
+            if (mode.equals("history")) {
+                List<ProductIdentifier> productIdentifiers = appUser.getProductHistory();
+                boolean[] areFavorites = ProductDataUtility.determineIfProductsAreFavoriteForUser(productIdentifiers, appUser);
+                setupRecyclerView(productIdentifiers, areFavorites);
+            }
+            else {
+                List<ProductIdentifier> productIdentifiers = appUser.getProductFavorites();
+                boolean[] areFavorites = new boolean[productIdentifiers.size()];
+                Arrays.fill(areFavorites, Boolean.TRUE);
+                setupRecyclerView(productIdentifiers, areFavorites);
+            }
         }
 
     }
@@ -92,7 +93,7 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
 
     @Override
     public void onPressFavoriteButton(int productAdapterPosition) {
-        AppUser currentUser = userSharedViewModel.getSelected().getValue();
+        AppUser currentUser = appDataManager.getAppUser();
         if (currentUser != null) {
             if (!adapter.getIsFavorite(productAdapterPosition)) {
                 currentUser.addProductFavorite(adapter.itemAt(productAdapterPosition));
@@ -102,6 +103,8 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
                 currentUser.removeProductFromFavorites(adapter.itemAt(productAdapterPosition));
                 adapter.setIsFavorite(productAdapterPosition, false);
             }
+            appDataManager.setAppUser(currentUser);
+            userSharedViewModel.select(currentUser);
             UserDataUtility.updateUserDataToDb(FirebaseAuth.getInstance().getCurrentUser(), userSharedViewModel);
         }
         currentAdapterPosition = productAdapterPosition;
@@ -135,10 +138,12 @@ public class ConsumedProductsActivity extends AppCompatActivity implements Consu
                 .setPositiveButton("Close", null)
                 .show();
         ProductIdentifier productIdentifier = adapter.itemAt(currentAdapterPosition);
-        AppUser currentUser = userSharedViewModel.getSelected().getValue();
+        AppUser currentUser = appDataManager.getAppUser();
         if (currentUser != null) {
             currentUser.removeProductFromFavorites(productIdentifier);
             currentUser.removeProductFromHistory(productIdentifier);
+            appDataManager.setAppUser(currentUser);
+            userSharedViewModel.select(currentUser);
             UserDataUtility.updateUserDataToDb(FirebaseAuth.getInstance().getCurrentUser(), userSharedViewModel);
         }
     }

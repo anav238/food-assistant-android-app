@@ -32,6 +32,7 @@ import com.example.food_assistant.Fragments.LogNewProductFragment;
 import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
 import com.example.food_assistant.Fragments.ScanProductNutritionalTableRequestFragment;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
+import com.example.food_assistant.Models.AppDataManager;
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.Utils.MLKit.BarcodeScannerProcessor;
@@ -44,7 +45,6 @@ import com.example.food_assistant.Utils.ViewModels.ImageProcessorSharedViewModel
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.example.food_assistant.Utils.ViewModels.UserSharedViewModel;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.mlkit.common.MlKitException;
 
 import org.jetbrains.annotations.NotNull;
@@ -72,6 +72,8 @@ public class ScanProductActivity extends AppCompatActivity
     private UserSharedViewModel userSharedViewModel;
     private ProductSharedViewModel productSharedViewModel;
     private ImageProcessorSharedViewModel imageProcessorSharedViewModel;
+
+    private AppDataManager appDataManager;
 
     @Nullable private ProcessCameraProvider cameraProvider;
     @Nullable private Preview previewUseCase;
@@ -120,13 +122,10 @@ public class ScanProductActivity extends AppCompatActivity
 
         setupFragmentResultListeners();
 
+        appDataManager = AppDataManager.getInstance();
         productSharedViewModel = new ViewModelProvider(this).get(ProductSharedViewModel.class);
         userSharedViewModel = new ViewModelProvider(this).get(UserSharedViewModel.class);
         imageProcessorSharedViewModel = new ViewModelProvider(this).get(ImageProcessorSharedViewModel.class);
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null)
-            UserDataUtility.getUserData(user, userSharedViewModel);
 
         productSharedViewModel.getSelected().observe(this, product -> {
             Log.i("INFO", "Scanned product" + product.toString());
@@ -140,7 +139,7 @@ public class ScanProductActivity extends AppCompatActivity
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
                 double productQuantity = bundle.getDouble("productQuantity");
                 Product currentProduct = productSharedViewModel.getSelected().getValue();
-                AppUser currentUser = userSharedViewModel.getSelected().getValue();
+                AppUser currentUser = appDataManager.getAppUser();
 
                 Map<String, Double> initialNutrientValues = currentUser.getTodayNutrientConsumption();
                 Map<String, Double> initialNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(initialNutrientValues, currentUser);
@@ -169,14 +168,13 @@ public class ScanProductActivity extends AppCompatActivity
 
         getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_SUCCESS", this, (requestKey, bundle) -> {
             double productQuantity = bundle.getDouble("productQuantity");
-            AppUser user = userSharedViewModel.getSelected().getValue();
+            AppUser user = appDataManager.getAppUser();
             Product product = productSharedViewModel.getSelected().getValue();
             user.updateUserNutrientConsumptionWithProduct(product, productQuantity);
-            System.out.println(user.getProductHistory());
+            appDataManager.setAppUser(user);
             userSharedViewModel.select(user);
 
             UserDataUtility.updateUserDataToDb(FirebaseAuth.getInstance().getCurrentUser(), userSharedViewModel);
-
 
             CharSequence text = "Product logged!";
             int duration = Toast.LENGTH_SHORT;
@@ -184,13 +182,15 @@ public class ScanProductActivity extends AppCompatActivity
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
 
-            if (imageProcessor != null) {
+            if (imageProcessor != null)
                 imageProcessor.restart();
-            }
         });
 
         getSupportFragmentManager().setFragmentResultListener("PROCESS_PRODUCT_CANCEL",
-                this, (requestKey, bundle) -> imageProcessor.restart());
+                this, (requestKey, bundle) -> {
+                    if (imageProcessor != null)
+                        imageProcessor.restart();
+                });
 
 
         getSupportFragmentManager().setFragmentResultListener("ADD_NEW_PRODUCT_TO_DB_REQUEST_SUCCESS",
@@ -201,12 +201,16 @@ public class ScanProductActivity extends AppCompatActivity
         });
 
         getSupportFragmentManager().setFragmentResultListener("ADD_NEW_PRODUCT_TO_DB_REQUEST_CANCEL",
-                this, (requestKey, bundle) -> imageProcessor.restart());
+                this, (requestKey, bundle) -> {
+                    if (imageProcessor != null)
+                        imageProcessor.restart();
+                });
 
         getSupportFragmentManager().setFragmentResultListener("ADD_NEW_PRODUCT_TO_DB_CANCEL",
-                this, (requestKey, bundle) -> imageProcessor.restart());
-
-
+                this, (requestKey, bundle) -> {
+                    if (imageProcessor != null)
+                        imageProcessor.restart();
+                });
     }
 
     private void processScannedProduct(Product product) {
