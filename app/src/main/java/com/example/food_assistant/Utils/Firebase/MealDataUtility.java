@@ -4,9 +4,12 @@ import android.util.Log;
 
 import com.example.food_assistant.Enums.ProductType;
 import com.example.food_assistant.HttpRequest.NetworkManager;
+import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Meal;
+import com.example.food_assistant.Models.MealIdentifier;
 import com.example.food_assistant.Models.MealSummary;
 import com.example.food_assistant.Models.Product;
+import com.example.food_assistant.Models.ProductIdentifier;
 import com.example.food_assistant.Utils.Mappers.ProductMapper;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.google.firebase.database.DatabaseReference;
@@ -14,6 +17,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import java.util.List;
 
 public class MealDataUtility {
     private static DatabaseReference mDatabase;
@@ -24,6 +29,20 @@ public class MealDataUtility {
             mDatabase = FirebaseDatabase.getInstance("https://foodassistant-43fda-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
         MealSummary mealSummary = new MealSummary(meal);
         mDatabase.child("meals").child(meal.getId()).setValue(mealSummary);
+    }
+
+    public static boolean[] determineIfProductsAreFavoriteForUser(List<MealIdentifier> mealIdentifiers, AppUser appUser) {
+        boolean[] areFavorites = new boolean[mealIdentifiers.size()];
+        List<MealIdentifier> mealFavorites = appUser.getMealFavorites();
+        int i = 0;
+        for (MealIdentifier mealIdentifier:mealIdentifiers) {
+            if (mealFavorites.contains(mealIdentifier))
+                areFavorites[i] = true;
+            else
+                areFavorites[i] = false;
+            i++;
+        }
+        return areFavorites;
     }
 
     /*public static void getProductById(String productId, ProductSharedViewModel productSharedViewModel) {

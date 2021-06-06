@@ -30,6 +30,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -93,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements UserDataFetchList
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 UserDataUtility.getUserData(user, this);
-                Log.i("USER LOGIN", user.getDisplayName());
+                Log.i("USER LOGIN", user.getEmail());
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
@@ -105,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements UserDataFetchList
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NotNull MenuItem item) {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.onNavDestinationSelected(item, navController)
                 || super.onOptionsItemSelected(item);
@@ -129,6 +131,18 @@ public class MainActivity extends AppCompatActivity implements UserDataFetchList
 
     public void openProductHistoryActivity(View view) {
         Intent intent = new Intent(MainActivity.this, ConsumedProductsActivity.class);
+        intent.putExtra("mode", "history");
+        startActivity(intent);
+    }
+
+    public void openFavoriteMealsActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, ConsumedMealsActivity.class);
+        intent.putExtra("mode", "favorites");
+        startActivity(intent);
+    }
+
+    public void openMealHistoryActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, ConsumedMealsActivity.class);
         intent.putExtra("mode", "history");
         startActivity(intent);
     }

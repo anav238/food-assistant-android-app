@@ -116,7 +116,6 @@ public class AppUser {
            saveProductToHistory(ingredient.getProduct());
 
         saveMealToHistory(meal);
-
     }
 
     public void updateTodayNutrientConsumption(Map<String, Double> newNutrientConsumption) {
@@ -140,12 +139,9 @@ public class AppUser {
         MealIdentifier mealIdentifier = new MealIdentifier(meal.getId(), meal.getName());
         if (mealHistory.contains(mealIdentifier))
             mealHistory.remove(mealIdentifier);
-
         mealHistory.add(0, mealIdentifier);
         if (mealHistory.size() > 30)
             mealHistory.remove(mealHistory.size() - 1);
-
-        mealHistory.add(mealIdentifier);
     }
 
     public Map<String, Map<String, Double>> getNutrientConsumptionHistory() {
@@ -167,6 +163,19 @@ public class AppUser {
     public void removeProductFromFavorites(ProductIdentifier productIdentifier) {
         productFavorites.remove(productIdentifier);
     }
+
+    public void addMealFavorite(Meal meal) {
+        mealFavorites.add(new MealIdentifier(meal.getId(), meal.getName()));
+    }
+
+    public void addMealFavorite(MealIdentifier mealIdentifier) {
+        mealFavorites.add(mealIdentifier);
+    }
+
+    public void removeMealFromFavorites(MealIdentifier mealIdentifier) {
+        mealFavorites.remove(mealIdentifier);
+    }
+
 
     public List<ProductIdentifier> getProductHistory() {
         return productHistory;

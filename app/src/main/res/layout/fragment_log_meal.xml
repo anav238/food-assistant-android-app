@@ -110,10 +110,30 @@
         android:id="@+id/previous_meals_button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
+        android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif-medium"
         android:onClick="openProductHistoryActivity"
         android:text="Previous products"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/favorite_products_button3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:fontFamily="sans-serif-medium"
+        android:onClick="openFavoriteMealsActivity"
+        android:text="Favorite Meals"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/previous_meals_button3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:fontFamily="sans-serif-medium"
+        android:onClick="openMealHistoryActivity"
+        android:text="Previous meals"
         android:visibility="visible" />
 
 </LinearLayout>

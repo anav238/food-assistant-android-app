@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Foodassistant">
+        <activity android:name=".Activities.ConsumedMealsActivity"></activity>
         <activity android:name=".Activities.ConsumedProductsActivity" />
         <activity android:name=".Activities.LogCustomMealActivity" />
         <activity android:name=".Activities.LogGenericFoodActivity" />

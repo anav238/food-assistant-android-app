@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -241,13 +242,21 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
                     .setReorderingAllowed(true)
                     .add(R.id.fragment_nutritional_values, NutrientIntakeFragment.class, bundle, "todayNutrientIntake")
                     .commit();
-        } else
+        }
+        else
             fragmentManager.beginTransaction().replace(R.id.fragment_nutritional_values, NutrientIntakeFragment.class, bundle, "todayNutrientIntake").commit();
     }
 
-
-
     public void logMeal(View view) {
+        EditText mealNameEditText = findViewById(R.id.editText_meal_name);
+        String mealName = mealNameEditText.getText().toString();
+        if (mealName.length() == 0) {
+            mealNameEditText.setError("Please enter a name for the meal!");
+            return;
+        }
+
+        meal.setName(mealName);
+
         AppUser currentUser = appDataManager.getAppUser();
 
         Map<String, Double> initialNutrientValues = currentUser.getTodayNutrientConsumption();

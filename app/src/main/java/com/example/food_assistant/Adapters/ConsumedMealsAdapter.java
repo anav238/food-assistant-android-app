@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.food_assistant.Models.MealIdentifier;
 import com.example.food_assistant.Models.ProductIdentifier;
 import com.example.food_assistant.R;
 
@@ -16,15 +17,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConsumedProductsAdapter extends RecyclerView.Adapter<ConsumedProductsAdapter.ViewHolder>  {
-
-    public interface ConsumedProductListener {
-        void onPressFavoriteButton(int productAdapterPosition);
-        void onPressInfoButton(int productAdapterPosition);
+public class ConsumedMealsAdapter extends RecyclerView.Adapter<ConsumedMealsAdapter.ViewHolder> {
+    public interface ConsumedMealListener {
+        void onPressFavoriteButton(int mealAdapterPosition);
+        void onPressEditButton(int mealAdapterPosition);
     }
 
-    private final ConsumedProductsAdapter.ConsumedProductListener consumedProductListener;
-    private List<ProductIdentifier> items;
+    private final ConsumedMealsAdapter.ConsumedMealListener consumedMealListener;
+    private List<MealIdentifier> items;
     private boolean[] areFavorites;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -32,7 +32,7 @@ public class ConsumedProductsAdapter extends RecyclerView.Adapter<ConsumedProduc
         private final ImageButton favoriteButton;
         private boolean isFavorite = false;
 
-        public ViewHolder(View view, ConsumedProductsAdapter.ConsumedProductListener consumedProductListener) {
+        public ViewHolder(View view, ConsumedMealsAdapter.ConsumedMealListener consumedProductListener) {
             super(view);
             textView = view.findViewById(R.id.textView_ingredient);
             favoriteButton = view.findViewById(R.id.imageButton_favorite);
@@ -41,12 +41,12 @@ public class ConsumedProductsAdapter extends RecyclerView.Adapter<ConsumedProduc
                 toggleFavoriteButton();
                 consumedProductListener.onPressFavoriteButton(getAdapterPosition());
             });
-            ImageButton infoButton = view.findViewById(R.id.imageButton_edit);
-            infoButton.setOnClickListener(v -> consumedProductListener.onPressInfoButton(getAdapterPosition()));
+            ImageButton editButton = view.findViewById(R.id.imageButton_edit);
+            editButton.setOnClickListener(v -> consumedProductListener.onPressEditButton(getAdapterPosition()));
         }
 
-        public void setProductIdentifier(ProductIdentifier productIdentifier, boolean isFavorite) {
-            textView.setText(productIdentifier.getProductName());
+        public void setMealIdentifier(MealIdentifier mealIdentifier, boolean isFavorite) {
+            textView.setText(mealIdentifier.getMealName());
             this.isFavorite = isFavorite;
             toggleFavoriteButton();
         }
@@ -59,27 +59,27 @@ public class ConsumedProductsAdapter extends RecyclerView.Adapter<ConsumedProduc
         }
     }
 
-    public ConsumedProductsAdapter(List<ProductIdentifier> items, boolean[] areFavorites, ConsumedProductsAdapter.ConsumedProductListener consumedProductListener) {
+    public ConsumedMealsAdapter(List<MealIdentifier> items, boolean[] areFavorites, ConsumedMealsAdapter.ConsumedMealListener consumedMealListener) {
         this.items =  new ArrayList<>(items);
         this.areFavorites = areFavorites;
-        this.consumedProductListener = consumedProductListener;
+        this.consumedMealListener = consumedMealListener;
         System.out.println(items.toString());
     }
 
     @NotNull
     @Override
-    public ConsumedProductsAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public ConsumedMealsAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.list_item_consumed_product, viewGroup, false);
+                .inflate(R.layout.list_item_consumed_meal, viewGroup, false);
 
-        ConsumedProductsAdapter.ViewHolder viewHolder = new ConsumedProductsAdapter.ViewHolder(view, consumedProductListener);
-        view.setOnClickListener(v -> consumedProductListener.onPressInfoButton(viewHolder.getAdapterPosition()));
+        ConsumedMealsAdapter.ViewHolder viewHolder = new ConsumedMealsAdapter.ViewHolder(view, consumedMealListener);
+        view.setOnClickListener(v -> consumedMealListener.onPressEditButton(viewHolder.getAdapterPosition()));
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ConsumedProductsAdapter.ViewHolder viewHolder, final int position) {
-        viewHolder.setProductIdentifier(items.get(position), areFavorites[position]);
+    public void onBindViewHolder(ConsumedMealsAdapter.ViewHolder viewHolder, final int position) {
+        viewHolder.setMealIdentifier(items.get(position), areFavorites[position]);
     }
 
     @Override
@@ -97,8 +97,7 @@ public class ConsumedProductsAdapter extends RecyclerView.Adapter<ConsumedProduc
         return position;
     }
 
-    public ProductIdentifier itemAt(int position) {
-        System.out.println(items);
+    public MealIdentifier itemAt(int position) {
         return items.get(position);
     }
 
