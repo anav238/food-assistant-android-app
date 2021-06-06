@@ -1,5 +1,7 @@
 package com.example.food_assistant.Utils.Nutrition;
 
+import android.util.Log;
+
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Meal;
 
@@ -27,8 +29,13 @@ public class NutrientCalculator {
     }
 
     public static Map<String, Double> addMealNutritionToUserDailyNutrition(Map<String, Double> userNutrition, Meal meal, Double mealConsumedQuantity) {
+        if (meal.getTotalQuantity() == 0.0)
+            return userNutrition;
+
         Map<String, Double> mealNutrition = meal.getMealNutrition();
         Map<String, Double> nutritionSum = new HashMap<>();
+        Log.i("INFO", "User nutrition: " + userNutrition.toString());
+        Log.i("INFO", "Meal nutrition: " + mealNutrition.toString());
 
         for (String nutrient:userNutrition.keySet()) {
             double totalNutrientValue = userNutrition.get(nutrient);

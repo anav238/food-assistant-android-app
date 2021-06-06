@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Fragments.ProductConsumptionEffectsFragment"
     android:layout_width="match_parent"
@@ -74,7 +75,9 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:stretchColumns="1"
+        android:shrinkColumns="0">
 
         <TableRow
             android:layout_width="match_parent"
@@ -85,23 +88,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
                 android:text="@string/carbs_name"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textView_carbohydrates_increase"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
-                android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
+                android:layout_marginEnd="5dp"
+                android:fontFamily="sans-serif-condensed"
                 android:paddingBottom="2dp"
-                android:textSize="20sp" />
+                android:textSize="18sp"/>
         </TableRow>
 
         <TableRow
@@ -113,23 +116,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
                 android:text="@string/sugars_name"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textView_sugars_increase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow
@@ -141,23 +144,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
                 android:text="@string/fats_name"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textView_fat_increase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow
@@ -169,23 +172,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
                 android:text="@string/saturated_fats_name"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textView_saturated_fat_increase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
         </TableRow>
 
@@ -198,23 +201,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
                 android:text="@string/proteins_name"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textView_proteins_increase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
         </TableRow>
 
         <TableRow
@@ -226,23 +229,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
                 android:text="@string/fiber_name"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textView_fiber_increase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
         </TableRow>
 
@@ -255,12 +258,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
                 android:text="@string/salt_name"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
 
             <TextView
@@ -268,11 +271,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
         </TableRow>
 
@@ -285,12 +288,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
                 android:text="@string/calories_name"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
 
             <TextView
@@ -298,11 +301,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:paddingBottom="2dp"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
         </TableRow>
     </TableLayout>

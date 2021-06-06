@@ -330,6 +330,7 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
         Map<String, Double> initialNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(initialNutrientValues, appUser);
 
         Map<String, Double> totalNutrientValues = NutrientCalculator.addMealNutritionToUserDailyNutrition(initialNutrientValues, meal, meal.getTotalQuantity());
+        Log.i("INFO", "Total nutrient values: " + totalNutrientValues.toString());
         Map<String, Double> totalNutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(totalNutrientValues, appUser);
 
         Bundle newFragmentBundle = new Bundle();

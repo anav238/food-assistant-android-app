@@ -42,18 +42,22 @@ public class NutrientIntakeFragment extends Fragment {
             else
                 nutrientProgressBar.setProgress(1);
 
-            int progressDrawableId = R.drawable.custom_progressbar_red;
+            int progressDrawableId = R.drawable.custom_progressbar_purple;
             if (Nutrients.badNutrients.contains(nutrient)) {
                 if (nutrientPercentage < 30)
                     progressDrawableId = R.drawable.custom_progressbar_green;
                 else if (nutrientPercentage < 60)
                     progressDrawableId = R.drawable.custom_progressbar_yellow;
+                else if (nutrientPercentage < 100)
+                    progressDrawableId = R.drawable.custom_progressbar_red;
             }
             else {
                 if (nutrientPercentage > 60)
                     progressDrawableId = R.drawable.custom_progressbar_green;
                 else if (nutrientPercentage > 30)
                     progressDrawableId = R.drawable.custom_progressbar_yellow;
+                else
+                    progressDrawableId = R.drawable.custom_progressbar_red;
             }
 
             Drawable progressDrawable = getResources().getDrawable(progressDrawableId);
