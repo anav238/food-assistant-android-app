@@ -82,13 +82,30 @@
 
         </androidx.fragment.app.FragmentContainerView>
 
-        <Button
-            android:id="@+id/button_log_meal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:onClick="logMeal"
-            android:text="Log Meal" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_log_meal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:onClick="logMeal"
+                android:text="Log Meal" />
+
+            <Button
+                android:id="@+id/button_save_meal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:onClick="saveMeal"
+                android:text="Save meal" />
+        </LinearLayout>
 
     </LinearLayout>
 

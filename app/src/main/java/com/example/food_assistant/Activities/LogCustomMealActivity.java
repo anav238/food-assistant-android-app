@@ -105,6 +105,8 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
         if (selectedMode.equals("edit")) {
             LinearLayout loadingLayout = findViewById(R.id.linearLayout_loading);
             loadingLayout.setVisibility(View.VISIBLE);
+
+
             MealDataUtility.getMealSummaryById(mealId, this);
         }
         else
@@ -176,6 +178,9 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
 
             Button logMealButton = findViewById(R.id.button_log_meal);
             logMealButton.setEnabled(true);
+
+            Button saveMealButton = findViewById(R.id.button_save_meal);
+            saveMealButton.setEnabled(true);
         }
         adapter.addItem(new Ingredient(product, 0.0));
     }
@@ -233,6 +238,9 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
 
             Button logMealButton = findViewById(R.id.button_log_meal);
             logMealButton.setEnabled(false);
+
+            Button saveMealButton = findViewById(R.id.button_save_meal);
+            saveMealButton.setEnabled(false);
         }
     }
 
@@ -281,12 +289,11 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
     }
 
     public void logMeal(View view) {
+        if (!isValidMeal())
+            return;
+
         EditText mealNameEditText = findViewById(R.id.editText_meal_name);
         String mealName = mealNameEditText.getText().toString();
-        if (mealName.length() == 0) {
-            mealNameEditText.setError("Please enter a name for the meal!");
-            return;
-        }
 
         meal.setName(mealName);
 
@@ -311,6 +318,38 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
         ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
         productConsumptionEffectsFragment.setArguments(newFragmentBundle);
         productConsumptionEffectsFragment.show(getSupportFragmentManager(), "test");
+    }
+
+    public void saveMeal(View view) {
+        if (!isValidMeal())
+            return;
+
+        EditText mealNameEditText = findViewById(R.id.editText_meal_name);
+        String mealName = mealNameEditText.getText().toString();
+        meal.setName(mealName);
+
+        AppUser currentUser = appDataManager.getAppUser();
+        currentUser.saveMealToHistory(meal);
+
+        appDataManager.setAppUser(currentUser);
+        userSharedViewModel.select(currentUser);
+        UserDataUtility.updateUserDataToDb(FirebaseAuth.getInstance().getCurrentUser(), userSharedViewModel);
+
+        CharSequence text = "Meal saved!";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+    }
+
+    public boolean isValidMeal() {
+        EditText mealNameEditText = findViewById(R.id.editText_meal_name);
+        String mealName = mealNameEditText.getText().toString();
+        if (mealName.length() == 0) {
+            mealNameEditText.setError("Please enter a name for the meal!");
+            return false;
+        }
+        return true;
     }
 
     @Override

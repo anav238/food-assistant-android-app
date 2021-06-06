@@ -135,7 +135,7 @@ public class AppUser {
             productHistory.remove(productHistory.size() - 1);
     }
 
-    private void saveMealToHistory(Meal meal) {
+    public void saveMealToHistory(Meal meal) {
         MealIdentifier mealIdentifier = new MealIdentifier(meal.getId(), meal.getName());
         if (mealHistory.contains(mealIdentifier))
             mealHistory.remove(mealIdentifier);
