@@ -10,6 +10,8 @@ import com.example.food_assistant.Models.MealIdentifier;
 import com.example.food_assistant.Models.MealSummary;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.Models.ProductIdentifier;
+import com.example.food_assistant.Utils.EventListeners.MealSummaryFetchListener;
+import com.example.food_assistant.Utils.Mappers.MealMapper;
 import com.example.food_assistant.Utils.Mappers.ProductMapper;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
 import com.google.firebase.database.DatabaseReference;
@@ -45,27 +47,20 @@ public class MealDataUtility {
         return areFavorites;
     }
 
-    /*public static void getProductById(String productId, ProductSharedViewModel productSharedViewModel) {
+    public static void getMealSummaryById(String id, MealSummaryFetchListener mealSummaryFetchListener) {
         if (mDatabase == null)
             mDatabase = FirebaseDatabase.getInstance("https://foodassistant-43fda-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
-        mDatabase.child("products").child(productId).get().addOnCompleteListener(task -> {
-            Log.i("productData", task.getResult().toString());
-            if (!task.isSuccessful() || task.getResult().getValue() == null) {
-                Product product = new Product();
-                product.setId(productId);
-                product.setProductType(ProductType.CUSTOM);
-                productSharedViewModel.select(product);
-            }
-            else {
+        mDatabase.child("meals").child(id).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult().getValue() != null) {
                 Log.d("firebase", String.valueOf(task.getResult().getValue()));
                 Gson gson = new Gson();
-                JsonElement productElement = gson.toJsonTree(task.getResult().getValue());
-                JsonObject productObject = (JsonObject) productElement;
-                Product product = ProductMapper.mapFirebaseProduct(productObject);
-                product.setProductType(ProductType.CUSTOM);
-                productSharedViewModel.select(product);
+                JsonElement element = gson.toJsonTree(task.getResult().getValue());
+                JsonObject object = (JsonObject) element;
+                MealSummary mealSummary = MealMapper.mapMealSummary(object);
+                mealSummary.setId(id);
+                mealSummaryFetchListener.onFetchSuccess(mealSummary);
             }
         }).addOnFailureListener(error -> {});
-    }*/
+    }
 }

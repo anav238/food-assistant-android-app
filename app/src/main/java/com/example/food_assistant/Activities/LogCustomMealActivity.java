@@ -27,11 +27,14 @@ import com.example.food_assistant.Models.AppDataManager;
 import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Ingredient;
 import com.example.food_assistant.Models.Meal;
+import com.example.food_assistant.Models.MealSummary;
 import com.example.food_assistant.Models.Product;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.ActivityResultContracts.GetBrandedProduct;
 import com.example.food_assistant.Utils.ActivityResultContracts.GetGenericProduct;
+import com.example.food_assistant.Utils.EventListeners.MealSummaryFetchListener;
 import com.example.food_assistant.Utils.Firebase.MealDataUtility;
+import com.example.food_assistant.Utils.Mappers.MealMapper;
 import com.example.food_assistant.Utils.Nutrition.NutrientCalculator;
 import com.example.food_assistant.Utils.Nutrition.Nutrients;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
@@ -45,7 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LogCustomMealActivity extends AppCompatActivity implements CustomMealIngredientAdapter.MealIngredientListener {
+public class LogCustomMealActivity extends AppCompatActivity implements CustomMealIngredientAdapter.MealIngredientListener, MealSummaryFetchListener {
 
     private boolean fabExpanded = false;
     private LinearLayout layoutFabScan;
@@ -62,12 +65,31 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
     private int currentItemAdapterPosition = -1;
 
     private Meal meal = new Meal();
+    private MealSummary mealSummary = new MealSummary();
+    private String mealId = "";
     private AppDataManager appDataManager;
+
+    private String selectedMode = "log";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_custom_meal);
+
+        if (savedInstanceState != null) {
+            selectedMode = savedInstanceState.getString("mode");
+            if (selectedMode != null && selectedMode.equals("edit"))
+                mealId = savedInstanceState.getString("mealId");
+        }
+        else {
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null && bundle.containsKey("mode")) {
+                selectedMode = bundle.getString("mode");
+                if (selectedMode != null && selectedMode.equals("edit"))
+                    mealId = bundle.getString("mealId");
+            }
+        }
+
         layoutFabScan = findViewById(R.id.linearLayout_scan_product);
         layoutFabLog = findViewById(R.id.linearLayout_add_generic_food);
         fabAdd = findViewById(R.id.fab_add);
@@ -79,7 +101,14 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
         userSharedViewModel.select(appDataManager.getAppUser());
 
         setupActivityResultLaunchers();
-        setupMealIngredientsRecyclerView();
+
+        if (selectedMode.equals("edit")) {
+            LinearLayout loadingLayout = findViewById(R.id.linearLayout_loading);
+            loadingLayout.setVisibility(View.VISIBLE);
+            MealDataUtility.getMealSummaryById(mealId, this);
+        }
+        else
+            setupMealIngredientsRecyclerView();
         setupFragmentResultListeners();
     }
 
@@ -119,7 +148,7 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
         mealIngredientsRecyclerView = findViewById(R.id.recyclerView_meal_ingredients);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mealIngredientsRecyclerView.setLayoutManager(layoutManager);
-        adapter = new CustomMealIngredientAdapter(new ArrayList<>(), this);
+        adapter = new CustomMealIngredientAdapter(meal.getIngredients(), this);
         mealIngredientsRecyclerView.setAdapter(adapter);
     }
 
@@ -224,6 +253,10 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
         if (currentUser == null)
             return;
 
+        CheckBox showNutritionalValuesCheckbox = findViewById(R.id.checkBox_show_nutritional_values);
+        if (!showNutritionalValuesCheckbox.isChecked())
+            return;
+
         Map<String, Double> mealNutritionalValues = meal.getMealNutrition();
         Map<String, Double> nutrientPercentages = NutrientCalculator.getNutrientsPercentageFromMaximumDV(mealNutritionalValues, currentUser);
 
@@ -278,5 +311,23 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
         ProductConsumptionEffectsFragment productConsumptionEffectsFragment = new ProductConsumptionEffectsFragment();
         productConsumptionEffectsFragment.setArguments(newFragmentBundle);
         productConsumptionEffectsFragment.show(getSupportFragmentManager(), "test");
+    }
+
+    @Override
+    public void onFetchSuccess(MealSummary summary) {
+        LinearLayout loadingLayout = findViewById(R.id.linearLayout_loading);
+        loadingLayout.setVisibility(View.VISIBLE);
+        meal = MealMapper.mapMinimalMealDataFromSummary(mealSummary);
+        setupMealIngredientsRecyclerView();
+    }
+
+    @Override
+    public void onFetchNotFound() {
+
+    }
+
+    @Override
+    public void onFetchFailure(String errorMessage) {
+
     }
 }

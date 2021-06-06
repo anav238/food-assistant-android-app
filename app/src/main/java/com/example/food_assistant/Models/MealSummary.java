@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MealSummary implements Serializable {
-    private String name;
+    private String id = "";
+    private String name = "";
     private List<IngredientSummary> ingredients = new ArrayList<>();
+
+    public MealSummary() {}
 
     public MealSummary(Meal meal) {
         this.name = meal.getName();
@@ -33,5 +36,13 @@ public class MealSummary implements Serializable {
 
     public void setIngredients(List<IngredientSummary> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

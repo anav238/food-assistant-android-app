@@ -4,6 +4,11 @@ public class Ingredient {
     private final Product product;
     private final Double quantity;
 
+    public Ingredient(IngredientSummary ingredientSummary) {
+        this.product = new Product(ingredientSummary.getProductIdentifier());
+        this.quantity = ingredientSummary.getQuantity();
+    }
+
     public Ingredient(Product product, Double quantity) {
         this.product = product;
         this.quantity = quantity;

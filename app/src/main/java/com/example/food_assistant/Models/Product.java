@@ -3,6 +3,7 @@ package com.example.food_assistant.Models;
 import com.example.food_assistant.Enums.ProductType;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Product implements Serializable {
@@ -15,6 +16,14 @@ public class Product implements Serializable {
 
     String novaGroup = "Unknown";
     String nutriScoreGrade = "Unknown";
+
+    public Product() {}
+
+    public Product(ProductIdentifier productIdentifier) {
+        this.id = productIdentifier.getId();
+        this.productName = productIdentifier.productName;
+        this.nutriments = new HashMap<>();
+    }
 
     public String getId() {
         return id;

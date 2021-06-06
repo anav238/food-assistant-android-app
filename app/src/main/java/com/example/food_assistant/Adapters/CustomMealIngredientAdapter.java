@@ -16,6 +16,7 @@ import com.example.food_assistant.R;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMealIngredientAdapter.ViewHolder> {
@@ -49,7 +50,7 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
     }
 
     public CustomMealIngredientAdapter(List<Ingredient> dataSet, MealIngredientListener mealIngredientListener) {
-        items = dataSet;
+        items = new ArrayList<>(dataSet);
         this.mealIngredientListener = mealIngredientListener;
     }
 
