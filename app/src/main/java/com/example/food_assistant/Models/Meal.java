@@ -1,5 +1,7 @@
 package com.example.food_assistant.Models;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,6 +75,7 @@ public class Meal implements Serializable {
     public void removeIngredient(Ingredient ingredient) {
         if (ingredients.contains(ingredient)) {
             ingredients.remove(ingredient);
+            Log.i("INFO", "INGREDIENT TO BE REMOVED: " + ingredient);
             totalQuantity -= ingredient.getQuantity();
 
             Map<String, Double> ingredientNutrition = ingredient.getProduct().getNutriments();
@@ -102,6 +105,15 @@ public class Meal implements Serializable {
         this.id = id;
     }
 
+    public boolean isComplete() {
+        for (Ingredient ingredient:ingredients) {
+            System.out.println(ingredient.toString());
+            if (ingredient.getProduct().getNutriments() == null || ingredient.getProduct().getNutriments().size() == 0)
+                return false;
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
         return "Meal{" +
@@ -111,5 +123,16 @@ public class Meal implements Serializable {
                 ", mealNutrition=" + mealNutrition +
                 ", totalQuantity=" + totalQuantity +
                 '}';
+    }
+
+    public void completeIngredient(Product product) {
+        for (int i = 0; i < ingredients.size(); i++) {
+            Ingredient oldIngredient = ingredients.get(i);
+            if (oldIngredient.getProduct().getId().equals(product.getId())) {
+                Ingredient newIngredient = new Ingredient(product, oldIngredient.getQuantity());
+                removeIngredient(oldIngredient);
+                addIngredient(newIngredient);
+            }
+        }
     }
 }

@@ -67,11 +67,13 @@ public class ProductConsumptionEffectsFragment extends DialogFragment {
     }
 
     private void populateProductNutrientData(View content, Product product, Map<String, Double> initialNutrientValues, Map<String, Double> finalNutrientValues) {
-        TextView nutriScoreGradeTextView = content.findViewById(R.id.textView_nutriscore_grade);
-        nutriScoreGradeTextView.setText(product.getNutriScoreGrade());
+        if (product != null) {
+            TextView nutriScoreGradeTextView = content.findViewById(R.id.textView_nutriscore_grade);
+            nutriScoreGradeTextView.setText(product.getNutriScoreGrade());
 
-        TextView novaScoreGradeTextView = content.findViewById(R.id.textView_novascore_grade);
-        novaScoreGradeTextView.setText(product.getNovaGroup());
+            TextView novaScoreGradeTextView = content.findViewById(R.id.textView_novascore_grade);
+            novaScoreGradeTextView.setText(product.getNovaGroup());
+        }
 
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
 

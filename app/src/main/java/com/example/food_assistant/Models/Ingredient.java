@@ -1,8 +1,8 @@
 package com.example.food_assistant.Models;
 
 public class Ingredient {
-    private final Product product;
-    private final Double quantity;
+    private Product product;
+    private Double quantity;
 
     public Ingredient(IngredientSummary ingredientSummary) {
         this.product = new Product(ingredientSummary.getProductIdentifier());
@@ -22,6 +22,14 @@ public class Ingredient {
         return quantity;
     }
 
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object == this)
@@ -29,8 +37,14 @@ public class Ingredient {
         if (!(object instanceof Ingredient))
             return false;
         Ingredient other = (Ingredient) object;
-        return this.quantity.equals(other.quantity) && this.product.getId().equals(other.product.getId()) && this.product.getProductType() == other.product.getProductType();
+        return this.product.getId().equals(other.product.getId());
     }
 
-
+    @Override
+    public String toString() {
+        return "Ingredient{" +
+                "product=" + product +
+                ", quantity=" + quantity +
+                '}';
+    }
 }

@@ -13,25 +13,6 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/linearLayout_loading"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#CC000000"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <ProgressBar
-                android:id="@+id/progress_bar_nutrient_intake"
-                style="@style/Base.Widget.AppCompat.ProgressBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:indeterminate="true"
-                android:visibility="visible" />
-
-        </LinearLayout>
-
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -211,6 +192,25 @@
             android:focusable="true"
             android:onClick="toggleSubMenusFab"
             android:src="@drawable/ic_plus" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#CC000000"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/progress_bar_nutrient_intake"
+                style="@style/Base.Widget.AppCompat.ProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="visible" />
+
+        </LinearLayout>
 
     </FrameLayout>
 </ScrollView>

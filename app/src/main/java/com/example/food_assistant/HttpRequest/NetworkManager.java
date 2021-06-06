@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -172,7 +173,14 @@ public class NetworkManager
                     else
                         productDataFetchListener.onFetchNotFound();
                 },
-                error -> productDataFetchListener.onFetchFailure(error.getMessage())) {
+                error -> {
+                    String errorMessage = "";
+                    if (error.getMessage() != null)
+                        errorMessage = error.getMessage();
+                    if (error.getCause() != null && error.getCause().getMessage() != null)
+                        errorMessage = error.getCause().getMessage();
+                    productDataFetchListener.onFetchFailure(errorMessage);
+                }) {
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -181,6 +189,10 @@ public class NetworkManager
                 return params;
             }
         };
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(60000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         requestQueue.add(stringRequest);
     }

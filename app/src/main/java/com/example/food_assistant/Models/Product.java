@@ -9,7 +9,7 @@ import java.util.Map;
 public class Product implements Serializable {
     String id;
     String productName;
-    double baseQuantity;
+    double baseQuantity = 100.0;
     ProductType productType = ProductType.CUSTOM;
     Map<String, Double> nutriments;
     String measurementUnit;
@@ -92,7 +92,8 @@ public class Product implements Serializable {
     @Override
     public String toString() {
         return "OpenFoodFactsProduct{" +
-                "productName='" + productName + '\'' +
+                "id='" + id + '\'' +
+                ", productName='" + productName + '\'' +
                 ", novaGroup=" + novaGroup +
                 ", nutriments=" + nutriments +
                 ", nutriScoreGrade='" + nutriScoreGrade + '\'' +
