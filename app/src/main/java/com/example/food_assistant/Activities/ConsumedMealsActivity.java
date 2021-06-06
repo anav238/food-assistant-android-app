@@ -1,6 +1,5 @@
 package com.example.food_assistant.Activities;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -11,14 +10,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.food_assistant.Adapters.ConsumedMealsAdapter;
-import com.example.food_assistant.Adapters.ConsumedProductsAdapter;
 import com.example.food_assistant.Fragments.ProductConsumptionEffectsFragment;
-import com.example.food_assistant.Fragments.ProductInfoFragment;
 import com.example.food_assistant.Fragments.SelectProductQuantityFragment;
 import com.example.food_assistant.HttpRequest.NetworkManager;
 import com.example.food_assistant.Models.AppDataManager;
@@ -26,12 +22,9 @@ import com.example.food_assistant.Models.AppUser;
 import com.example.food_assistant.Models.Meal;
 import com.example.food_assistant.Models.MealIdentifier;
 import com.example.food_assistant.Models.Product;
-import com.example.food_assistant.Models.ProductIdentifier;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.EventListeners.MealDataFetchListener;
-import com.example.food_assistant.Utils.EventListeners.ProductDataFetchListener;
 import com.example.food_assistant.Utils.Firebase.MealDataUtility;
-import com.example.food_assistant.Utils.Firebase.ProductDataUtility;
 import com.example.food_assistant.Utils.Firebase.UserDataUtility;
 import com.example.food_assistant.Utils.Nutrition.NutrientCalculator;
 import com.example.food_assistant.Utils.ViewModels.ProductSharedViewModel;
@@ -43,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class ConsumedMealsActivity extends AppCompatActivity implements ConsumedMealsAdapter.ConsumedMealListener, MealDataFetchListener {
+public class ConsumedMealsActivity extends AppCompatActivity implements ConsumedMealsAdapter.ConsumedMealListener {
 
     private String mode;
     private UserSharedViewModel userSharedViewModel;
@@ -175,51 +168,12 @@ public class ConsumedMealsActivity extends AppCompatActivity implements Consumed
     }
 
     @Override
-    public void onPressEditButton(int productAdapterPosition) {
-        /*LinearLayout loadingLayout = findViewById(R.id.linearLayout_loading);
-        loadingLayout.setVisibility(View.VISIBLE);
-        ProductDataUtility.getProductByIdentifier(adapter.itemAt(productAdapterPosition), this);
-        currentAdapterPosition = productAdapterPosition;*/
+    public void onPressEditButton(int adapterPosition) {
+        Intent intent = new Intent(this, LogCustomMealActivity.class);
+        intent.putExtra("mode", "edit");
+        intent.putExtra("mealId", adapter.itemAt(adapterPosition).getId());
+        startActivity(intent);
     }
 
-    @Override
-    public void onFetchSuccess(Meal meal) {
-        /*LinearLayout loadingLayout = findViewById(R.id.linearLayout_loading);
-        loadingLayout.setVisibility(View.GONE);
-
-        productSharedViewModel.select(product);
-
-        ProductInfoFragment productInfoFragment = new ProductInfoFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        productInfoFragment.show(fragmentManager, "test");*/
-    }
-
-    @Override
-    public void onFetchNotFound() {
-        /*new AlertDialog.Builder(this)
-                .setTitle("Error fetching product data")
-                .setMessage("This product does not exist anymore.")
-                .setPositiveButton("Close", null)
-                .show();
-        MealIdentifier mealIdentifier = adapter.itemAt(currentAdapterPosition);
-        AppUser currentUser = appDataManager.getAppUser();
-        if (currentUser != null) {
-            currentUser.removeProductFromFavorites(productIdentifier);
-            currentUser.removeProductFromHistory(productIdentifier);
-            appDataManager.setAppUser(currentUser);
-            userSharedViewModel.select(currentUser);
-            UserDataUtility.updateUserDataToDb(FirebaseAuth.getInstance().getCurrentUser(), userSharedViewModel);
-        }*/
-    }
-
-    @Override
-    public void onFetchFailure(String errorMessage) {
-       /* new AlertDialog.Builder(this)
-                .setTitle("Error fetching product data")
-                .setMessage("Error cause: " + errorMessage + ". If this is a connection error, retry after reconnecting to the Internet.")
-                .setPositiveButton("Ok", null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();*/
-    }
 
 }

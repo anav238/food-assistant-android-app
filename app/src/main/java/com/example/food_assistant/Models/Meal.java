@@ -101,4 +101,15 @@ public class Meal implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Meal{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", ingredients=" + ingredients +
+                ", mealNutrition=" + mealNutrition +
+                ", totalQuantity=" + totalQuantity +
+                '}';
+    }
 }

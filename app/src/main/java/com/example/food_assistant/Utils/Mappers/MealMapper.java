@@ -20,8 +20,9 @@ public class MealMapper {
     public static MealSummary mapMealSummary(JsonObject json) {
         Gson gson = new Gson();
         MealSummary summary = new MealSummary();
+        System.out.println("SUMMARY JSON: " + json.toString());
         if (json.has("name"))
-            summary.setName(json.get("id").getAsString());
+            summary.setName(json.get("name").getAsString());
         if (json.has("ingredients")) {
             JsonArray ingredientsJson = json.get("ingredients").getAsJsonArray();
             List<IngredientSummary> ingredients = new ArrayList<>();
@@ -36,6 +37,7 @@ public class MealMapper {
     }
 
     public static Meal mapMinimalMealDataFromSummary(MealSummary mealSummary) {
+        System.out.println(mealSummary.toString());
         Meal meal = new Meal();
         meal.setId(mealSummary.getId());
         meal.setName(mealSummary.getName());

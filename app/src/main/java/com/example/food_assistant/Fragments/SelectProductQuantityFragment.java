@@ -33,12 +33,8 @@ public class SelectProductQuantityFragment extends DialogFragment {
         View content = inflater.inflate(R.layout.fragment_select_product_quantity, null);
         builder.setView(content)
                 .setMessage(R.string.pick_product_quantity)
-                .setPositiveButton(R.string.next, (dialog, id) -> {
-
-                })
+                .setPositiveButton(R.string.next, (dialog, id) -> { })
                 .setNegativeButton(R.string.cancel, (dialog, id) -> {
-                    // AppUser cancelled the dialog
-                   // visionImageProcessor.restart();
                     Bundle result = new Bundle();
                     getParentFragmentManager().setFragmentResult("GET_QUANTITY_CANCEL", result);
                     dismiss();
@@ -47,8 +43,6 @@ public class SelectProductQuantityFragment extends DialogFragment {
         AlertDialog dialog = builder.create();
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-        TextView measurementUnitTextView = content.findViewById(R.id.product_quantity_unit);
-        measurementUnitTextView.setText(productSharedViewModel.getSelected().getValue().getMeasurementUnit());
 
         return dialog;
     }
@@ -81,7 +75,6 @@ public class SelectProductQuantityFragment extends DialogFragment {
                     getParentFragmentManager().setFragmentResult("GET_QUANTITY_SUCCESS", result);
                     dismiss();
                 }
-
             });
         }
     }

@@ -59,8 +59,9 @@ public class MealDataUtility {
                 JsonObject object = (JsonObject) element;
                 MealSummary mealSummary = MealMapper.mapMealSummary(object);
                 mealSummary.setId(id);
+                Log.i("INFO", "meal summary object: " + mealSummary.toString());
                 mealSummaryFetchListener.onFetchSuccess(mealSummary);
             }
-        }).addOnFailureListener(error -> {});
+        }).addOnFailureListener(error -> {mealSummaryFetchListener.onFetchFailure(error.getMessage());});
     }
 }

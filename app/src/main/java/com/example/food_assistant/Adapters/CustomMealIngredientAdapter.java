@@ -44,12 +44,13 @@ public class CustomMealIngredientAdapter extends RecyclerView.Adapter<CustomMeal
 
         public void setIngredient(Ingredient ingredient) {
             this.ingredient = ingredient;
-            CharSequence updatedText = ingredient.getProduct().getProductName() + " - " + ingredient.getQuantity() + ingredient.getProduct().getMeasurementUnit();
+            CharSequence updatedText = ingredient.getProduct().getProductName() + " - " + ingredient.getQuantity() + "g";
             textView.setText(updatedText);
         }
     }
 
     public CustomMealIngredientAdapter(List<Ingredient> dataSet, MealIngredientListener mealIngredientListener) {
+        System.out.println(dataSet);
         items = new ArrayList<>(dataSet);
         this.mealIngredientListener = mealIngredientListener;
     }

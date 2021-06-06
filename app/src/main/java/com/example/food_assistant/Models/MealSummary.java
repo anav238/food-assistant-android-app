@@ -45,4 +45,13 @@ public class MealSummary implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "MealSummary{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", ingredients=" + ingredients +
+                '}';
+    }
 }

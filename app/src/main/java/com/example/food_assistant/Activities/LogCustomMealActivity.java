@@ -1,6 +1,7 @@
 package com.example.food_assistant.Activities;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -9,7 +10,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +33,7 @@ import com.example.food_assistant.Models.Ingredient;
 import com.example.food_assistant.Models.Meal;
 import com.example.food_assistant.Models.MealSummary;
 import com.example.food_assistant.Models.Product;
+import com.example.food_assistant.Models.ProductIdentifier;
 import com.example.food_assistant.R;
 import com.example.food_assistant.Utils.ActivityResultContracts.GetBrandedProduct;
 import com.example.food_assistant.Utils.ActivityResultContracts.GetGenericProduct;
@@ -65,7 +70,6 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
     private int currentItemAdapterPosition = -1;
 
     private Meal meal = new Meal();
-    private MealSummary mealSummary = new MealSummary();
     private String mealId = "";
     private AppDataManager appDataManager;
 
@@ -102,11 +106,10 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
 
         setupActivityResultLaunchers();
 
+        Log.i("INFO", "LogCustomMealActivitMode = " + selectedMode);
         if (selectedMode.equals("edit")) {
             LinearLayout loadingLayout = findViewById(R.id.linearLayout_loading);
             loadingLayout.setVisibility(View.VISIBLE);
-
-
             MealDataUtility.getMealSummaryById(mealId, this);
         }
         else
@@ -176,11 +179,13 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
             noIngredientsTextView.setVisibility(View.GONE);
             mealIngredientsRecyclerView.setVisibility(View.VISIBLE);
 
-            Button logMealButton = findViewById(R.id.button_log_meal);
-            logMealButton.setEnabled(true);
+            if (selectedMode.equals("log")) {
+                Button logMealButton = findViewById(R.id.button_log_meal);
+                logMealButton.setEnabled(true);
 
-            Button saveMealButton = findViewById(R.id.button_save_meal);
-            saveMealButton.setEnabled(true);
+                Button saveMealButton = findViewById(R.id.button_save_meal);
+                saveMealButton.setEnabled(true);
+            }
         }
         adapter.addItem(new Ingredient(product, 0.0));
     }
@@ -236,11 +241,13 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
             noIngredientsTextView.setVisibility(View.VISIBLE);
             mealIngredientsRecyclerView.setVisibility(View.GONE);
 
-            Button logMealButton = findViewById(R.id.button_log_meal);
-            logMealButton.setEnabled(false);
+            if (selectedMode.equals("log")) {
+                Button logMealButton = findViewById(R.id.button_log_meal);
+                logMealButton.setEnabled(false);
 
-            Button saveMealButton = findViewById(R.id.button_save_meal);
-            saveMealButton.setEnabled(false);
+                Button saveMealButton = findViewById(R.id.button_save_meal);
+                saveMealButton.setEnabled(false);
+            }
         }
     }
 
@@ -355,18 +362,43 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
     @Override
     public void onFetchSuccess(MealSummary summary) {
         LinearLayout loadingLayout = findViewById(R.id.linearLayout_loading);
-        loadingLayout.setVisibility(View.VISIBLE);
-        meal = MealMapper.mapMinimalMealDataFromSummary(mealSummary);
+        loadingLayout.setVisibility(View.GONE);
+        meal = MealMapper.mapMinimalMealDataFromSummary(summary);
+
+        TextView noIngredientsTextView = findViewById(R.id.textView_no_ingredients);
+        noIngredientsTextView.setVisibility(View.GONE);
+
+        EditText mealNameEditText = findViewById(R.id.editText_meal_name);
+        mealNameEditText.setText(meal.getName());
         setupMealIngredientsRecyclerView();
+
+        Button logMealButton = findViewById(R.id.button_log_meal);
+        logMealButton.setEnabled(true);
+
+        Button saveMealButton = findViewById(R.id.button_save_meal);
+        saveMealButton.setEnabled(true);
     }
 
     @Override
     public void onFetchNotFound() {
+        new AlertDialog.Builder(this)
+                .setTitle("Error fetching meal data")
+                .setMessage("This meal does not exist anymore.")
+                .setPositiveButton("Close", null)
+                .show();
 
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_CANCELED, returnIntent);
+        finish();
     }
 
     @Override
     public void onFetchFailure(String errorMessage) {
-
+        new AlertDialog.Builder(this)
+                .setTitle("Error fetching meal data")
+                .setMessage("Error cause: " + errorMessage + ". If this is a connection error, retry after reconnecting to the Internet.")
+                .setPositiveButton("Ok", null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }
