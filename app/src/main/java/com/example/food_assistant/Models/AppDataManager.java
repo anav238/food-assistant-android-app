@@ -5,11 +5,11 @@ public class AppDataManager {
     private static AppDataManager instance;
     private AppUser appUser;
 
-    private AppDataManager(AppUser appUser) {
-        this.appUser = appUser;
+    private AppDataManager(AppUser newUser) {
+        appUser = newUser;
     }
 
-    public static AppDataManager getInstance() {
+    public synchronized static AppDataManager getInstance() {
         if (instance == null)
             throw new NullPointerException("Please call initialize() before getting the instance.");
         return instance;
@@ -27,8 +27,6 @@ public class AppDataManager {
         return appUser;
     }
 
-    public void setAppUser(AppUser appUser) {
-        this.appUser = appUser;
-    }
+    public void setAppUser(AppUser newUser) {appUser = newUser; }
 
 }

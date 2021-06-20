@@ -69,12 +69,6 @@ public class LogNewProductFragment extends DialogFragment {
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
 
-        Spinner spinner = content.findViewById(R.id.spinner_measurement_units);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.measurement_units, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-
         return dialog;
     }
 
@@ -134,9 +128,7 @@ public class LogNewProductFragment extends DialogFragment {
         else
             product.setProductName(productNameEditText.getText().toString());
 
-        Spinner measurementUnitSpinner = dialog.findViewById(R.id.spinner_measurement_units);
-        String measurementUnit = measurementUnitSpinner.getSelectedItem().toString();
-        product.setMeasurementUnit(measurementUnit);
+        product.setMeasurementUnit("grams");
 
         Map<String, Double> nutrientQuantities = new HashMap<>();
         for (String nutrient: Nutrients.nutrientDefaultDV.keySet()) {

@@ -30,11 +30,10 @@ public class HistoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSharedViewModel = new ViewModelProvider(requireActivity()).get(UserSharedViewModel.class);
+        userSharedViewModel.getSelected().observe(this,  provider -> updateNutrientHistory(getView()));
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_history, null);
+    private void updateNutrientHistory(View v) {
         ExpandableListView elv = v.findViewById(R.id.expandableListView);
 
         elv.setOnGroupExpandListener(groupPosition -> {
@@ -49,6 +48,12 @@ public class HistoryFragment extends Fragment {
         Map<String, Map<String, Double>> nutrientConsumptionHistory = user.getNutrientConsumptionHistory();
 
         elv.setAdapter(new NutritionHistoryExpandableListAdapter(requireActivity(), getContext(), user, new ArrayList<>(nutrientConsumptionHistory.keySet()), nutrientConsumptionHistory));
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_history, null);
+        updateNutrientHistory(v);
         return v;
     }
 

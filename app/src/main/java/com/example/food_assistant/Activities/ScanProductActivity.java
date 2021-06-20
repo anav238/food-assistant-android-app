@@ -284,15 +284,14 @@ public class ScanProductActivity extends AppCompatActivity
     }
 
     private void bindAnalysisUseCase() {
-        if (cameraProvider == null) {
+        if (cameraProvider == null)
             return;
-        }
-        if (analysisUseCase != null) {
+
+        if (analysisUseCase != null)
             cameraProvider.unbind(analysisUseCase);
-        }
-        if (imageProcessor != null) {
+
+        if (imageProcessor != null)
             imageProcessor.stop();
-        }
 
         try {
             if (selectedModel.equals(BARCODE_SCANNING)) {

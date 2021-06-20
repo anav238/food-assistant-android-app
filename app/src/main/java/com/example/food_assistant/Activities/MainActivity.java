@@ -159,16 +159,28 @@ public class MainActivity extends AppCompatActivity implements UserDataFetchList
 
     @Override
     public void onFetchSuccess(AppUser appUser) {
-        AppDataManager.initialize(appUser);
+        try {
+            AppDataManager.getInstance().setAppUser(appUser);
+        } catch (Exception e) {
+            AppDataManager.initialize(appUser);
+        }
         appDataManager = AppDataManager.getInstance();
         userSharedViewModel.select(appUser);
+        System.out.println("Main Activity user" + appUser.toString());
     }
 
     @Override
     public void onFetchNotFound() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         AppUser appUser = new AppUser(firebaseUser.getDisplayName(), firebaseUser.getEmail());
+        try {
+            AppDataManager.getInstance().setAppUser(appUser);
+        } catch (Exception e) {
+            AppDataManager.initialize(appUser);
+        }
+        appDataManager = AppDataManager.getInstance();
         userSharedViewModel.select(appUser);
+        System.out.println("Main Activity user" + appUser.toString());
     }
 
     @Override
@@ -176,5 +188,6 @@ public class MainActivity extends AppCompatActivity implements UserDataFetchList
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Oops! Something went wrong. Please check your Internet connection and retry registering/logging in. Error message: " + errorMessage);
         builder.setPositiveButton("Retry", (dialog, which) -> authenticateUser());
+        builder.show();
     }
 }
