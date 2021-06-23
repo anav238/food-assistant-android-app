@@ -166,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements UserDataFetchList
         }
         appDataManager = AppDataManager.getInstance();
         userSharedViewModel.select(appUser);
-        System.out.println("Main Activity user" + appUser.toString());
     }
 
     @Override

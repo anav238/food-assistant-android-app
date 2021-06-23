@@ -298,7 +298,7 @@ public class LogCustomMealActivity extends AppCompatActivity implements CustomMe
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag("todayNutrientIntake");
-
+        productSharedViewModel.select(null );
         if (fragment == null) {
             fragmentManager.beginTransaction()
                     .setReorderingAllowed(true)
